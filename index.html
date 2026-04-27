@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر صحتك بالدنيا</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --green-dark:#1a5c2a;
+    --green-mid:#2e7d3e;
+    --green-light:#4caf6a;
+    --green-pale:#d4edda;
+    --green-card:rgba(30,90,45,0.82);
+    --teal-bg:#7ecfc0;
+    --teal-dark:#5bbdad;
+    --white:#ffffff;
+    --gray-light:#f4f4f0;
+    --text-dark:#1a1a1a;
+    --text-muted:#555;
+    --shadow:0 8px 32px rgba(0,0,0,0.18);
+    --radius:18px;
+    --radius-sm:10px;
+  }
+  body{font-family:'Tajawal',sans-serif;direction:rtl;background:var(--gray-light);color:var(--text-dark);min-height:100vh}
+
+  /* PAGE SYSTEM */
+  .page{display:none;min-height:100vh;animation:fadeIn 0.35s ease}
+  .page.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* LEAF BACKGROUND */
+  .leaf-bg{
+    min-height:100vh;
+    background:linear-gradient(135deg,var(--teal-bg) 0%,#a8ddd5 60%,#b5e0d8 100%);
+    display:flex;align-items:center;justify-content:center;
+    padding:2rem;position:relative;overflow:hidden
+  }
+  .leaf-bg::before{
+    content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cellipse cx='60' cy='100' rx='18' ry='55' fill='%2355b09050' transform='rotate(-30 60 100)'/%3E%3Cellipse cx='140' cy='60' rx='14' ry='45' fill='%2355b09040' transform='rotate(20 140 60)'/%3E%3Cellipse cx='30' cy='160' rx='12' ry='40' fill='%2355b09035' transform='rotate(-50 30 160)'/%3E%3Cellipse cx='170' cy='150' rx='16' ry='50' fill='%2355b09045' transform='rotate(40 170 150)'/%3E%3C/svg%3E") repeat;
+    opacity:0.6
+  }
+  .auth-card{
+    background:var(--green-card);
+    backdrop-filter:blur(12px);
+    border-radius:28px;
+    padding:2.5rem 2.8rem;
+    max-width:480px;width:100%;
+    position:relative;z-index:1;
+    border:1.5px solid rgba(255,255,255,0.18);
+    box-shadow:var(--shadow)
+  }
+  .logo-box{
+    background:var(--green-dark);
+    border-radius:16px;padding:0.7rem 1.5rem;
+    text-align:center;margin:0 auto 1.6rem;max-width:260px;
+    display:flex;align-items:center;justify-content:center;gap:0.5rem
+  }
+  .logo-box span{color:#fff;font-size:1.6rem;font-weight:800}
+  .logo-icon{width:36px;height:36px;opacity:0.9}
+
+  /* WELCOME */
+  .welcome-title{color:#fff;font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:2rem}
+  .btn-primary{
+    display:block;width:100%;padding:0.9rem;
+    background:var(--green-light);color:#fff;
+    font-size:1.1rem;font-weight:700;font-family:'Tajawal',sans-serif;
+    border:none;border-radius:50px;cursor:pointer;
+    transition:background 0.2s,transform 0.1s;margin-bottom:0.8rem
+  }
+  .btn-primary:hover{background:var(--green-mid);transform:scale(1.02)}
+  .btn-outline{
+    display:block;width:100%;padding:0.85rem;
+    background:transparent;color:#fff;
+    font-size:1rem;font-weight:600;font-family:'Tajawal',sans-serif;
+    border:2px solid rgba(255,255,255,0.6);border-radius:50px;cursor:pointer;
+    transition:all 0.2s;margin-bottom:0.5rem
+  }
+  .btn-outline:hover{background:rgba(255,255,255,0.12)}
+  .auth-hint{color:rgba(255,255,255,0.75);font-size:0.9rem;text-align:center;margin:0.4rem 0}
+
+  /* FORMS */
+  .form-title{color:#fff;font-size:1.4rem;font-weight:700;text-align:center;margin-bottom:1.5rem}
+  .input-wrap{position:relative;margin-bottom:1rem}
+  .input-wrap input{
+    width:100%;padding:0.8rem 1rem 0.8rem 2.8rem;
+    background:rgba(255,255,255,0.92);
+    border:2px solid var(--green-light);
+    border-radius:50px;font-size:1rem;
+    font-family:'Tajawal',sans-serif;color:var(--text-dark);
+    outline:none;direction:rtl;transition:border 0.2s
+  }
+  .input-wrap input:focus{border-color:var(--green-dark)}
+  .input-wrap .ico{
+    position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);
+    color:var(--green-mid);font-size:1.1rem
+  }
+  .forgot-link{color:rgba(255,255,255,0.75);font-size:0.88rem;cursor:pointer;text-align:left;display:block;margin-bottom:0.8rem}
+  .forgot-link:hover{color:#fff}
+
+  /* REGISTER FORM */
+  .register-bg{
+    min-height:100vh;
+    background:linear-gradient(135deg,#c8e6c9 0%,#e8f5e9 100%);
+    padding:1.5rem;
+  }
+  .register-card{
+    background:#fff;border-radius:24px;
+    padding:2rem 2.5rem;max-width:860px;margin:0 auto;
+    box-shadow:var(--shadow);border:1.5px solid var(--green-pale)
+  }
+  .register-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:1.5rem;border-bottom:2px solid var(--green-pale);padding-bottom:1rem
+  }
+  .register-title{color:var(--green-dark);font-size:1.5rem;font-weight:800}
+  .register-logo{background:var(--green-dark);border-radius:12px;padding:0.4rem 1rem;display:flex;align-items:center;gap:0.4rem}
+  .register-logo span{color:#fff;font-size:1.1rem;font-weight:700}
+  .leaf-mini{display:inline-block;margin-left:0.3rem}
+
+  .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem 1.5rem}
+  .field-group{display:flex;flex-direction:column;gap:0.3rem}
+  .field-group label{font-size:0.88rem;font-weight:600;color:var(--green-dark)}
+  .field-group input,.field-group select{
+    padding:0.6rem 0.9rem;
+    border:2px solid #b2dfdb;border-radius:var(--radius-sm);
+    font-size:0.95rem;font-family:'Tajawal',sans-serif;
+    outline:none;transition:border 0.2s;background:#fff;color:var(--text-dark)
+  }
+  .field-group input:focus,.field-group select:focus{border-color:var(--green-mid)}
+  .radio-group{display:flex;gap:1.5rem;align-items:center;padding:0.5rem 0}
+  .radio-group label{display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.95rem;color:var(--text-dark)}
+  .radio-group input[type=radio]{accent-color:var(--green-mid);width:18px;height:18px}
+  .section-title{
+    grid-column:1/-1;color:var(--green-dark);
+    font-size:1rem;font-weight:700;
+    border-bottom:2px solid var(--green-pale);
+    padding-bottom:0.4rem;margin-top:0.5rem
+  }
+  .hint-text{font-size:0.8rem;color:var(--text-muted);grid-column:1/-1;text-align:center;margin-top:0.3rem}
+  .no-guide-check{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;color:var(--text-dark);cursor:pointer}
+  .no-guide-check input{accent-color:var(--green-mid);width:18px;height:18px}
+
+  /* MAIN MENU */
+  .menu-bg{
+    min-height:100vh;
+    background:linear-gradient(135deg,#7ecfc0 0%,#a8ddd5 100%);
+    padding:2rem;position:relative;overflow:hidden
+  }
+  .menu-bg::before{content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cellipse cx='80' cy='150' rx='25' ry='80' fill='%2322774030' transform='rotate(-25 80 150)'/%3E%3Cellipse cx='220' cy='80' rx='20' ry='65' fill='%2322774025' transform='rotate(15 220 80)'/%3E%3Cellipse cx='250' cy='230' rx='22' ry='70' fill='%2322774028' transform='rotate(-40 250 230)'/%3E%3C/svg%3E") repeat;
+    opacity:0.7
+  }
+  .menu-logo{
+    position:absolute;top:1.5rem;right:1.5rem;z-index:2;
+    background:var(--green-dark);border-radius:14px;padding:0.5rem 1.2rem;
+    display:flex;align-items:center;gap:0.5rem
+  }
+  .menu-logo span{color:#fff;font-size:1.3rem;font-weight:800}
+  .menu-cards{
+    display:flex;gap:1.2rem;justify-content:center;align-items:center;
+    flex-wrap:wrap;min-height:100vh;padding-top:5rem;position:relative;z-index:1
+  }
+  .menu-card{
+    background:var(--green-dark);
+    border:2.5px solid rgba(255,255,255,0.3);
+    border-radius:var(--radius);padding:2rem 1.5rem;
+    min-width:200px;max-width:240px;flex:1;
+    text-align:center;cursor:pointer;color:#fff;
+    font-size:1.15rem;font-weight:700;
+    transition:all 0.25s;box-shadow:0 4px 20px rgba(0,0,0,0.2)
+  }
+  .menu-card:hover{background:var(--green-mid);transform:translateY(-6px) scale(1.03);box-shadow:0 12px 32px rgba(0,0,0,0.25)}
+  .menu-card.vip{background:var(--green-dark)}
+  .menu-card-icon{font-size:2rem;margin-bottom:0.8rem;display:block}
+
+  /* SHOP LAYOUT */
+  .shop-page{display:none;flex-direction:column;min-height:100vh;background:linear-gradient(135deg,#7ecfc0 0%,#9ed9d0 100%)}
+  .shop-page.active{display:flex}
+  .shop-nav{
+    background:var(--green-card);backdrop-filter:blur(10px);
+    padding:0.6rem 1.5rem;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:0.8rem;flex-wrap:wrap;position:sticky;top:0;z-index:100;
+    border-bottom:1.5px solid rgba(255,255,255,0.15)
+  }
+  .nav-logo{background:var(--green-dark);border-radius:12px;padding:0.3rem 1rem;display:flex;align-items:center;gap:0.4rem}
+  .nav-logo span{color:#fff;font-size:1.05rem;font-weight:700}
+  .nav-links{display:flex;gap:0.3rem;flex-wrap:wrap}
+  .nav-btn{
+    padding:0.4rem 0.85rem;border-radius:50px;
+    background:transparent;color:#fff;font-size:0.88rem;font-weight:600;
+    font-family:'Tajawal',sans-serif;border:1.5px solid rgba(255,255,255,0.3);
+    cursor:pointer;transition:all 0.2s
+  }
+  .nav-btn:hover,.nav-btn.active-nav{background:var(--green-light);border-color:var(--green-light)}
+  .nav-btn.special{background:var(--green-light);border-color:var(--green-light)}
+  .cart-info{
+    background:rgba(255,255,255,0.15);border-radius:var(--radius-sm);
+    padding:0.4rem 0.9rem;color:#fff;font-size:0.85rem;
+    display:flex;align-items:center;gap:0.6rem;min-width:130px
+  }
+  .cart-icon-box{font-size:1.4rem}
+  .cart-total{font-weight:700}
+
+  /* SEARCH BAR */
+  .search-bar{
+    background:rgba(30,70,40,0.18);backdrop-filter:blur(6px);
+    padding:0.8rem 1.5rem;display:flex;align-items:center;gap:1rem;
+    justify-content:space-between;flex-wrap:wrap
+  }
+  .search-wrap{display:flex;gap:0.5rem;flex:1;max-width:500px;margin:0 auto}
+  .search-wrap input{
+    flex:1;padding:0.6rem 1rem;border-radius:50px;
+    border:2px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.9);
+    font-family:'Tajawal',sans-serif;font-size:0.95rem;outline:none;direction:rtl
+  }
+  .search-btn{
+    padding:0.6rem 1.1rem;background:var(--green-mid);color:#fff;
+    border:none;border-radius:50px;cursor:pointer;font-size:1.1rem
+  }
+  .points-hint{color:rgba(255,255,255,0.9);font-size:0.85rem;font-weight:700}
+  .addon-btn{
+    padding:0.45rem 0.9rem;background:rgba(255,160,50,0.9);color:#fff;
+    border:none;border-radius:8px;cursor:pointer;font-size:0.88rem;font-weight:600;font-family:'Tajawal',sans-serif
+  }
+  .addon-btn-green{background:rgba(46,125,62,0.9)}
+
+  /* PRODUCTS TABLE */
+  .products-container{flex:1;padding:1rem 1.5rem;overflow-x:auto}
+  .products-table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.97);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .products-table th{
+    background:var(--green-dark);color:#fff;
+    padding:0.7rem 0.8rem;font-size:0.9rem;font-weight:700;text-align:center
+  }
+  .products-table td{
+    padding:0.65rem 0.8rem;border-bottom:1px solid #e8f5e9;
+    font-size:0.9rem;text-align:center;vertical-align:middle
+  }
+  .products-table tr:hover td{background:#f0faf2}
+  .row-normal td{background:#fff}
+  .row-highlight td{background:#fff9e6}
+  .row-red td{background:#fff0f0}
+
+  .product-thumb{
+    width:42px;height:42px;border-radius:8px;object-fit:cover;
+    border:2px solid var(--green-pale);background:#f0f0f0;
+    display:flex;align-items:center;justify-content:center;margin:0 auto
+  }
+  .thumb-placeholder{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,#c8e6c9,#a5d6a7);border:2px solid var(--green-pale);display:inline-flex;align-items:center;justify-content:center;color:var(--green-dark);font-size:1.2rem}
+  .qty-ctrl{display:flex;align-items:center;gap:0.3rem;justify-content:center}
+  .qty-btn{width:26px;height:26px;border-radius:50%;background:var(--green-pale);border:1px solid var(--green-light);color:var(--green-dark);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .qty-btn:hover{background:var(--green-light);color:#fff}
+  .qty-num{min-width:24px;text-align:center;font-weight:700;font-size:0.95rem}
+  .details-btn{
+    padding:0.3rem 0.7rem;background:transparent;
+    border:1.5px solid var(--green-mid);color:var(--green-dark);
+    border-radius:50px;cursor:pointer;font-size:0.8rem;font-weight:600;font-family:'Tajawal',sans-serif
+  }
+  .details-btn:hover{background:var(--green-pale)}
+  .add-cart-btn{
+    padding:0.4rem 0.85rem;background:var(--green-light);color:#fff;
+    border:none;border-radius:50px;cursor:pointer;font-size:0.85rem;font-weight:700;font-family:'Tajawal',sans-serif;
+    white-space:nowrap
+  }
+  .add-cart-btn:hover{background:var(--green-dark)}
+  .points-badge{
+    background:var(--green-pale);color:var(--green-dark);
+    padding:0.2rem 0.5rem;border-radius:20px;font-size:0.8rem;font-weight:700
+  }
+  .price-tag{font-weight:700;color:var(--green-dark);font-size:0.95rem}
+
+  /* PRODUCT DETAIL MODAL */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,0.45);
+    display:flex;align-items:center;justify-content:center;padding:1rem
+  }
+  .modal-overlay.hidden{display:none}
+  .modal-box{
+    background:#fff;border-radius:24px;
+    max-width:720px;width:100%;max-height:90vh;overflow-y:auto;
+    padding:2rem;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3)
+  }
+  .modal-close{
+    position:absolute;top:1rem;left:1rem;
+    width:36px;height:36px;border-radius:50%;
+    background:var(--green-pale);border:none;cursor:pointer;
+    font-size:1.3rem;color:var(--green-dark);display:flex;align-items:center;justify-content:center
+  }
+  .modal-video-btn{
+    display:flex;align-items:center;gap:0.5rem;
+    background:var(--green-dark);color:#fff;border:none;
+    border-radius:10px;padding:0.5rem 1rem;cursor:pointer;font-size:0.9rem;font-weight:600;font-family:'Tajawal',sans-serif;
+    margin-bottom:1rem
+  }
+  .modal-content{display:grid;grid-template-columns:1fr 260px;gap:1.5rem;align-items:start}
+  .modal-product-img{
+    width:100%;max-width:220px;margin:0 auto;display:block;
+    border-radius:16px;border:3px solid var(--green-pale)
+  }
+  .modal-img-placeholder{
+    width:100%;aspect-ratio:1;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+    border-radius:16px;border:3px solid var(--green-pale);
+    display:flex;align-items:center;justify-content:center;font-size:4rem
+  }
+  .modal-dots{display:flex;gap:6px;justify-content:center;margin-top:0.6rem}
+  .modal-dot{width:10px;height:10px;border-radius:50%;background:var(--green-pale);cursor:pointer}
+  .modal-dot.active{background:var(--green-mid)}
+  .modal-title{font-size:1.2rem;font-weight:800;color:var(--green-dark);margin-bottom:0.5rem}
+  .modal-price{font-size:1.4rem;font-weight:700;color:var(--green-dark)}
+  .modal-price-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:0.3rem}
+  .modal-stock{font-size:0.9rem;color:var(--text-muted);margin-bottom:1rem}
+  .modal-desc-title{font-weight:700;color:var(--green-dark);margin-bottom:0.4rem;font-size:0.95rem}
+  .modal-desc{font-size:0.9rem;color:var(--text-dark);line-height:1.7}
+  .modal-actions{display:flex;gap:0.8rem;margin-top:1.5rem;align-items:center}
+  .modal-qty{display:flex;align-items:center;gap:0.5rem;background:var(--green-pale);padding:0.3rem 0.8rem;border-radius:50px}
+  .modal-qty button{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--green-dark);font-weight:700;width:24px;height:24px}
+  .modal-qty span{font-weight:700;font-size:1rem;min-width:20px;text-align:center}
+  .btn-buy{padding:0.7rem 1.5rem;background:var(--green-light);color:#fff;border:none;border-radius:50px;font-size:0.95rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer}
+  .btn-cart{padding:0.7rem 1.5rem;background:transparent;color:var(--green-dark);border:2px solid var(--green-mid);border-radius:50px;font-size:0.95rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer}
+  .back-arrow{
+    display:flex;align-items:center;justify-content:center;
+    width:50px;height:50px;cursor:pointer;
+    color:var(--green-mid);font-size:2rem
+  }
+
+  /* DELIVERY PAGE */
+  .delivery-page{background:var(--gray-light);min-height:100vh;padding:2rem}
+  .delivery-card{background:#fff;border-radius:24px;max-width:900px;margin:0 auto;padding:2rem;box-shadow:var(--shadow)}
+  .delivery-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+  .order-summary-box{background:#f9faf8;border:1.5px solid var(--green-pale);border-radius:var(--radius);padding:1.2rem}
+  .order-summary-box h3{font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:0.8rem;border-bottom:2px solid var(--green-pale);padding-bottom:0.4rem;text-align:center}
+  .order-item{display:flex;justify-content:space-between;font-size:0.88rem;padding:0.25rem 0;color:var(--text-dark)}
+  .order-item .item-name{flex:1;font-weight:500}
+  .order-item .item-price{color:var(--green-dark);font-weight:700;margin-right:0.5rem}
+  .order-item .item-pts{color:#888;font-size:0.8rem}
+  .delivery-section h3{font-size:1.1rem;font-weight:800;color:var(--green-dark);margin-bottom:1rem}
+  .delivery-options{display:flex;gap:1rem;margin-bottom:1rem}
+  .delivery-opt{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.95rem}
+  .delivery-opt input{accent-color:var(--green-mid);width:18px;height:18px}
+  .delivery-table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+  .delivery-table th{background:var(--green-dark);color:#fff;padding:0.5rem;font-size:0.85rem;text-align:center}
+  .delivery-table td{border:1.5px solid var(--green-pale);padding:0.5rem;font-size:0.9rem;text-align:center}
+  .delivery-table input{width:100%;border:none;outline:none;font-family:'Tajawal',sans-serif;font-size:0.9rem;text-align:center}
+  .points-summary{background:var(--green-pale);border-radius:var(--radius-sm);padding:0.8rem;margin-top:1rem}
+  .points-row{display:flex;justify-content:space-between;font-size:0.9rem;padding:0.2rem 0;color:var(--text-dark)}
+  .total-row{display:flex;justify-content:space-between;font-size:0.95rem;font-weight:700;padding:0.3rem 0;border-top:1.5px solid #c8e6c9;margin-top:0.3rem;color:var(--green-dark)}
+  .contact-section{margin-top:1rem}
+  .contact-section label{font-size:0.88rem;font-weight:600;color:var(--green-dark);display:block;margin-bottom:0.3rem}
+  .contact-section input{
+    width:100%;padding:0.6rem 0.9rem;border:2px solid var(--green-pale);
+    border-radius:var(--radius-sm);font-family:'Tajawal',sans-serif;font-size:0.95rem;outline:none;direction:ltr
+  }
+  .map-link{color:var(--green-mid);font-size:0.85rem;text-decoration:underline;cursor:pointer}
+  .warning-text{color:#c0392b;font-size:0.85rem;font-weight:700;margin-top:0.5rem}
+  .btn-complete{
+    display:block;width:100%;padding:1rem;
+    background:var(--green-mid);color:#fff;
+    font-size:1.1rem;font-weight:700;font-family:'Tajawal',sans-serif;
+    border:none;border-radius:50px;cursor:pointer;margin-top:1.5rem;
+    transition:background 0.2s
+  }
+  .btn-complete:hover{background:var(--green-dark)}
+
+  /* SUCCESS PAGE */
+  .success-bg{
+    min-height:100vh;
+    background:linear-gradient(135deg,#c8e6c9 0%,#e8f5e9 100%);
+    display:flex;align-items:center;justify-content:center;padding:2rem
+  }
+  .success-card{background:#fff;border-radius:24px;max-width:500px;width:100%;padding:2.5rem;text-align:center;box-shadow:var(--shadow)}
+  .success-check{width:70px;height:70px;border-radius:50%;background:var(--green-light);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+  .success-title{font-size:1.3rem;font-weight:800;color:var(--green-dark);margin-bottom:0.5rem}
+  .success-sub{color:var(--text-muted);font-size:0.95rem;margin-bottom:1.5rem}
+  .order-badge{background:var(--green-dark);color:#fff;border-radius:12px;padding:0.8rem 1.5rem;display:inline-block;margin-bottom:1rem;font-weight:700}
+  .invoice-btn{
+    display:inline-block;padding:0.8rem 2rem;
+    background:var(--green-mid);color:#fff;
+    font-size:1rem;font-weight:700;font-family:'Tajawal',sans-serif;
+    border:none;border-radius:50px;cursor:pointer
+  }
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:2rem;right:2rem;z-index:999;
+    background:var(--green-dark);color:#fff;
+    padding:0.8rem 1.5rem;border-radius:50px;
+    font-size:0.95rem;font-weight:600;
+    opacity:0;transform:translateY(20px);
+    transition:all 0.3s;pointer-events:none
+  }
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  /* MEMBERSHIP ORDER PAGE */
+  .order-modal-wrap{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,0.45);
+    display:flex;align-items:center;justify-content:center;padding:1rem
+  }
+  .order-modal-wrap.hidden{display:none}
+  .order-modal-box{
+    background:rgba(30,80,40,0.9);backdrop-filter:blur(14px);
+    border-radius:24px;max-width:520px;width:100%;padding:2rem;
+    border:1.5px solid rgba(255,255,255,0.2)
+  }
+  .order-modal-title{color:#fff;font-size:1.3rem;font-weight:800;text-align:center;margin-bottom:0.5rem}
+  .order-modal-hint{color:rgba(255,255,255,0.75);font-size:0.85rem;text-align:center;margin-bottom:1.2rem}
+  .checkbox-row{display:flex;gap:1.5rem;justify-content:center;margin-bottom:1rem;flex-wrap:wrap}
+  .check-label{display:flex;align-items:center;gap:0.4rem;cursor:pointer;color:#fff;font-size:0.9rem}
+  .check-label input[type=checkbox]{accent-color:var(--green-light);width:18px;height:18px}
+  .order-input{
+    width:100%;padding:0.65rem 1rem;margin-bottom:0.8rem;
+    background:rgba(255,255,255,0.9);border:2px solid var(--green-light);
+    border-radius:50px;font-size:0.95rem;font-family:'Tajawal',sans-serif;
+    outline:none;direction:rtl
+  }
+  .order-input::placeholder{color:#aaa}
+  .order-submit{
+    display:block;width:100%;padding:0.85rem;
+    background:var(--green-light);color:#fff;
+    font-size:1.05rem;font-weight:700;font-family:'Tajawal',sans-serif;
+    border:none;border-radius:50px;cursor:pointer;margin-top:0.5rem
+  }
+
+  /* PRINT */
+  @media print{
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    body>*{display:none!important}
+    #invoice-print-frame{display:block!important;position:fixed!important;inset:0!important;z-index:9999!important;background:#fff!important}
+  }
+  /* RESPONSIVE */
+  @media(max-width:700px){
+    .modal-content{grid-template-columns:1fr}
+    .delivery-grid{grid-template-columns:1fr}
+    .fields-grid{grid-template-columns:1fr}
+    .menu-cards{flex-direction:column;align-items:center}
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: WELCOME -->
+<div class="page active" id="page-welcome">
+  <div class="leaf-bg">
+    <div class="auth-card">
+      <div class="logo-box">
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M20 8 C12 8 6 16 6 24 C6 30 10 35 20 36 C30 35 34 30 34 24 C34 16 28 8 20 8Z" fill="rgba(255,255,255,0.3)"/>
+          <path d="M20 10 C20 10 20 20 14 28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 10 C20 10 20 22 26 28" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>صحتك بالدنيا</span>
+      </div>
+      <p class="welcome-title">مرحبا بك في متجر صحتك بالدنيا</p>
+      <button class="btn-primary" onclick="goTo('page-login')">تسجيل الدخول</button>
+      <p class="auth-hint">ليس لديك حساب ؟</p>
+      <button class="btn-primary" onclick="goTo('page-register')">إنشاء حساب</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: LOGIN -->
+<div class="page" id="page-login">
+  <div class="leaf-bg">
+    <div class="auth-card">
+      <div class="logo-box">
+        <span>صحتك بالدنيا 🌿</span>
+      </div>
+      <p class="form-title">سجل دخولك</p>
+      <div class="input-wrap">
+        <input type="text" placeholder="اسم المستخدم" id="login-user">
+        <span class="ico">👤</span>
+      </div>
+      <div class="input-wrap">
+        <input type="password" placeholder="الرمز السري" id="login-pass">
+        <span class="ico">🔒</span>
+      </div>
+      <span class="forgot-link" onclick="goTo('page-forgot')">نسيت الرمز السري</span>
+      <button class="btn-primary" onclick="doLogin()">اضغط للدخول</button>
+      <button class="btn-outline" onclick="goTo('page-welcome')">← رجوع</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: FORGOT PASSWORD -->
+<div class="page" id="page-forgot">
+  <div class="leaf-bg">
+    <div class="auth-card">
+      <div class="logo-box"><span>صحتك بالدنيا 🌿</span></div>
+      <p class="form-title">نسيت الرمز السري</p>
+      <p style="color:rgba(255,255,255,0.8);text-align:center;font-size:0.9rem;margin-bottom:1.2rem">يرجى إدخال رقم هاتفك ليتم التواصل مع المشرف</p>
+      <div class="input-wrap">
+        <input type="tel" placeholder="رقم الهاتف" id="forgot-phone">
+        <span class="ico">👤</span>
+      </div>
+      <button class="btn-primary" onclick="goTo('page-forgot-thanks')">اضغط للدخول</button>
+      <button class="btn-outline" onclick="goTo('page-login')">← رجوع</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4: FORGOT THANKS -->
+<div class="page" id="page-forgot-thanks">
+  <div class="leaf-bg">
+    <div class="auth-card" style="text-align:center">
+      <div class="logo-box" style="margin:0 auto 1.5rem"><span>صحتك بالدنيا 🌿</span></div>
+      <p style="color:#fff;font-size:1.4rem;font-weight:800;margin-bottom:1rem">شكرا لإعلامنا</p>
+      <p style="color:rgba(255,255,255,0.85);font-size:0.95rem;margin-bottom:0.5rem">سيتم التواصل معك بأقرب وقت</p>
+      <p style="color:rgba(255,255,255,0.85);font-size:0.95rem;margin-bottom:0.5rem">يمكنك التسوق مباشرة بلا عضوية</p>
+      <p style="color:rgba(255,255,255,0.85);font-size:0.95rem;margin-bottom:1.5rem">حتى يتم استعادة حسابك</p>
+      <button class="btn-primary" onclick="goTo('page-main')">اضغط للدخول</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5: REGISTER -->
+<div class="page" id="page-register">
+  <div class="register-bg">
+    <div class="register-card">
+      <div class="register-header">
+        <div class="register-title">إنشاء حساب</div>
+        <div class="register-logo"><span>صحتك بالدنيا 🌿</span></div>
+      </div>
+      <p style="text-align:center;color:var(--green-dark);font-size:0.88rem;margin-bottom:1.2rem;font-weight:600">يرجى كتابة الأسماء كما هو موجود بنظام ( DXN )</p>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>رقم عضوية الدليل</label>
+          <input type="text" placeholder="رقم العضوية">
+        </div>
+        <div class="field-group">
+          <label>الرقم السري</label>
+          <input type="password" placeholder="اختر رقماً سرياً">
+        </div>
+        <div class="field-group">
+          <label>اسم الدليل بالعربي</label>
+          <input type="text" placeholder="اسم الدليل">
+        </div>
+        <div class="field-group">
+          <label>رقم الهاتف</label>
+          <input type="tel" placeholder="+966...">
+        </div>
+        <div class="field-group">
+          <label>اسم الدليل بالإنجليزي</label>
+          <input type="text" placeholder="Guide Name EN">
+        </div>
+        <div class="field-group">
+          <label>تاريخ الميلاد</label>
+          <input type="date">
+        </div>
+        <div class="field-group" style="grid-column:1/-1">
+          <label class="no-guide-check"><input type="checkbox"> اضغط هنا إذا لا يوجد دليل</label>
+        </div>
+        <div class="field-group">
+          <label>اسمك الثلاثي بالعربي</label>
+          <input type="text" placeholder="الاسم الثلاثي">
+        </div>
+        <div class="field-group">
+          <label>رقم الهوية</label>
+          <input type="text" placeholder="رقم الهوية">
+        </div>
+        <div class="field-group">
+          <label>اسمك الثلاثي بالإنجليزي</label>
+          <input type="text" placeholder="Full Name EN">
+        </div>
+        <div class="field-group">
+          <label>الجنسية</label>
+          <input type="text" placeholder="الجنسية">
+        </div>
+        <div class="field-group">
+          <label>اسم المستخدم</label>
+          <input type="text" placeholder="username">
+        </div>
+        <div class="field-group">
+          <label>الجنس</label>
+          <div class="radio-group">
+            <label><input type="radio" name="gender" value="male"> ذكر</label>
+            <label><input type="radio" name="gender" value="female"> أنثى</label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>بلد الإقامة</label>
+          <input type="text" placeholder="بلد الإقامة">
+        </div>
+        <p class="section-title">معلومات الوريث :</p>
+        <div class="field-group">
+          <label>اسم الوريث الثلاثي</label>
+          <input type="text" placeholder="اسم الوريث">
+        </div>
+        <div class="field-group">
+          <label>صلة القرابة</label>
+          <input type="text" placeholder="الصلة">
+        </div>
+        <div class="field-group" style="grid-column:1/-1">
+          <label>الإيميل الشخصي :</label>
+          <input type="email" placeholder="email@example.com">
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:1.5rem;display:flex;gap:1rem;justify-content:center">
+        <button class="btn-primary" style="max-width:220px" onclick="goTo('page-main')">إنشاء الحساب</button>
+        <button class="btn-outline" style="max-width:160px;background:transparent;color:var(--green-dark);border-color:var(--green-mid)" onclick="goTo('page-welcome')">← رجوع</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 6: MAIN MENU -->
+<div class="page" id="page-main">
+  <div class="menu-bg">
+    <div class="menu-logo"><span>صحتك بالدنيا 🌿</span></div>
+    <div class="menu-cards">
+      <div class="menu-card vip" onclick="goTo('page-shop-membership')">
+        <span class="menu-card-icon">⭐</span>
+        العملاء المميزين
+      </div>
+      <div class="menu-card" onclick="goTo('page-register')">
+        <span class="menu-card-icon">🆕</span>
+        شراء بإنشاء<br>عضوية جديدة
+      </div>
+      <div class="menu-card" onclick="goTo('page-shop-membership')">
+        <span class="menu-card-icon">🪪</span>
+        شراء بعضوية
+      </div>
+      <div class="menu-card" onclick="goTo('page-shop-nomembership')">
+        <span class="menu-card-icon">🛒</span>
+        شراء بلا عضوية
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 7: SHOP (NO MEMBERSHIP) -->
+<div class="shop-page" id="page-shop-nomembership">
+  <nav class="shop-nav">
+    <div class="cart-info">
+      <span class="cart-icon-box">🛒</span>
+      <div>
+        <div style="font-size:0.8rem">عدد العناصر (<span id="cart-count-nm">0</span>)</div>
+        <div class="cart-total">SAR <span id="cart-total-nm">0.00</span></div>
+      </div>
+    </div>
+    <div class="nav-logo"><span>صحتك بالدنيا 🌿</span></div>
+    <div class="nav-links">
+      <button class="nav-btn special">شراء بلا عضوية</button>
+      <button class="nav-btn active-nav">الصفحة الرئيسية</button>
+      <button class="nav-btn">التصنيفات</button>
+      <button class="nav-btn">المنتجات السعودية</button>
+      <button class="nav-btn">المنتجات الماليزية</button>
+      <button class="nav-btn">العروض</button>
+    </div>
+  </nav>
+  <div class="search-bar">
+    <span class="points-hint">ن.س = نقاط سعودية | ن.م = نقاط ماليزية</span>
+    <div class="search-wrap">
+      <input type="text" placeholder="البحث عن منتج" id="search-nm">
+      <button class="search-btn">🔍</button>
+    </div>
+    <span></span>
+  </div>
+  <div class="products-container">
+    <table class="products-table" id="table-nm">
+      <thead>
+        <tr>
+          <th>الكمية</th><th>المنتج</th><th>السعر</th><th></th><th>تفاصيل</th><th>أضف للسلة</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-nm"></tbody>
+    </table>
+  </div>
+  <div style="padding:0.8rem 1.5rem;text-align:center">
+    <button class="btn-primary" style="max-width:200px;display:inline-block" onclick="goToDelivery()">إتمام الطلب ←</button>
+    <button class="btn-outline" style="max-width:160px;display:inline-block;color:var(--green-dark);border-color:var(--green-mid)" onclick="goTo('page-main')">← رجوع</button>
+  </div>
+</div>
+
+<!-- PAGE 8: SHOP (WITH MEMBERSHIP) -->
+<div class="shop-page" id="page-shop-membership">
+  <nav class="shop-nav">
+    <div class="cart-info">
+      <span class="cart-icon-box">🛒</span>
+      <div>
+        <div style="font-size:0.8rem">عدد العناصر (<span id="cart-count-m">0</span>)</div>
+        <div class="cart-total">SAR <span id="cart-total-m">0.00</span></div>
+      </div>
+    </div>
+    <div class="nav-logo"><span>صحتك بالدنيا 🌿</span></div>
+    <div class="nav-links">
+      <button class="nav-btn special">شراء بعضوية</button>
+      <button class="nav-btn active-nav">الصفحة الرئيسية</button>
+      <button class="nav-btn">التصنيفات</button>
+      <button class="nav-btn">المنتجات السعودية</button>
+      <button class="nav-btn">المنتجات الماليزية</button>
+      <button class="nav-btn">العروض</button>
+    </div>
+  </nav>
+  <div class="search-bar">
+    <span class="points-hint">ن.س = نقاط سعودية | ن.م = نقاط ماليزية</span>
+    <div class="search-wrap">
+      <input type="text" placeholder="البحث عن منتج" id="search-m">
+      <button class="search-btn">🔍</button>
+    </div>
+    <button class="addon-btn addon-btn-green" onclick="showOrderModal('addon')">+ إضافة إلحاقية</button>
+  </div>
+  <div class="products-container">
+    <table class="products-table" id="table-m">
+      <thead>
+        <tr>
+          <th>الكمية</th><th>المنتج</th><th>السعر</th><th>النقاط</th><th></th><th>تفاصيل</th><th>أضف للسلة</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-m"></tbody>
+    </table>
+  </div>
+  <div style="padding:0.8rem 1.5rem;text-align:center">
+    <button class="btn-primary" style="max-width:200px;display:inline-block" onclick="goToDelivery()">إتمام الطلب ←</button>
+    <button class="btn-outline" style="max-width:160px;display:inline-block;color:var(--green-dark);border-color:var(--green-mid)" onclick="goTo('page-main')">← رجوع</button>
+  </div>
+</div>
+
+<!-- PAGE 9: DELIVERY -->
+<div class="page" id="page-delivery">
+  <div class="delivery-page">
+    <div class="delivery-card">
+      <h2 style="color:var(--green-dark);font-size:1.4rem;font-weight:800;margin-bottom:1.5rem;text-align:center">معلومات التوصيل والحساب</h2>
+      <div class="delivery-grid">
+        <div>
+          <div class="order-summary-box">
+            <h3>ملخص الطلب</h3>
+            <div id="order-summary-items"></div>
+            <div class="points-summary">
+              <div class="points-row"><span>النقاط السعودية</span><span id="pts-saudi">0 نقطة</span></div>
+              <div class="points-row"><span>النقاط الماليزية</span><span id="pts-malaysia">0 نقطة</span></div>
+              <div class="points-row"><span>النقاط المؤجلة</span><span id="pts-delayed">0 نقطة</span></div>
+              <div class="total-row"><span>إجمالي الطلبات</span><span id="total-orders">0 ريال</span></div>
+              <div class="total-row"><span>أجرة التوصيل</span><span id="delivery-fee">39 ريال سعودي</span></div>
+              <div class="total-row" style="font-size:1rem"><span>المجموع الكلي</span><span id="grand-total">0 ريال</span></div>
+            </div>
+            <p class="warning-text" style="text-align:center;margin-top:0.8rem">يجب توفر المبلغ نقداً قبل التوصيل</p>
+          </div>
+        </div>
+        <div class="delivery-section">
+          <h3>موقع التوصيل</h3>
+          <div class="delivery-options">
+            <label class="delivery-opt"><input type="radio" name="dloc" value="inside" checked onchange="updateDeliveryFee(this)"> داخل مدينة الرياض</label>
+            <label class="delivery-opt"><input type="radio" name="dloc" value="outside" onchange="updateDeliveryFee(this)"> خارج مدينة الرياض</label>
+          </div>
+          <table class="delivery-table">
+            <thead><tr><th>المدينة</th><th>الحي</th><th>اسم الشارع</th><th>رقم البيت</th></tr></thead>
+            <tbody><tr><td><input type="text" placeholder="الرياض"></td><td><input type="text" placeholder="الحي"></td><td><input type="text" placeholder="الشارع"></td><td><input type="text" placeholder="رقم"></td></tr></tbody>
+          </table>
+          <div class="contact-section">
+            <label>رابط الموقع</label>
+            <input type="text" placeholder="https://maps.app.goo.gl/..." style="margin-bottom:0.8rem">
+            <label>رقم التواصل</label>
+            <input type="tel" placeholder="+966...">
+          </div>
+          <button class="btn-complete" onclick="goTo('page-success')">اتمام الطلب</button>
+          <button class="btn-outline" style="margin-top:0.8rem;color:var(--green-dark);border-color:var(--green-mid)" onclick="history.back()">← رجوع</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 10: SUCCESS -->
+<div class="page" id="page-success">
+  <div class="success-bg">
+    <div class="success-card">
+      <div class="logo-box" style="margin:0 auto 1.5rem"><span>صحتك بالدنيا 🌿</span></div>
+      <div class="success-check">✓</div>
+      <div class="order-badge">الطلب (1) – 821164589</div>
+      <p class="success-title">تم إرسال الطلب بنجاح</p>
+      <p class="success-sub">انقر هنا لعرض الفاتورة</p>
+      <button class="invoice-btn" onclick="goTo('page-invoice')">إصدار الفاتورة 🧾</button>
+      <br><br>
+      <button class="btn-outline" style="max-width:180px;display:inline-block;color:var(--green-dark);border-color:var(--green-mid)" onclick="goTo('page-main')">← الصفحة الرئيسية</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 11: INVOICE -->
+<div class="page" id="page-invoice">
+  <div style="background:#f0f4f1;min-height:100vh;padding:2rem">
+    <div style="max-width:780px;margin:0 auto">
+      <div style="display:flex;gap:1rem;margin-bottom:1.2rem;justify-content:flex-end" class="no-print">
+        <button onclick="printInvoice()" style="padding:0.7rem 1.8rem;background:var(--green-dark);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem">🖨️ طباعة الفاتورة</button>
+        <button onclick="goTo('page-success')" style="padding:0.7rem 1.5rem;background:transparent;color:var(--green-dark);border:2px solid var(--green-mid);border-radius:50px;font-size:0.95rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer">← رجوع</button>
+      </div>
+      <!-- INVOICE DOCUMENT -->
+      <div id="invoice-doc" style="background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 8px 32px rgba(0,0,0,0.12);font-family:'Tajawal',sans-serif">
+
+        <!-- INVOICE HEADER -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--green-dark);padding-bottom:1.5rem;margin-bottom:1.5rem">
+          <div>
+            <div style="font-size:0.85rem;color:#777;margin-bottom:0.3rem">رقم الفاتورة</div>
+            <div style="font-size:1.3rem;font-weight:800;color:var(--green-dark)" id="inv-number">#INV-0001</div>
+            <div style="font-size:0.85rem;color:#777;margin-top:0.6rem">تاريخ الإصدار</div>
+            <div style="font-size:0.95rem;font-weight:600;color:#333" id="inv-date"></div>
+          </div>
+          <div style="text-align:center">
+            <div style="background:var(--green-dark);border-radius:16px;padding:0.7rem 1.8rem;display:inline-flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem">
+              <span style="color:#fff;font-size:1.5rem;font-weight:800">صحتك بالدنيا 🌿</span>
+            </div>
+            <div style="font-size:0.82rem;color:#777">Sehhatek-beddonya.com</div>
+          </div>
+          <div style="text-align:left">
+            <div style="background:#e8f5e9;border-radius:12px;padding:0.5rem 1rem;display:inline-block">
+              <div style="font-size:0.8rem;color:var(--green-dark);font-weight:700">حالة الطلب</div>
+              <div style="font-size:1rem;font-weight:800;color:var(--green-mid)">✓ مؤكد</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLIENT + DELIVERY INFO -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+          <div style="background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:14px;padding:1rem">
+            <div style="font-size:0.88rem;font-weight:800;color:var(--green-dark);margin-bottom:0.7rem;border-bottom:1px solid #c8e6c9;padding-bottom:0.4rem">بيانات العميل</div>
+            <div style="font-size:0.88rem;color:#555;margin-bottom:0.3rem">الاسم: <span style="font-weight:700;color:#222" id="inv-name">—</span></div>
+            <div style="font-size:0.88rem;color:#555;margin-bottom:0.3rem">رقم الهاتف: <span style="font-weight:700;color:#222" id="inv-phone">—</span></div>
+            <div style="font-size:0.88rem;color:#555">رقم العضوية: <span style="font-weight:700;color:#222" id="inv-member">—</span></div>
+          </div>
+          <div style="background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:14px;padding:1rem">
+            <div style="font-size:0.88rem;font-weight:800;color:var(--green-dark);margin-bottom:0.7rem;border-bottom:1px solid #c8e6c9;padding-bottom:0.4rem">عنوان التوصيل</div>
+            <div style="font-size:0.88rem;color:#555;margin-bottom:0.3rem">المدينة: <span style="font-weight:700;color:#222" id="inv-city">الرياض</span></div>
+            <div style="font-size:0.88rem;color:#555;margin-bottom:0.3rem">الحي: <span style="font-weight:700;color:#222" id="inv-district">—</span></div>
+            <div style="font-size:0.88rem;color:#555">نوع التوصيل: <span style="font-weight:700;color:var(--green-mid)" id="inv-delivery-type">داخل الرياض</span></div>
+          </div>
+        </div>
+
+        <!-- PRODUCTS TABLE -->
+        <div style="margin-bottom:1.5rem">
+          <div style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:0.8rem">تفاصيل الطلب</div>
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem">
+            <thead>
+              <tr style="background:var(--green-dark);color:#fff">
+                <th style="padding:0.7rem 0.8rem;text-align:right;border-radius:0">المنتج</th>
+                <th style="padding:0.7rem;text-align:center">الكمية</th>
+                <th style="padding:0.7rem;text-align:center">سعر الوحدة</th>
+                <th style="padding:0.7rem;text-align:center">النقاط</th>
+                <th style="padding:0.7rem;text-align:center">المجموع</th>
+              </tr>
+            </thead>
+            <tbody id="inv-items-body"></tbody>
+          </table>
+        </div>
+
+        <!-- TOTALS -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem">
+          <div style="min-width:280px;background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:14px;padding:1rem">
+            <div style="display:flex;justify-content:space-between;font-size:0.9rem;padding:0.3rem 0;color:#555">
+              <span>إجمالي المنتجات</span><span style="font-weight:600;color:#222" id="inv-subtotal">0 ريال</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.9rem;padding:0.3rem 0;color:#555">
+              <span>رسوم التوصيل</span><span style="font-weight:600;color:#222" id="inv-fee">39 ريال</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.9rem;padding:0.3rem 0;color:#555">
+              <span>الضريبة (15%)</span><span style="font-weight:600;color:#c0392b" id="inv-tax">0 ريال</span>
+            </div>
+            <div style="border-top:2px solid var(--green-dark);margin-top:0.5rem;padding-top:0.6rem;display:flex;justify-content:space-between;font-size:1.05rem;font-weight:800;color:var(--green-dark)">
+              <span>المجموع الكلي</span><span id="inv-grand">0 ريال</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- POINTS SUMMARY -->
+        <div style="background:var(--green-pale);border-radius:14px;padding:1rem;margin-bottom:1.5rem">
+          <div style="font-size:0.9rem;font-weight:800;color:var(--green-dark);margin-bottom:0.6rem">ملخص النقاط</div>
+          <div style="display:flex;gap:2rem;flex-wrap:wrap">
+            <div style="font-size:0.88rem;color:#555">النقاط السعودية: <strong style="color:var(--green-dark)" id="inv-pts-sa">0</strong> ن.س</div>
+            <div style="font-size:0.88rem;color:#555">النقاط الماليزية: <strong style="color:var(--green-dark)" id="inv-pts-my">0</strong> ن.م</div>
+            <div style="font-size:0.88rem;color:#555">النقاط المؤجلة: <strong style="color:var(--green-dark)" id="inv-pts-dl">0</strong> نقطة</div>
+          </div>
+        </div>
+
+        <!-- FOOTER NOTE -->
+        <div style="border-top:2px dashed #c8e6c9;padding-top:1rem;text-align:center">
+          <div style="font-size:0.85rem;color:#c0392b;font-weight:700;margin-bottom:0.4rem">⚠️ يجب توفر المبلغ نقداً قبل التوصيل</div>
+          <div style="font-size:0.8rem;color:#777">شكراً لتسوقك من متجر صحتك بالدنيا • Sehhatek-beddonya.com</div>
+          <div style="font-size:0.8rem;color:#777;margin-top:0.3rem">هذه الفاتورة صادرة إلكترونياً ولا تحتاج إلى توقيع</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay hidden" id="product-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:0.8rem">
+      <button class="modal-video-btn" onclick="showVideoModal()">▶ لمشاهدة مقطع مرئي</button>
+    </div>
+    <div class="modal-content">
+      <div>
+        <h2 class="modal-title" id="modal-title">اسم المنتج</h2>
+        <p class="modal-price"><span id="modal-price">0</span> ريال سعودي</p>
+        <p class="modal-price-sub">شامل الضريبة</p>
+        <p class="modal-stock">الكمية المتبقية : <span id="modal-stock">0</span> حبة</p>
+        <p class="modal-desc-title">وصف المنتج :</p>
+        <div class="modal-desc" id="modal-desc"></div>
+        <div class="modal-actions">
+          <div class="modal-qty">
+            <button onclick="modalQty(-1)">−</button>
+            <span id="modal-qty-val">1</span>
+            <button onclick="modalQty(1)">+</button>
+          </div>
+          <button class="btn-cart" onclick="addToCartFromModal()">+ أضف للسلة</button>
+          <button class="btn-buy" onclick="addToCartFromModal();goToDelivery()">اشتري الآن 🛒</button>
+        </div>
+      </div>
+      <div>
+        <div class="modal-img-placeholder" id="modal-img">🌿</div>
+        <div class="modal-dots">
+          <div class="modal-dot active"></div>
+          <div class="modal-dot"></div>
+          <div class="modal-dot"></div>
+          <div class="modal-dot"></div>
+          <div class="modal-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay hidden" id="video-modal">
+  <div class="modal-box" style="max-width:680px">
+    <button class="modal-close" onclick="closeVideoModal()">✕</button>
+    <button class="modal-video-btn" onclick="closeVideoModal()">← للعودة الى التفاصيل</button>
+    <div style="background:#f0f0f0;border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:3rem;margin-top:1rem">▶</div>
+  </div>
+</div>
+
+<!-- ORDER MODAL (WITH MEMBERSHIP) -->
+<div class="order-modal-wrap hidden" id="order-modal">
+  <div class="order-modal-box">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem">
+      <button style="background:var(--green-dark);color:#fff;border:none;border-radius:8px;padding:0.35rem 0.9rem;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.9rem" id="order-modal-label">طلب جديد</button>
+    </div>
+    <p class="order-modal-hint">العضوية المجمدة أو تحتاج الى تفعيل يلزمها (100) نقطة سعودية لإعادة تفعيل العضوية</p>
+    <div class="checkbox-row" id="order-checkboxes">
+      <label class="check-label"><input type="checkbox" checked> الطلب بعضوية مفعلة</label>
+      <label class="check-label"><input type="checkbox"> الطلب بعضوية تحتاج الى تفعيل أو مجمدة</label>
+    </div>
+    <input class="order-input" type="text" placeholder="رقم العضوية :">
+    <input class="order-input" type="text" placeholder="الاسم الثلاثي : كما في نظام DXN">
+    <button class="order-submit" onclick="closeOrderModal()">اطلب الآن</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+  {id:1,name:'الفطر الريشي - مسحوق 70 جرام',price:310,pts:51,stock:33,emoji:'🍄',desc:'يعتبر الفطر الريشي DXN من أقدم الأعشاب الطبية. مزيج من 6 أنواع من فطر الجانوديرما. غني بـ 300 مكون طبيعي. يُعرف باسم ملك الأعشاب. طريقة الاستخدام: يُشرب مع الماء الدافئ، تبدأ بجرعة نصف معيار ثم تزيدها إلى معيار واحد، يُفضل تناوله على معدة فارغة.',highlight:''},
+  {id:2,name:'شامبو جانوزي - 250 مل',price:51,pts:17,stock:11,emoji:'🧴',desc:'شامبو طبيعي خالٍ من المواد الكيميائية الضارة، غني بمستخلص فطر الجانوديرما وفيتامين B5. يقوي الشعر ويمنع تساقطه، يُغذي الشعر ويساعد على نموه، يُعالج القشرة والحكة.',highlight:''},
+  {id:3,name:'ليمونزي عرف أسد',price:69,pts:10,stock:25,emoji:'🍋',desc:'مشروب طبيعي غني بفيتامين C وعرف الأسد، يدعم المناعة والطاقة.',highlight:'yellow'},
+  {id:4,name:'خميرة الأرز 90كب',price:132,pts:39,stock:18,emoji:'🌾',desc:'مكمل غذائي طبيعي مستخلص من خميرة الأرز الأحمر، يدعم صحة القلب والكولسترول.',highlight:''},
+  {id:5,name:'كرديسبس 30 غرام',price:145,pts:25,stock:40,emoji:'🌿',desc:'فطر طبي نادر يُعزز الطاقة والأداء الرياضي وصحة الجهاز التنفسي.',highlight:'red'},
+  {id:6,name:'مورنزي 285 مل',price:69,pts:17,stock:15,emoji:'🥤',desc:'عصير طبيعي غني بمضادات الأكسدة والعناصر الغذائية.',highlight:''},
+  {id:7,name:'حلوى النعناع',price:34,pts:9,stock:50,emoji:'🍬',desc:'حلوى طبيعية بنكهة النعناع المنعشة مع مستخلص فطر الجانوديرما.',highlight:''},
+  {id:8,name:'شاي لنجزي',price:48,pts:10,stock:30,emoji:'🍵',desc:'شاي طبيعي بلندي المستخرج من أعشاب طبية مختارة، يُهدئ ويُنشط.',highlight:''},
+];
+
+let cart = [];
+let currentPage = 'nm';
+let currentProduct = null;
+let modalQtyVal = 1;
+
+function goTo(id){
+  document.querySelectorAll('.page,.shop-page').forEach(function(p){
+    p.classList.remove('active');
+    if(p.classList.contains('shop-page')) p.style.display='none';
+  });
+  var el = document.getElementById(id);
+  if(el){
+    if(el.classList.contains('shop-page')){
+      el.style.display='flex';
+      el.classList.add('active');
+      currentPage = id.indexOf('no') > -1 ? 'nm' : 'm';
+      renderProducts();
+    } else {
+      el.classList.add('active');
+    }
+  }
+  if(id === 'page-invoice') generateInvoice();
+}
+
+function doLogin(){
+  var u = document.getElementById('login-user').value.trim();
+  var p = document.getElementById('login-pass').value.trim();
+  if(u && p) goTo('page-main');
+  else showToast('يرجى إدخال اسم المستخدم والرمز السري');
+}
+
+function renderProducts(){
+  var isMembership = currentPage === 'm';
+  var tbodyId = isMembership ? 'tbody-m' : 'tbody-nm';
+  var tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  var searchId = isMembership ? 'search-m' : 'search-nm';
+  var searchEl = document.getElementById(searchId);
+  var q = searchEl ? searchEl.value.toLowerCase() : '';
+  var filtered = products.filter(function(p){ return p.name.toLowerCase().indexOf(q) > -1 || q === ''; });
+  tbody.innerHTML = filtered.map(function(p){
+    var cartItem = cart.find(function(c){ return c.id === p.id; });
+    var qty = cartItem ? cartItem.qty : 1;
+    var hlClass = p.highlight === 'yellow' ? 'row-highlight' : p.highlight === 'red' ? 'row-red' : 'row-normal';
+    var ptsCol = isMembership ? '<td><span class="points-badge">'+p.pts+' ن.س</span></td>' : '';
+    return '<tr class="'+hlClass+'">'+
+      '<td><div class="qty-ctrl">'+
+      '<button class="qty-btn" onclick="changeQty('+p.id+',-1)">↓</button>'+
+      '<span class="qty-num" id="qty-'+p.id+'">'+qty+'</span>'+
+      '<button class="qty-btn" onclick="changeQty('+p.id+',1)">↑</button>'+
+      '</div></td>'+
+      '<td style="text-align:right;min-width:180px">'+p.name+'</td>'+
+      '<td><span class="price-tag">'+p.price+' ريال</span></td>'+
+      ptsCol+
+      '<td><div class="thumb-placeholder">'+p.emoji+'</div></td>'+
+      '<td><button class="details-btn" onclick="showProduct('+p.id+')">تفاصيل ومعلومات المنتج ▼</button></td>'+
+      '<td><button class="add-cart-btn" onclick="addToCart('+p.id+')">أضف إلى السلة ←</button></td>'+
+      '</tr>';
+  }).join('');
+}
+
+function changeQty(id, delta){
+  var el = document.getElementById('qty-'+id);
+  if(!el) return;
+  var v = parseInt(el.textContent) + delta;
+  if(v < 1) v = 1;
+  el.textContent = v;
+  var item = cart.find(function(c){ return c.id === id; });
+  if(item) item.qty = v;
+}
+
+function addToCart(id){
+  var p = products.find(function(x){ return x.id === id; });
+  if(!p) return;
+  var qEl = document.getElementById('qty-'+id);
+  var qty = qEl ? parseInt(qEl.textContent) : 1;
+  var existing = cart.find(function(c){ return c.id === id; });
+  if(existing) existing.qty += qty;
+  else cart.push(Object.assign({}, p, {qty: qty}));
+  updateCartDisplay();
+  showToast('✓ تم إضافة "'+p.name.substring(0,25)+'..." للسلة');
+}
+
+function addToCartFromModal(){
+  if(!currentProduct) return;
+  var existing = cart.find(function(c){ return c.id === currentProduct.id; });
+  if(existing) existing.qty += modalQtyVal;
+  else cart.push(Object.assign({}, currentProduct, {qty: modalQtyVal}));
+  updateCartDisplay();
+  showToast('✓ تم إضافة المنتج للسلة');
+  closeModal();
+}
+
+function updateCartDisplay(){
+  var count = cart.reduce(function(s,c){ return s+c.qty; }, 0);
+  var total = cart.reduce(function(s,c){ return s+(c.price*c.qty); }, 0);
+  ['nm','m'].forEach(function(t){
+    var cEl = document.getElementById('cart-count-'+t);
+    var tEl = document.getElementById('cart-total-'+t);
+    if(cEl) cEl.textContent = count;
+    if(tEl) tEl.textContent = total.toFixed(2);
+  });
+}
+
+function showProduct(id){
+  var p = products.find(function(x){ return x.id === id; });
+  if(!p) return;
+  currentProduct = p;
+  modalQtyVal = 1;
+  document.getElementById('modal-title').textContent = p.name;
+  document.getElementById('modal-price').textContent = p.price;
+  document.getElementById('modal-stock').textContent = p.stock;
+  document.getElementById('modal-desc').textContent = p.desc;
+  var imgEl = document.getElementById('modal-img');
+  imgEl.textContent = p.emoji;
+  imgEl.style.fontSize = '5rem';
+  document.getElementById('modal-qty-val').textContent = 1;
+  document.getElementById('product-modal').classList.remove('hidden');
+}
+
+function closeModal(){ document.getElementById('product-modal').classList.add('hidden'); }
+
+function showVideoModal(){
+  document.getElementById('product-modal').classList.add('hidden');
+  document.getElementById('video-modal').classList.remove('hidden');
+}
+function closeVideoModal(){
+  document.getElementById('video-modal').classList.add('hidden');
+  document.getElementById('product-modal').classList.remove('hidden');
+}
+
+function modalQty(d){
+  modalQtyVal = Math.max(1, modalQtyVal + d);
+  document.getElementById('modal-qty-val').textContent = modalQtyVal;
+}
+
+function showOrderModal(type){
+  var m = document.getElementById('order-modal');
+  var lbl = document.getElementById('order-modal-label');
+  var checks = document.getElementById('order-checkboxes');
+  if(type === 'addon'){
+    lbl.textContent = 'إلحاقية';
+    checks.innerHTML =
+      '<label class="check-label"><input type="checkbox" checked> الطلب بعضوية مفعلة</label>'+
+      '<label class="check-label"><input type="checkbox"> الطلب بعضوية تحتاج الى تفعيل أو مجمدة</label>'+
+      '<label class="check-label"><input type="checkbox"> الطلب بلا عضوية</label>'+
+      '<label class="check-label"><input type="checkbox"> الطلب مع تأجيل تحديد النقاط لمن</label>';
+  } else {
+    lbl.textContent = 'طلب جديد';
+    checks.innerHTML =
+      '<label class="check-label"><input type="checkbox" checked> الطلب بعضوية مفعلة</label>'+
+      '<label class="check-label"><input type="checkbox"> الطلب بعضوية تحتاج الى تفعيل أو مجمدة</label>';
+  }
+  m.classList.remove('hidden');
+}
+function closeOrderModal(){ document.getElementById('order-modal').classList.add('hidden'); }
+
+function goToDelivery(){
+  var summaryEl = document.getElementById('order-summary-items');
+  if(cart.length === 0){
+    summaryEl.innerHTML = '<div class="order-item"><span class="item-name">لا توجد منتجات في السلة</span></div>';
+  } else {
+    summaryEl.innerHTML = cart.map(function(i){
+      return '<div class="order-item">'+
+        '<span class="item-name">'+i.qty+'× '+i.name.substring(0,30)+(i.name.length>30?'...':'')+'</span>'+
+        '<span class="item-price">'+(i.price*i.qty)+' ريال</span>'+
+        '<span class="item-pts">'+((i.pts||0)*i.qty)+' ن.س</span>'+
+        '</div>';
+    }).join('');
+  }
+  var subtotal = cart.reduce(function(s,c){ return s+(c.price*c.qty); }, 0);
+  var fee = 39;
+  document.getElementById('total-orders').textContent = subtotal+' ريال سعودي';
+  document.getElementById('grand-total').textContent = (subtotal+fee)+' ريال سعودي';
+  var totalPts = cart.reduce(function(s,c){ return s+((c.pts||0)*c.qty); }, 0);
+  document.getElementById('pts-saudi').textContent = totalPts+' نقطة';
+  document.getElementById('pts-malaysia').textContent = '0 نقطة';
+  document.getElementById('pts-delayed').textContent = '0 نقطة';
+  goTo('page-delivery');
+}
+
+function updateDeliveryFee(radio){
+  var fee = radio.value === 'outside' ? 60 : 39;
+  document.getElementById('delivery-fee').textContent = fee+' ريال سعودي';
+  var subtotal = cart.reduce(function(s,c){ return s+(c.price*c.qty); }, 0);
+  document.getElementById('grand-total').textContent = (subtotal+fee)+' ريال سعودي';
+}
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+// ─── INVOICE ──────────────────────────────────────────────
+function getDeliveryData(){
+  var cityInputs = document.querySelectorAll('.delivery-table input');
+  var city     = cityInputs[0] ? cityInputs[0].value || 'الرياض' : 'الرياض';
+  var district = cityInputs[1] ? cityInputs[1].value || '—' : '—';
+  var street   = cityInputs[2] ? cityInputs[2].value || '—' : '—';
+  var dlType   = document.querySelector('input[name=dloc]:checked');
+  var isOut    = dlType && dlType.value === 'outside';
+  var fee      = isOut ? 60 : 39;
+  var dlText   = isOut ? 'خارج الرياض' : 'داخل الرياض';
+  var phones   = document.querySelectorAll('.contact-section input[type=tel]');
+  var phone    = phones[0] ? phones[0].value || '—' : '—';
+  var months   = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  var now      = new Date();
+  var dateStr  = now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  var invNum   = 'INV-'+String(Math.floor(Math.random()*9000)+1000);
+  var subtotal = cart.reduce(function(s,c){ return s+(c.price*c.qty); }, 0);
+  var tax      = Math.round(subtotal*0.15);
+  var grand    = subtotal+fee+tax;
+  var totalPts = cart.reduce(function(s,c){ return s+((c.pts||0)*c.qty); }, 0);
+  return {city:city,district:district,street:street,fee:fee,dlText:dlText,
+          phone:phone,dateStr:dateStr,invNum:invNum,subtotal:subtotal,
+          tax:tax,grand:grand,totalPts:totalPts};
+}
+
+function generateInvoice(){
+  var d = getDeliveryData();
+  document.getElementById('inv-number').textContent = '#'+d.invNum;
+  document.getElementById('inv-date').textContent   = d.dateStr;
+  document.getElementById('inv-phone').textContent  = d.phone;
+  document.getElementById('inv-name').textContent   = '—';
+  document.getElementById('inv-member').textContent = '—';
+  document.getElementById('inv-city').textContent   = d.city;
+  document.getElementById('inv-district').textContent = d.district;
+  document.getElementById('inv-delivery-type').textContent = d.dlText;
+  var tbody = document.getElementById('inv-items-body');
+  if(cart.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1rem;color:#aaa">لا توجد منتجات</td></tr>';
+  } else {
+    tbody.innerHTML = cart.map(function(p,i){
+      return '<tr style="background:'+(i%2===0?'#fff':'#f5fbf6')+';border-bottom:1px solid #e8f5e9">'+
+        '<td style="padding:0.6rem 0.8rem;text-align:right;font-weight:600;color:#222">'+(p.emoji||'🌿')+' '+p.name+'</td>'+
+        '<td style="padding:0.6rem;text-align:center;font-weight:700">'+p.qty+'</td>'+
+        '<td style="padding:0.6rem;text-align:center;font-weight:800;color:#1a5c2a">'+p.price+' ريال</td>'+
+        '<td style="padding:0.6rem;text-align:center"><span style="background:#d4edda;color:#1a5c2a;padding:2px 8px;border-radius:20px;font-size:0.82rem;font-weight:700">'+((p.pts||0)*p.qty)+' ن.س</span></td>'+
+        '<td style="padding:0.6rem;text-align:center;font-weight:800;color:#1a5c2a">'+(p.price*p.qty)+' ريال</td>'+
+        '</tr>';
+    }).join('');
+  }
+  document.getElementById('inv-subtotal').textContent = d.subtotal+' ريال';
+  document.getElementById('inv-fee').textContent      = d.fee+' ريال';
+  document.getElementById('inv-tax').textContent      = d.tax+' ريال';
+  document.getElementById('inv-grand').textContent    = d.grand+' ريال سعودي';
+  document.getElementById('inv-pts-sa').textContent   = d.totalPts;
+  document.getElementById('inv-pts-my').textContent   = 0;
+  document.getElementById('inv-pts-dl').textContent   = 0;
+}
+
+function printInvoice(){
+  var d = getDeliveryData();
+
+  // Build items rows as plain string (no template literals with HTML tags)
+  var itemsRows = '';
+  if(cart.length === 0){
+    itemsRows = '<tr><td colspan="5" style="text-align:center;padding:14px;color:#aaa">لا توجد منتجات في السلة</td></tr>';
+  } else {
+    for(var i=0; i<cart.length; i++){
+      var p = cart[i];
+      var bg = i%2===0 ? '#fff' : '#f5fbf6';
+      itemsRows +=
+        '<tr style="background:'+bg+';border-bottom:1px solid #e8f5e9">'+
+        '<td style="padding:8px 10px;text-align:right;font-weight:600;color:#222">'+(p.emoji||'🌿')+' '+p.name+'</td>'+
+        '<td style="padding:8px;text-align:center;font-weight:700">'+p.qty+'</td>'+
+        '<td style="padding:8px;text-align:center;font-weight:800;color:#1a5c2a">'+p.price+' ريال</td>'+
+        '<td style="padding:8px;text-align:center"><span style="background:#d4edda;color:#1a5c2a;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700">'+((p.pts||0)*p.qty)+' ن.س</span></td>'+
+        '<td style="padding:8px;text-align:center;font-weight:800;color:#1a5c2a">'+(p.price*p.qty)+' ريال</td>'+
+        '</tr>';
+    }
+  }
+
+  var css = [
+    '*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}',
+    '@page{size:A4 portrait;margin:12mm 14mm}',
+    'body{font-family:Tajawal,Arial,sans-serif;direction:rtl;background:#fff;color:#1a1a1a;font-size:13px;line-height:1.6}',
+    '.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:90px;font-weight:800;color:rgba(26,92,42,0.05);white-space:nowrap;z-index:0;pointer-events:none}',
+    '.pg{position:relative;z-index:1}',
+    '.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1a5c2a;padding-bottom:13px;margin-bottom:13px}',
+    '.logo{background:#1a5c2a;border-radius:12px;padding:9px 20px;display:inline-block;color:#fff;font-size:20px;font-weight:800}',
+    '.inv-n{font-weight:800;color:#1a5c2a;font-size:18px}',
+    '.inv-d{font-size:12px;color:#555;margin-top:4px}',
+    '.sbadge{background:#e8f5e9;border:1.5px solid #4caf6a;border-radius:8px;padding:5px 13px;display:inline-block}',
+    '.sbadge span{color:#1a5c2a;font-weight:800;font-size:12px}',
+    '.deco{height:5px;background:linear-gradient(90deg,#1a5c2a,#4caf6a,#7ecfc0);border-radius:4px;margin-bottom:13px}',
+    '.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:15px}',
+    '.ibox{background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:10px;padding:10px 12px}',
+    '.ibox h4{color:#1a5c2a;font-size:11.5px;font-weight:800;border-bottom:1px solid #c8e6c9;padding-bottom:5px;margin-bottom:6px}',
+    '.irow{display:flex;justify-content:space-between;font-size:11px;color:#555;padding:2px 0}',
+    '.irow span:last-child{font-weight:700;color:#222}',
+    '.stitle{font-size:13px;font-weight:800;color:#1a5c2a;margin-bottom:8px}',
+    'table{width:100%;border-collapse:collapse;margin-bottom:14px}',
+    'thead tr{background:#1a5c2a;color:#fff}',
+    'thead th{padding:8px 9px;text-align:center;font-size:11.5px;font-weight:700}',
+    'thead th:first-child{text-align:right}',
+    'tbody td{font-size:11.5px}',
+    '.tw{display:flex;justify-content:flex-end;margin-bottom:14px}',
+    '.tb{min-width:250px;background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:10px;padding:10px 12px}',
+    '.tr{display:flex;justify-content:space-between;font-size:11.5px;padding:3px 0;color:#555}',
+    '.tr span:last-child{font-weight:700;color:#222}',
+    '.tr.tax span:last-child{color:#c0392b}',
+    '.tr.grand{border-top:2px solid #1a5c2a;margin-top:5px;padding-top:6px;font-size:13px;font-weight:800;color:#1a5c2a}',
+    '.pb{background:#d4edda;border-radius:10px;padding:9px 12px;margin-bottom:14px}',
+    '.pb h4{color:#1a5c2a;font-size:11.5px;font-weight:800;margin-bottom:5px}',
+    '.pi{display:flex;gap:20px;flex-wrap:wrap;font-size:11.5px;color:#444}',
+    '.pi strong{color:#1a5c2a}',
+    '.ft{border-top:2px dashed #c8e6c9;padding-top:10px;text-align:center}',
+    '.ft .w{color:#c0392b;font-weight:800;font-size:11.5px;margin-bottom:4px}',
+    '.ft .n{color:#888;font-size:11px;line-height:1.8}'
+  ].join('\n');
+
+  var html =
+    '<!DOCTYPE html><html lang="ar" dir="rtl"><head>'+
+    '<meta charset="UTF-8">'+
+    '<title>فاتورة - #'+d.invNum+'</title>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">'+
+    '<style>'+css+'</style>'+
+    '</head><body>'+
+    '<div class="wm">صحتك بالدنيا</div>'+
+    '<div class="pg">'+
+
+    '<div class="hdr">'+
+      '<div><div class="logo">🌿 صحتك بالدنيا</div><div style="color:#777;font-size:11px;margin-top:4px">Sehhatek-beddonya.com</div></div>'+
+      '<div style="text-align:center"><div class="inv-n">#'+d.invNum+'</div><div class="inv-d">📅 '+d.dateStr+'</div></div>'+
+      '<div><div class="sbadge"><span>✓ طلب مؤكد</span></div></div>'+
+    '</div>'+
+
+    '<div class="deco"></div>'+
+
+    '<div class="igrid">'+
+      '<div class="ibox"><h4>👤 بيانات العميل</h4>'+
+        '<div class="irow"><span>رقم الهاتف</span><span>'+d.phone+'</span></div>'+
+      '</div>'+
+      '<div class="ibox"><h4>🏠 عنوان التوصيل</h4>'+
+        '<div class="irow"><span>المدينة</span><span>'+d.city+'</span></div>'+
+        '<div class="irow"><span>الحي</span><span>'+d.district+'</span></div>'+
+        '<div class="irow"><span>الشارع</span><span>'+d.street+'</span></div>'+
+        '<div class="irow"><span>نوع التوصيل</span><span style="color:#2e7d3e;font-weight:800">'+d.dlText+'</span></div>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="stitle">🛒 تفاصيل الطلب</div>'+
+    '<table>'+
+      '<thead><tr>'+
+        '<th style="text-align:right">المنتج</th>'+
+        '<th>الكمية</th><th>سعر الوحدة</th><th>النقاط</th><th>الإجمالي</th>'+
+      '</tr></thead>'+
+      '<tbody>'+itemsRows+'</tbody>'+
+    '</table>'+
+
+    '<div class="tw"><div class="tb">'+
+      '<div class="tr"><span>إجمالي المنتجات</span><span>'+d.subtotal+' ريال</span></div>'+
+      '<div class="tr"><span>رسوم التوصيل</span><span>'+d.fee+' ريال</span></div>'+
+      '<div class="tr tax"><span>الضريبة 15%</span><span>'+d.tax+' ريال</span></div>'+
+      '<div class="tr grand"><span>💰 المجموع الكلي</span><span>'+d.grand+' ريال سعودي</span></div>'+
+    '</div></div>'+
+
+    '<div class="pb"><h4>⭐ ملخص النقاط المكتسبة</h4>'+
+      '<div class="pi">'+
+        '<div>النقاط السعودية: <strong>'+d.totalPts+' ن.س</strong></div>'+
+        '<div>النقاط الماليزية: <strong>0 ن.م</strong></div>'+
+        '<div>النقاط المؤجلة: <strong>0 نقطة</strong></div>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="ft">'+
+      '<div class="w">⚠️ يجب توفر المبلغ نقداً قبل التوصيل</div>'+
+      '<div class="n">شكراً لتسوقك من متجر صحتك بالدنيا 🌿<br>'+
+        'هذه الفاتورة صادرة إلكترونياً ولا تحتاج إلى توقيع<br>'+
+        '<strong style="color:#1a5c2a">Sehhatek-beddonya.com</strong>'+
+      '</div>'+
+    '</div>'+
+
+    '</div>'+  // .pg
+    '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};<' + '/script>'+
+    '</body></html>';
+
+  var w = window.open('', '_blank', 'width=900,height=750');
+  if(!w){ showToast('⚠️ يرجى السماح بالنوافذ المنبثقة'); return; }
+  w.document.write(html);
+  w.document.close();
+}
+// ──────────────────────────────────────────────────────────
+
+document.addEventListener('input', function(e){
+  if(e.target.id === 'search-nm' || e.target.id === 'search-m') renderProducts();
+});
+
+goTo('page-welcome');
+</script>
+</body>
+</html>
