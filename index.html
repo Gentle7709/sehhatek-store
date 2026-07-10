@@ -330,12 +330,12 @@
 
   /* DELIVERY PAGE */
   .delivery-page{background:var(--gray-light);min-height:100vh;padding:2rem}
-  .delivery-card{background:#fff;border-radius:24px;max-width:900px;margin:0 auto;padding:2rem;box-shadow:var(--shadow)}
-  .delivery-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
-  .order-summary-box{background:#f9faf8;border:1.5px solid var(--green-pale);border-radius:var(--radius);padding:1.2rem}
+  .delivery-card{background:#fff;border-radius:24px;max-width:1080px;margin:0 auto;padding:2rem;box-shadow:var(--shadow)}
+  .delivery-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:2rem;align-items:start}
+  .order-summary-box{background:#f9faf8;border:1.5px solid var(--green-pale);border-radius:var(--radius);padding:1.2rem;min-width:0}
   .order-summary-box h3{font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:0.8rem;border-bottom:2px solid var(--green-pale);padding-bottom:0.4rem;text-align:center}
   .order-item{display:flex;justify-content:space-between;font-size:0.88rem;padding:0.25rem 0;color:var(--text-dark)}
-  .order-item .item-name{flex:1;font-weight:500}
+  .order-item .item-name{flex:1;font-weight:500;white-space:normal;word-break:break-word;line-height:1.5}
   .order-item .item-price{color:var(--green-dark);font-weight:700;margin-right:0.5rem}
   .order-item .item-pts{color:#888;font-size:0.8rem}
   .delivery-section h3{font-size:1.1rem;font-weight:800;color:var(--green-dark);margin-bottom:1rem}
@@ -554,7 +554,7 @@
     <table class="products-table" id="table-nm">
       <thead>
         <tr>
-          <th>الكمية</th><th>المنتج</th><th>السعر</th><th>ن.س</th><th>ن.م</th><th></th><th>تفاصيل</th><th>أضف للسلة</th>
+          <th style="width:42px;font-size:0.78rem">#</th><th>الكمية</th><th>المنتج</th><th>السعر</th><th>ن.س</th><th>ن.م</th><th></th><th>تفاصيل</th><th>أضف للسلة</th>
         </tr>
       </thead>
       <tbody id="tbody-nm"></tbody>
@@ -602,7 +602,7 @@
     <table class="products-table" id="table-m">
       <thead>
         <tr>
-          <th>الكمية</th><th>المنتج</th><th>السعر</th><th>ن.س</th><th>ن.م</th><th></th><th>تفاصيل</th><th>أضف للسلة</th>
+          <th style="width:42px;font-size:0.78rem">#</th><th>الكمية</th><th>المنتج</th><th>السعر</th><th>ن.س</th><th>ن.م</th><th></th><th>تفاصيل</th><th>أضف للسلة</th>
         </tr>
       </thead>
       <tbody id="tbody-m"></tbody>
@@ -799,12 +799,9 @@
 
         <!-- POINTS SUMMARY -->
         <div style="background:var(--green-pale);border-radius:14px;padding:1rem;margin-bottom:1.5rem">
-          <div style="font-size:0.9rem;font-weight:800;color:var(--green-dark);margin-bottom:0.6rem">ملخص النقاط</div>
-          <div style="display:flex;gap:2rem;flex-wrap:wrap">
-            <div style="font-size:0.88rem;color:#555">النقاط السعودية: <strong style="color:var(--green-dark)" id="inv-pts-sa">0</strong> ن.س</div>
-            <div style="font-size:0.88rem;color:#555">النقاط الماليزية: <strong style="color:var(--green-dark)" id="inv-pts-my">0</strong> ن.م</div>
-            <div style="font-size:0.88rem;color:#555">النقاط المؤجلة: <strong style="color:var(--green-dark)" id="inv-pts-dl">0</strong> نقطة</div>
-          </div>
+          <div style="font-size:0.95rem;font-weight:800;color:var(--green-dark);margin-bottom:0.7rem">ملخص النقاط</div>
+          <div id="inv-pts-list"></div>
+          <div id="inv-pts-transfers"></div>
         </div>
 
         <!-- FOOTER NOTE -->
@@ -900,6 +897,14 @@
     <div style="font-size:1.15rem;font-weight:800;color:var(--green-dark);margin-bottom:0.25rem;text-align:center">معلومات العميل</div>
     <div style="font-size:0.85rem;color:#666;margin-bottom:1.2rem;text-align:center">تُسجَّل باسمك طلباتك الرئيسية في عرض السعر</div>
 
+    <div id="client-member-wrap" style="margin-bottom:1.1rem">
+      <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">رقم العضوية <span id="client-member-hint" style="color:#888;font-weight:400">(9 أرقام)</span></label>
+      <input type="text" id="client-member" placeholder="رقم عضوية DXN" maxlength="9" inputmode="numeric"
+        oninput="validateMemberNo(this,'client-member-note')"
+        style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;direction:ltr;text-align:right">
+      <div id="client-member-note" style="font-size:0.78rem;font-weight:600;margin-top:4px;display:none"></div>
+    </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem">
       <div>
         <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">الاسم الثلاثي بالعربي</label>
@@ -913,32 +918,7 @@
       </div>
     </div>
 
-    <div id="client-member-wrap" style="margin-bottom:1.1rem">
-      <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">رقم العضوية <span id="client-member-hint" style="color:#888;font-weight:400">(9 أرقام)</span></label>
-      <input type="text" id="client-member" placeholder="رقم عضوية DXN" maxlength="9" inputmode="numeric"
-        oninput="validateMemberNo(this,'client-member-note')"
-        style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;direction:ltr;text-align:right">
-      <div id="client-member-note" style="font-size:0.78rem;font-weight:600;margin-top:4px;display:none"></div>
-    </div>
-
     <button class="btn-primary" style="margin-bottom:0" onclick="submitClientInfo()">متابعة إلى المنتجات ←</button>
-  </div>
-</div>
-
-<!-- POINT TYPE PICKER -->
-<div class="modal-overlay hidden" id="pt-modal">
-  <div class="modal-box" style="max-width:420px;text-align:center;padding:1.8rem">
-    <button class="modal-close" onclick="closePtModal()">✕</button>
-    <div style="font-size:1.1rem;font-weight:800;color:var(--green-dark);margin-bottom:0.3rem" id="pt-modal-title">اختر نوع النقاط</div>
-    <div style="font-size:0.88rem;color:#666;margin-bottom:1.2rem" id="pt-modal-sub">—</div>
-    <button onclick="confirmPointType('sa')"
-      style="display:block;width:100%;padding:0.85rem;margin-bottom:0.7rem;background:var(--green-mid);color:#fff;border:none;border-radius:50px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer">
-      إضافة المنتج ن.س (نقاط سعودية)
-    </button>
-    <button onclick="confirmPointType('my')"
-      style="display:block;width:100%;padding:0.85rem;background:#0d47a1;color:#fff;border:none;border-radius:50px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer">
-      إضافة المنتج ن.م (نقاط ماليزية)
-    </button>
   </div>
 </div>
 
@@ -951,22 +931,86 @@
 // ════════════════════════════════════════════════════════════
 
 var products = [
-  {id:1, name:'الفطر الريشي - مسحوق 70 جرام', price:310, pts:51, ptsMy:34, stock:33, emoji:'🍄', highlight:'',
-   desc:'يعتبر الفطر الريشي DXN من أقدم الأعشاب الطبية. مزيج من 6 أنواع من فطر الجانوديرما. غني بـ 300 مكون طبيعي. يُشرب مع الماء الدافئ، تبدأ بجرعة نصف معيار ثم تزيدها إلى معيار واحد، ويُفضل تناوله على معدة فارغة.'},
-  {id:2, name:'شامبو جانوزي - 250 مل', price:51, pts:17, ptsMy:11, stock:11, emoji:'🧴', highlight:'',
-   desc:'شامبو طبيعي خالٍ من المواد الكيميائية الضارة، غني بمستخلص فطر الجانوديرما وفيتامين B5. يقوي الشعر ويمنع تساقطه ويعالج القشرة والحكة.'},
-  {id:3, name:'ليمونزي عرف أسد', price:69, pts:10, ptsMy:7, stock:25, emoji:'🍋', highlight:'yellow',
-   desc:'مشروب طبيعي غني بفيتامين C وعرف الأسد، يدعم المناعة والطاقة.'},
-  {id:4, name:'خميرة الأرز 90كب', price:132, pts:39, ptsMy:26, stock:18, emoji:'🌾', highlight:'',
-   desc:'مكمل غذائي طبيعي مستخلص من خميرة الأرز الأحمر، يدعم صحة القلب والكولسترول.'},
-  {id:5, name:'كرديسبس 30 غرام', price:145, pts:25, ptsMy:17, stock:40, emoji:'🌿', highlight:'red',
-   desc:'فطر طبي نادر يُعزز الطاقة والأداء الرياضي وصحة الجهاز التنفسي.'},
-  {id:6, name:'مورنزي 285 مل', price:69, pts:17, ptsMy:11, stock:15, emoji:'🥤', highlight:'',
-   desc:'عصير طبيعي غني بمضادات الأكسدة والعناصر الغذائية.'},
-  {id:7, name:'حلوى النعناع', price:34, pts:9, ptsMy:6, stock:50, emoji:'🍬', highlight:'',
-   desc:'حلوى طبيعية بنكهة النعناع المنعشة مع مستخلص فطر الجانوديرما.'},
-  {id:8, name:'شاي لنجزي', price:48, pts:10, ptsMy:7, stock:30, emoji:'🍵', highlight:'',
-   desc:'شاي طبيعي بلندي المستخرج من أعشاب طبية مختارة، يُهدئ ويُنشط.'}
+  {id:1, name:'ريشي 70 غرام', price:284, pts:70, ptsMy:0, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:2, name:'ريشي 70 غرام', price:304, pts:0, ptsMy:92, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:3, name:'ريشي 24 غرام ميكوفيتا', price:84, pts:0, ptsMy:0, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:4, name:'ريشي 12 غرام ميكوفيتا', price:42, pts:0, ptsMy:0, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:5, name:'ريشي 30 ظرف 12 غرام ميكوفيتا', price:1249, pts:305, ptsMy:0, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:6, name:'ريشي 30 ظرف 12 غرام ميكوفيتا', price:1399, pts:0, ptsMy:446, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:7, name:'ريشي 30 ظرف 24 غرام ميكوفيتا', price:2499, pts:0, ptsMy:810, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:8, name:'ريشي GL 90 كبسولة', price:127, pts:0, ptsMy:36.5, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:9, name:'ريشي GL 360 كبسولة', price:465, pts:0, ptsMy:140, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:10, name:'ريشي RG 90 كبسولة', price:173, pts:0, ptsMy:51.5, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:11, name:'ريشي RG 360 كبسولة', price:650, pts:0, ptsMy:195, stock:30, emoji:'🍄', highlight:'',
+   desc:'فطر ريشي يعزز المناعة يعيد التوازن والضبط الحيوي للجسم'},
+  {id:12, name:'سبيرولينا 50 غرام', price:125, pts:35, ptsMy:0, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:13, name:'سبيرولينا 50 غرام', price:125, pts:0, ptsMy:35, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:14, name:'سبيرولينا 120 حبة', price:89, pts:0, ptsMy:20, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:15, name:'سبيرولينا 300 حبة', price:209, pts:0, ptsMy:50, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:16, name:'سبيرولينا 300 حبة', price:189, pts:0, ptsMy:30, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:17, name:'سبيرولينا 300 حبة', price:159, pts:0, ptsMy:0, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:18, name:'سبيرولينا 500 حبة', price:299, pts:0, ptsMy:75, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:19, name:'سبيرولينا 1500 حبة', price:859, pts:0, ptsMy:210, stock:30, emoji:'🌿', highlight:'',
+   desc:'سلسلة غذائية أقوى من كل اللحوم والخضراوات'},
+  {id:20, name:'مورنزي 700 مل', price:155, pts:35, ptsMy:0, stock:30, emoji:'🥤', highlight:'',
+   desc:'كنز الخمائر والأنزيمات'},
+  {id:21, name:'مورنزي 285 مل', price:74, pts:17, ptsMy:0, stock:30, emoji:'🥤', highlight:'',
+   desc:'كنز الخمائر والأنزيمات'},
+  {id:22, name:'مورنزي 90 كبسولة', price:119, pts:0, ptsMy:31, stock:30, emoji:'🥤', highlight:'',
+   desc:'كنز الخمائر والأنزيمات'},
+  {id:23, name:'مورنزايم 285 مل', price:110, pts:17, ptsMy:0, stock:30, emoji:'🥤', highlight:'',
+   desc:''},
+  {id:24, name:'عرف أسد 30 غ', price:104, pts:22, ptsMy:0, stock:30, emoji:'🦁', highlight:'',
+   desc:'نافع للجهاز العالي والعظمي والهضمي'},
+  {id:25, name:'عرف أسد 30 غ', price:124, pts:0, ptsMy:27.5, stock:30, emoji:'🦁', highlight:'',
+   desc:'نافع للجهاز العالي والعظمي والهضمي'},
+  {id:26, name:'عرف أسد 50 غ', price:144, pts:0, ptsMy:32.5, stock:30, emoji:'🦁', highlight:'',
+   desc:'نافع للجهاز العالي والعظمي والهضمي'},
+  {id:27, name:'عرف أسد 120 حبة', price:144, pts:0, ptsMy:33, stock:30, emoji:'🦁', highlight:'',
+   desc:'نافع للجهاز العالي والعظمي والهضمي'},
+  {id:28, name:'كرديسبس 30 غرام', price:150, pts:0, ptsMy:20, stock:30, emoji:'💪', highlight:'',
+   desc:'الكنز والفطر الأغلى والأثمن ، فطر الطاقة'},
+  {id:29, name:'كرديسبس 30 غرام', price:237, pts:50, ptsMy:0, stock:30, emoji:'💪', highlight:'',
+   desc:'الكنز والفطر الأغلى والأثمن ، فطر الطاقة'},
+  {id:30, name:'كرديسبس 120 حبة', price:279, pts:0, ptsMy:85, stock:30, emoji:'💪', highlight:'',
+   desc:'الكنز والفطر الأغلى والأثمن ، فطر الطاقة'},
+  {id:31, name:'ميكوفيجي 400 غرام', price:276, pts:70, ptsMy:0, stock:30, emoji:'🌿', highlight:'',
+   desc:'منجم أغذية، أكثر من 23 غذاءً مهمًا لنا'},
+  {id:32, name:'ميكوفيجي 200 غرام', price:199, pts:0, ptsMy:53, stock:30, emoji:'🌿', highlight:'',
+   desc:'منجم أغذية، أكثر من 23 غذاءً مهمًا لنا'},
+  {id:33, name:'لقاح نحل 120 حبة', price:99, pts:0, ptsMy:21, stock:30, emoji:'🐝', highlight:'',
+   desc:'من أجود حبوب اللقاح في العالم'},
+  {id:34, name:'لقاح نحل 300 حبة', price:216, pts:0, ptsMy:51, stock:30, emoji:'🐝', highlight:'',
+   desc:'من أجود حبوب اللقاح في العالم'},
+  {id:35, name:'حبيبات اللقاح', price:74, pts:17, ptsMy:0, stock:30, emoji:'🐝', highlight:'',
+   desc:'من أجود حبوب اللقاح في العالم'},
+  {id:36, name:'مسحوق لؤلؤ 30 غرام', price:109, pts:0, ptsMy:26, stock:30, emoji:'⚪', highlight:'',
+   desc:'مسحوق لؤلؤ'},
+  {id:37, name:'بوتنزي 90 كبسولة', price:257, pts:54, ptsMy:0, stock:30, emoji:'💪', highlight:'',
+   desc:'9 أغذية مختارة بعناية من أجل قوة الدورة الدموية والفحولة'},
+  {id:38, name:'بوتنزي 90 كبسولة', price:279, pts:0, ptsMy:70, stock:30, emoji:'💪', highlight:'',
+   desc:'9 أغذية مختارة بعناية من أجل قوة الدورة الدموية والفحولة'},
+  {id:39, name:'شراب حليب النمور', price:68, pts:0, ptsMy:13.5, stock:30, emoji:'🥛', highlight:'',
+   desc:''},
+  {id:40, name:'كركديه 285 مل', price:73, pts:12, ptsMy:0, stock:30, emoji:'🌺', highlight:'',
+   desc:''}
 ];
 
 // ── نموذج المشترين (الإلحاقيات) ──────────────────────────────
@@ -991,20 +1035,40 @@ function buyerMoney(b) {
   return b.items.reduce(function(s, i) { return s + (i.price * i.qty); }, 0);
 }
 function buyerPts(b, type) {
-  return b.items.reduce(function(s, i) { return s + (i.ptType === type ? i.ptValue * i.qty : 0); }, 0);
+  return b.items.reduce(function(s, i) {
+    return s + ((type === 'my' ? (i.ptsMy || 0) : (i.ptsSa || 0)) * i.qty);
+  }, 0);
 }
 function allItems() {
   return buyers.reduce(function(a, b) { return a.concat(b.items); }, []);
 }
-// نقاط المشترين بلا عضوية تُضاف لنقاط الحساب الرئيسي
+// نقاط المشترين بلا عضوية تُضاف إلى نقاط مشترٍ يحدده المستخدم
 function noMembershipBuyers() {
   return buyers.filter(function(b) { return !b.main && b.orderType === 'none'; });
 }
+function creditTarget(b) {
+  // إلى من تذهب نقاط هذا المشتري بلا عضوية (افتراضياً الحساب الرئيسي)
+  var tid = b.creditTo || 1;
+  var t = buyers.find(function(x) { return x.id === tid && x.orderType !== 'none'; });
+  return t || buyers[0];
+}
+// المشترون الذين يمكن أن تُضاف إليهم النقاط (أصحاب عضوية)
+function creditRecipients() {
+  return buyers.filter(function(b) { return b.orderType !== 'none'; });
+}
+// مجموع النقاط المحوّلة إلى مشترٍ معيّن من كل الطلبات بلا عضوية
+function transferredToBuyer(recipientId, type) {
+  return noMembershipBuyers().reduce(function(s, b) {
+    return s + (creditTarget(b).id === recipientId ? buyerPts(b, type) : 0);
+  }, 0);
+}
+// إجمالي المحوّل (للحالات التي تحتاج مجموعاً عاماً)
 function transferredPts(type) {
   return noMembershipBuyers().reduce(function(s, b) { return s + buyerPts(b, type); }, 0);
 }
 function creditedPts(b, type) {
-  return b.main ? buyerPts(b, type) + transferredPts(type) : buyerPts(b, type);
+  if (b.orderType === 'none') return 0;
+  return buyerPts(b, type) + transferredToBuyer(b.id, type);
 }
 function ordersTotal() {
   return buyers.reduce(function(s, b) { return s + buyerMoney(b); }, 0);
@@ -1235,13 +1299,14 @@ function renderProducts() {
   var q     = sEl ? sEl.value.toLowerCase() : '';
   var list  = products.filter(function(p) { return !q || p.name.toLowerCase().indexOf(q) > -1; });
   if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#aaa">لا توجد منتجات مطابقة</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#aaa">لا توجد منتجات مطابقة</td></tr>';
     return;
   }
-  tbody.innerHTML = list.map(function(p) {
+  tbody.innerHTML = list.map(function(p, idx) {
     var qty = 1;
     var hl  = p.highlight === 'yellow' ? 'row-highlight' : p.highlight === 'red' ? 'row-red' : 'row-normal';
     return '<tr class="' + hl + '">'
+      + '<td style="color:#9aa;font-size:0.72rem;font-weight:700;width:42px">' + (idx + 1) + '</td>'
       + '<td><div class="qty-ctrl">'
       +   '<button class="qty-btn" onclick="changeQty(' + p.id + ',-1)">↓</button>'
       +   '<span class="qty-num" id="qty-' + p.id + '">' + qty + '</span>'
@@ -1253,7 +1318,7 @@ function renderProducts() {
       + '<td><span class="points-badge" style="background:#e3f2fd;color:#0d47a1">' + (p.ptsMy || 0) + ' ن.م</span></td>'
       + '<td><div class="thumb-placeholder">' + p.emoji + '</div></td>'
       + '<td><button class="details-btn" onclick="showProduct(' + p.id + ')">تفاصيل ▼</button></td>'
-      + '<td><button class="add-cart-btn" onclick="askPointType(' + p.id + ')">أضف ←</button></td>'
+      + '<td><button class="add-cart-btn" onclick="addToCart(' + p.id + ')">أضف ←</button></td>'
       + '</tr>';
   }).join('');
   renderBuyerChips();
@@ -1265,57 +1330,33 @@ function changeQty(id, delta) {
   el.textContent = Math.max(1, parseInt(el.textContent) + delta);
 }
 
-// ── اختيار نوع النقاط ───────────────────────────────────────
-function askPointType(id) {
-  var p = products.find(function(x) { return x.id === id; });
-  if (!p) return;
-  pendingProductId = id;
-  var qEl = document.getElementById('qty-' + id);
-  var qty = qEl ? parseInt(qEl.textContent) : 1;
-  document.getElementById('pt-modal-sub').textContent = p.name + ' — الكمية: ' + qty + ' — لـ' + buyerLabel(activeBuyer());
-  document.getElementById('pt-modal').classList.remove('hidden');
-}
-function closePtModal() {
-  document.getElementById('pt-modal').classList.add('hidden');
-  pendingProductId = null;
-}
-function confirmPointType(type) {
-  if (pendingProductId === null) return;
-  addToCart(pendingProductId, type);
-  closePtModal();
-}
-
 // ── السلة ───────────────────────────────────────────────────
-function addToCart(id, ptType) {
+function addToCart(id) {
   var p = products.find(function(x) { return x.id === id; });
   if (!p) return;
-  ptType = ptType || 'sa';
   var qEl = document.getElementById('qty-' + id);
   var qty = qEl ? parseInt(qEl.textContent) : 1;
   var b   = activeBuyer();
-  var key = id + '-' + ptType;
+  var key = String(id);
   var ex  = b.items.find(function(i) { return i.key === key; });
   if (ex) { ex.qty += qty; }
   else {
     b.items.push({
       key: key, id: p.id, name: p.name, price: p.price, emoji: p.emoji,
-      qty: qty, ptType: ptType,
-      ptValue: ptType === 'my' ? (p.ptsMy || 0) : (p.pts || 0),
-      ptLabel: ptType === 'my' ? 'ن.م' : 'ن.س'
+      qty: qty, ptsSa: p.pts || 0, ptsMy: p.ptsMy || 0
     });
   }
   updateCartDisplay();
-  showToast('✓ أُضيف لـ' + buyerLabel(b) + ' (' + (ptType === 'my' ? 'ن.م' : 'ن.س') + ')');
+  renderOrderSummary();
+  showToast('✓ أُضيف لـ' + buyerLabel(b) + ': ' + p.name.substring(0, 18));
 }
 
 function addToCartFromModal() {
   if (!currentProduct) return;
-  closeModal();
-  pendingProductId = currentProduct.id;
   var qEl = document.getElementById('qty-' + currentProduct.id);
   if (qEl) qEl.textContent = modalQtyVal;
-  document.getElementById('pt-modal-sub').textContent = currentProduct.name + ' — الكمية: ' + modalQtyVal + ' — لـ' + buyerLabel(activeBuyer());
-  document.getElementById('pt-modal').classList.remove('hidden');
+  addToCart(currentProduct.id);
+  closeModal();
 }
 
 function updateCartDisplay() {
@@ -1357,6 +1398,15 @@ function setActiveBuyer(id) {
   showToast('المشتري الحالي: ' + buyerLabel(activeBuyer()));
 }
 
+function setCreditTo(noneBuyerId, targetId) {
+  var b = buyers.find(function(x) { return x.id === noneBuyerId; });
+  if (!b) return;
+  b.creditTo = parseInt(targetId, 10);
+  updateCartDisplay();
+  renderOrderSummary();
+  showToast('✓ نقاطه تُضاف إلى ' + buyerLabel(buyers.find(function(x){return x.id===b.creditTo;}) || buyers[0]));
+}
+
 function removeBuyer(id) {
   var b = buyers.find(function(x) { return x.id === id; });
   if (!b || b.main) return;
@@ -1383,6 +1433,7 @@ function createAddon() {
     id: buyerSeq, main: false, name: name,
     memberId: (type === 'none') ? '' : memEl.value.trim(),
     orderType: type,
+    creditTo: 1,
     items: []
   });
   activeBuyerId = buyerSeq;
@@ -1688,38 +1739,50 @@ function renderOrderSummary() {
       if (b.items.length === 0) return '';
       var sa = buyerPts(b, 'sa'), my = buyerPts(b, 'my');
       var rows = b.items.map(function(i) {
-        var btn  = 'background:#e8f5e9;color:#1a5c2a;border:1px solid #c8e6c9;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.95rem;font-weight:700;flex-shrink:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0';
-        var ptBg = i.ptType === 'my' ? '#e3f2fd' : '#d4edda';
-        var ptFg = i.ptType === 'my' ? '#0d47a1' : '#1a5c2a';
-        return '<div class="order-item" style="align-items:center;gap:0.35rem;flex-wrap:wrap">'
-          + '<button onclick="removeFromCart(' + b.id + ',\'' + i.key + '\')" title="حذف" style="background:#fdecea;color:#c0392b;border:1px solid #f5c6cb;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.9rem;font-weight:700;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;padding:0">×</button>'
-          + '<button onclick="decreaseQty(' + b.id + ',\'' + i.key + '\')" style="' + btn + '">−</button>'
-          + '<span style="min-width:20px;text-align:center;font-weight:800;color:#1a5c2a">' + i.qty + '</span>'
-          + '<button onclick="increaseQty(' + b.id + ',\'' + i.key + '\')" style="' + btn + '">+</button>'
-          + '<span class="item-name" style="flex:1">' + i.name.substring(0, 18) + (i.name.length > 18 ? '…' : '') + '</span>'
-          + '<span class="item-price">' + (i.price * i.qty) + ' ريال</span>'
-          + '<span style="background:' + ptBg + ';color:' + ptFg + ';padding:1px 7px;border-radius:20px;font-size:0.76rem;font-weight:700">' + (i.ptValue * i.qty) + ' ' + i.ptLabel + '</span>'
+        var btn  = 'background:#e8f5e9;color:#1a5c2a;border:1px solid #c8e6c9;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:0.95rem;font-weight:700;flex-shrink:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0';
+        var isa = (i.ptsSa || 0) * i.qty, imy = (i.ptsMy || 0) * i.qty;
+        return '<div style="padding:0.5rem 0;border-bottom:1px solid #f0f7f1">'
+          + '<div style="display:flex;align-items:center;gap:0.35rem;margin-bottom:0.4rem">'
+          +   '<button onclick="removeFromCart(' + b.id + ',\'' + i.key + '\')" title="حذف" style="background:#fdecea;color:#c0392b;border:1px solid #f5c6cb;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:0.9rem;font-weight:700;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;padding:0">×</button>'
+          +   '<button onclick="decreaseQty(' + b.id + ',\'' + i.key + '\')" style="' + btn + '">−</button>'
+          +   '<span style="min-width:22px;text-align:center;font-weight:800;color:#1a5c2a">' + i.qty + '</span>'
+          +   '<button onclick="increaseQty(' + b.id + ',\'' + i.key + '\')" style="' + btn + '">+</button>'
+          +   '<span style="flex:1;font-size:0.88rem;font-weight:600;color:#333;line-height:1.5;text-align:right">' + i.name + '</span>'
+          + '</div>'
+          + '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:0.25rem;direction:ltr">'
+          +   '<span style="color:#1a5c2a;font-weight:800;font-size:0.88rem">' + (i.price * i.qty) + ' ريال</span>'
+          +   '<span style="background:#d4edda;color:#1a5c2a;padding:1px 9px;border-radius:20px;font-size:0.75rem;font-weight:700">' + isa + ' ن.س</span>'
+          +   '<span style="background:#e3f2fd;color:#0d47a1;padding:1px 9px;border-radius:20px;font-size:0.75rem;font-weight:700">' + imy + ' ن.م</span>'
+          + '</div>'
           + '</div>';
       }).join('');
 
       var isNone  = !b.main && b.orderType === 'none';
-      var csa     = creditedPts(b, 'sa'), cmy = creditedPts(b, 'my');
-      var tsa     = transferredPts('sa'), tmy = transferredPts('my');
       var ptsNote = '';
       if (isNone) {
-        ptsNote = '<div style="font-size:0.72rem;color:#0d47a1;background:#e3f2fd;border-radius:8px;padding:3px 8px;margin-top:0.35rem">'
-          + '↩ نقاطه (' + sa + ' ن.س / ' + my + ' ن.م) تُضاف إلى نقاط ' + buyerLabel(buyers[0]) + '</div>';
-      } else if (b.main && (tsa > 0 || tmy > 0)) {
-        ptsNote = '<div style="font-size:0.72rem;color:#1a5c2a;background:#e8f5e9;border-radius:8px;padding:3px 8px;margin-top:0.35rem">'
-          + 'يشمل نقاط الطلبات بلا عضوية: +' + tsa + ' ن.س / +' + tmy + ' ن.م</div>';
+        var recips = creditRecipients();
+        var opts = recips.map(function(r) {
+          var sel = (creditTarget(b).id === r.id) ? ' selected' : '';
+          return '<option value="' + r.id + '"' + sel + '>' + buyerLabel(r) + '</option>';
+        }).join('');
+        ptsNote = '<div style="font-size:0.74rem;color:#0d47a1;background:#e3f2fd;border-radius:8px;padding:5px 8px;margin-top:0.35rem;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap">'
+          + '<span>↩ نقاطه (' + sa + ' ن.س / ' + my + ' ن.م) تُضاف إلى:</span>'
+          + '<select onchange="setCreditTo(' + b.id + ',this.value)" style="font-family:\'Tajawal\',sans-serif;font-size:0.74rem;font-weight:700;color:#0d47a1;border:1.5px solid #90caf9;border-radius:6px;padding:2px 6px;background:#fff;cursor:pointer">' + opts + '</select>'
+          + '</div>';
+      } else if (!isNone) {
+        var tsa = transferredToBuyer(b.id, 'sa'), tmy = transferredToBuyer(b.id, 'my');
+        if (tsa > 0 || tmy > 0) {
+          ptsNote = '<div style="font-size:0.72rem;color:#1a5c2a;background:#e8f5e9;border-radius:8px;padding:3px 8px;margin-top:0.35rem">'
+            + 'يشمل نقاط طلبات بلا عضوية مُحوّلة إليه: +' + tsa + ' ن.س / +' + tmy + ' ن.م</div>';
+        }
       }
-      var showSa = b.main ? csa : sa;
-      var showMy = b.main ? cmy : my;
+      var showSa = isNone ? sa : creditedPts(b, 'sa');
+      var showMy = isNone ? my : creditedPts(b, 'my');
 
       return '<div style="border:1.5px solid ' + (isNone ? '#bbdefb' : '#c8e6c9') + ';border-radius:12px;padding:0.6rem;margin-bottom:0.7rem;background:#fff">'
         + '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.4rem;flex-wrap:wrap;border-bottom:1px solid #e8f5e9;padding-bottom:0.4rem;margin-bottom:0.4rem">'
         +   '<span style="font-size:0.85rem;font-weight:800;color:#1a5c2a">' + (b.main ? '👤 ' : '➕ ') + buyerLabel(b) + '</span>'
-        +   '<span style="font-size:0.72rem;color:#777">' + orderTypeLabel(b.orderType) + (b.memberId ? ' • ' + b.memberId : '') + '</span>'
+        +   '<span style="font-size:0.82rem;color:#222;font-weight:700">' + orderTypeLabel(b.orderType) + (b.memberId ? ' • ' + b.memberId : '') + '</span>'
         + '</div>'
         + rows
         + '<div style="display:flex;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;border-top:1px dashed #c8e6c9;margin-top:0.4rem;padding-top:0.4rem;font-size:0.8rem">'
@@ -1733,7 +1796,7 @@ function renderOrderSummary() {
         + ptsNote
         + '</div>';
     }).join('')
-    + '<div style="text-align:center;margin-top:0.3rem">'
+    + '<div style="text-align:center;margin-top:0.5rem">'
     +   '<button onclick="clearCart()" style="background:#c0392b;color:#fff;border:none;border-radius:50px;padding:0.4rem 1.2rem;font-family:\'Tajawal\',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">🗑️ حذف كل المنتجات</button>'
     + '</div>';
   }
@@ -1823,25 +1886,26 @@ function generateInvoice() {
       + '<span style="font-weight:400;color:#777;font-size:0.78rem"> — ' + orderTypeLabel(b.orderType) + (b.memberId ? ' • ' + b.memberId : '') + '</span>'
       + '</td></tr>';
     b.items.forEach(function(p, i) {
-      var bg   = i % 2 === 0 ? '#fff' : '#f5fbf6';
-      var ptBg = p.ptType === 'my' ? '#e3f2fd' : '#d4edda';
-      var ptFg = p.ptType === 'my' ? '#0d47a1' : '#1a5c2a';
+      var bg  = i % 2 === 0 ? '#fff' : '#f5fbf6';
+      var psa = (p.ptsSa || 0) * p.qty, pmy = (p.ptsMy || 0) * p.qty;
       html += '<tr style="background:' + bg + ';border-bottom:1px solid #e8f5e9">'
         + '<td style="padding:0.5rem 0.8rem;text-align:center;font-weight:800">' + p.qty + '</td>'
         + '<td style="padding:0.5rem 0.8rem;text-align:right;font-weight:600">' + p.name + '</td>'
         + '<td style="padding:0.5rem;text-align:center;font-weight:700;color:#1a5c2a">' + p.price + ' ريال</td>'
-        + '<td style="padding:0.5rem;text-align:center"><span style="background:' + ptBg + ';color:' + ptFg + ';padding:2px 8px;border-radius:20px;font-size:.8rem;font-weight:700">' + (p.ptValue * p.qty) + ' ' + p.ptLabel + '</span></td>'
-        + '</tr>';
+        + '<td style="padding:0.5rem;text-align:center;white-space:nowrap">'
+        +   '<span style="background:#d4edda;color:#1a5c2a;padding:2px 7px;border-radius:20px;font-size:.75rem;font-weight:700">' + psa + ' ن.س</span> '
+        +   '<span style="background:#e3f2fd;color:#0d47a1;padding:2px 7px;border-radius:20px;font-size:.75rem;font-weight:700">' + pmy + ' ن.م</span>'
+        + '</td></tr>';
     });
     var isNone = !b.main && b.orderType === 'none';
-    var showSa = b.main ? creditedPts(b,'sa') : buyerPts(b,'sa');
-    var showMy = b.main ? creditedPts(b,'my') : buyerPts(b,'my');
+    var showSa = isNone ? buyerPts(b,'sa') : creditedPts(b,'sa');
+    var showMy = isNone ? buyerPts(b,'my') : creditedPts(b,'my');
     html += '<tr style="background:#f9fdf9;border-bottom:2px solid #c8e6c9">'
       + '<td colspan="2" style="padding:0.45rem 0.8rem;text-align:right;font-weight:800;color:#1a5c2a;font-size:0.8rem">مجموع ' + buyerLabel(b) + '</td>'
       + '<td style="padding:0.45rem;text-align:center;font-weight:800;color:#1a5c2a;font-size:0.85rem">' + buyerMoney(b) + ' ريال</td>'
       + '<td style="padding:0.45rem;text-align:center;font-size:0.75rem">'
       +   (isNone
-          ? '<span style="color:#0d47a1;font-weight:700">↩ تُضاف للرئيسي</span>'
+          ? '<span style="color:#0d47a1;font-weight:700">↩ نقاطه إلى ' + buyerLabel(creditTarget(b)) + '</span>'
           : '<span style="background:#d4edda;color:#1a5c2a;padding:1px 6px;border-radius:20px;font-weight:700">' + showSa + ' ن.س</span> '
           + '<span style="background:#e3f2fd;color:#0d47a1;padding:1px 6px;border-radius:20px;font-weight:700">' + showMy + ' ن.م</span>')
       + '</td></tr>';
@@ -1851,17 +1915,51 @@ function generateInvoice() {
   document.getElementById('inv-subtotal').textContent = d.subtotal + ' ريال';
   document.getElementById('inv-fee').textContent      = d.fee + ' ريال';
   document.getElementById('inv-grand').textContent    = d.grand + ' ريال سعودي';
-  var sa = document.getElementById('inv-pts-sa');
-  var my = document.getElementById('inv-pts-my');
-  var dl = document.getElementById('inv-pts-dl');
-  var scoring = buyers.filter(function(b){ return b.main || b.orderType !== 'none'; });
-  if (sa) sa.textContent = scoring.map(function(b){ return buyerLabel(b) + ': ' + creditedPts(b,'sa'); }).join(' | ');
-  if (my) my.textContent = scoring.map(function(b){ return buyerLabel(b) + ': ' + creditedPts(b,'my'); }).join(' | ');
-  if (dl) dl.textContent = 0;
+  var listEl = document.getElementById('inv-pts-list');
+  var trEl   = document.getElementById('inv-pts-transfers');
+  if (listEl) {
+    listEl.innerHTML = creditRecipients().map(function(r) {
+      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.6rem;flex-wrap:wrap;padding:0.4rem 0;border-bottom:1px solid #d5ead9">'
+        + '<span style="font-size:0.9rem;font-weight:800;color:#1a5c2a">' + buyerLabel(r) + '</span>'
+        + '<span style="display:flex;gap:0.4rem">'
+        +   '<span style="background:#d4edda;color:#1a5c2a;padding:2px 10px;border-radius:20px;font-size:0.82rem;font-weight:800">' + creditedPts(r,'sa') + ' ن.س</span>'
+        +   '<span style="background:#e3f2fd;color:#0d47a1;padding:2px 10px;border-radius:20px;font-size:0.82rem;font-weight:800">' + creditedPts(r,'my') + ' ن.م</span>'
+        + '</span>'
+        + '</div>';
+    }).join('') || '<div style="font-size:0.85rem;color:#777">لا يوجد</div>';
+  }
+  if (trEl) {
+    var transfers = noMembershipBuyers().filter(function(b){ return b.items.length; });
+    if (transfers.length === 0) {
+      trEl.innerHTML = '';
+    } else {
+      trEl.innerHTML = '<div style="margin-top:0.7rem;padding-top:0.6rem;border-top:1.5px dashed #a5d6b0">'
+        + '<div style="font-size:0.82rem;font-weight:800;color:#0d47a1;margin-bottom:0.35rem">ملاحظة — تحويل نقاط الطلبات بلا عضوية:</div>'
+        + transfers.map(function(b) {
+            return '<div style="font-size:0.8rem;color:#333;padding:2px 0">'
+              + '• حُوِّلت نقاط <strong>' + buyerLabel(b) + '</strong> ('
+              + buyerPts(b,'sa') + ' ن.س / ' + buyerPts(b,'my') + ' ن.م) إلى <strong>' + buyerLabel(creditTarget(b)) + '</strong>'
+              + '</div>';
+          }).join('')
+        + '</div>';
+    }
+  }
+}
+
+function WA_SVG(size) {
+  var s = size || 16;
+  return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;flex-shrink:0">'
+    + '<circle cx="16" cy="16" r="16" fill="#25D366"/>'
+    + '<path fill="#fff" d="M16 6.5c-5.25 0-9.5 4.25-9.5 9.5 0 1.67.44 3.29 1.27 4.72L6.5 25.5l4.94-1.29c1.38.75 2.94 1.15 4.56 1.15 5.25 0 9.5-4.25 9.5-9.5S21.25 6.5 16 6.5zm5.55 13.4c-.23.66-1.35 1.26-1.86 1.3-.5.05-.97.24-3.27-.68-2.77-1.09-4.5-3.94-4.64-4.13-.13-.19-1.1-1.46-1.1-2.78 0-1.32.69-1.97.94-2.24.23-.25.5-.31.67-.31.17 0 .34 0 .48.01.16.01.37-.06.57.44.23.56.78 1.93.85 2.07.07.14.11.3.02.48-.09.19-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.28.72 1.18 1.54 1.92 1.06.94 1.95 1.24 2.23 1.38.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.36-.23.6-.14.25.09 1.58.75 1.85.89.28.14.46.21.53.32.07.12.07.66-.16 1.32z"/>'
+    + '</svg>';
 }
 
 function printInvoice() {
   var d = getDeliveryData();
+  // رابط واتساب للعميل الرئيسي (من رقم هاتفه) وللمشرف
+  var custDigits = (d.phone || '').replace(/[^0-9]/g, '');
+  var custWa = custDigits ? ('https://wa.me/' + custDigits) : '';
+  var supWa  = 'https://wa.me/966506434783';
   var rows = '';
   buyers.forEach(function(b) {
     if (b.items.length === 0) return;
@@ -1872,12 +1970,15 @@ function printInvoice() {
       + '</td></tr>';
     b.items.forEach(function(p, i) {
       var bg = i % 2 === 0 ? '#fff' : '#f5fbf6';
+      var psa = (p.ptsSa || 0) * p.qty, pmy = (p.ptsMy || 0) * p.qty;
       rows += '<tr style="background:' + bg + ';border-bottom:1px solid #e8f5e9">'
         + '<td style="padding:7px 10px;text-align:center;font-weight:800;font-size:13px">' + p.qty + '</td>'
         + '<td style="padding:7px 10px;text-align:right;font-weight:600;font-size:12px">' + (p.emoji||'🌿') + ' ' + p.name + '</td>'
         + '<td style="padding:7px;text-align:center;font-weight:700;color:#1a5c2a;font-size:12px">' + p.price + ' ريال</td>'
-        + '<td style="padding:7px;text-align:center"><span style="background:' + (p.ptType==='my'?'#e3f2fd':'#d4edda') + ';color:' + (p.ptType==='my'?'#0d47a1':'#1a5c2a') + ';padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700">' + (p.ptValue*p.qty) + ' ' + p.ptLabel + '</span></td>'
-        + '</tr>';
+        + '<td style="padding:7px;text-align:center;white-space:nowrap">'
+        +   '<span style="background:#d4edda;color:#1a5c2a;padding:2px 6px;border-radius:20px;font-size:10px;font-weight:700">' + psa + ' ن.س</span> '
+        +   '<span style="background:#e3f2fd;color:#0d47a1;padding:2px 6px;border-radius:20px;font-size:10px;font-weight:700">' + pmy + ' ن.م</span>'
+        + '</td></tr>';
     });
     var isNoneP = !b.main && b.orderType === 'none';
     rows += '<tr style="background:#f9fdf9;border-bottom:2px solid #c8e6c9">'
@@ -1885,25 +1986,28 @@ function printInvoice() {
       + '<td style="padding:6px;text-align:center;font-weight:800;color:#1a5c2a;font-size:12px">' + buyerMoney(b) + ' ريال</td>'
       + '<td style="padding:6px;text-align:center;font-size:10px">'
       +   (isNoneP
-          ? '<span style="color:#0d47a1;font-weight:700">↩ نقاطه تُضاف للحساب الرئيسي</span>'
-          : '<span style="background:#d4edda;color:#1a5c2a;padding:1px 6px;border-radius:20px;font-weight:700">' + (b.main ? creditedPts(b,'sa') : buyerPts(b,'sa')) + ' ن.س</span> '
-          + '<span style="background:#e3f2fd;color:#0d47a1;padding:1px 6px;border-radius:20px;font-weight:700">' + (b.main ? creditedPts(b,'my') : buyerPts(b,'my')) + ' ن.م</span>')
+          ? '<span style="color:#0d47a1;font-weight:700">↩ نقاطه إلى ' + buyerLabel(creditTarget(b)) + '</span>'
+          : '<span style="background:#d4edda;color:#1a5c2a;padding:1px 6px;border-radius:20px;font-weight:700">' + creditedPts(b,'sa') + ' ن.س</span> '
+          + '<span style="background:#e3f2fd;color:#0d47a1;padding:1px 6px;border-radius:20px;font-weight:700">' + creditedPts(b,'my') + ' ن.م</span>')
       + '</td></tr>';
   });
   if (!rows) rows = '<tr><td colspan="4" style="text-align:center;padding:14px;color:#aaa">لا توجد منتجات</td></tr>';
 
-  var tsaP = transferredPts('sa'), tmyP = transferredPts('my');
-  var ptsBlock = buyers.filter(function(b){
-    return b.items.length && (b.main || b.orderType !== 'none');
-  }).map(function(b) {
-    var extra = (b.main && (tsaP > 0 || tmyP > 0))
-      ? '<div style="font-size:9.5px;color:#0d47a1;margin-top:1px">يشمل نقاط الطلبات بلا عضوية: +' + tsaP + ' ن.س / +' + tmyP + ' ن.م</div>'
-      : '';
-    return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:11px;padding:3px 0;border-bottom:1px dotted #b6dfc0">'
-      + '<span style="font-weight:700;color:#1a5c2a">' + buyerLabel(b) + extra + '</span>'
-      + '<span style="white-space:nowrap"><strong>' + creditedPts(b,'sa') + ' ن.س</strong> &nbsp;|&nbsp; <strong>' + creditedPts(b,'my') + ' ن.م</strong></span>'
+  var ptsBlock = creditRecipients().map(function(r) {
+    return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:11.5px;padding:4px 0;border-bottom:1px dotted #b6dfc0">'
+      + '<span style="font-weight:800;color:#1a5c2a">' + buyerLabel(r) + '</span>'
+      + '<span style="white-space:nowrap"><strong>' + creditedPts(r,'sa') + ' ن.س</strong> &nbsp;|&nbsp; <strong>' + creditedPts(r,'my') + ' ن.م</strong></span>'
       + '</div>';
   }).join('') || '<div style="font-size:11px;color:#777">—</div>';
+  var transfersP = noMembershipBuyers().filter(function(b){ return b.items.length; });
+  if (transfersP.length) {
+    ptsBlock += '<div style="margin-top:6px;padding-top:5px;border-top:1px dashed #a5d6b0">'
+      + '<div style="font-size:10.5px;font-weight:800;color:#0d47a1;margin-bottom:2px">ملاحظة — تحويل نقاط الطلبات بلا عضوية:</div>'
+      + transfersP.map(function(b) {
+          return '<div style="font-size:10px;color:#333;padding:1px 0">• حُوِّلت نقاط ' + buyerLabel(b) + ' (' + buyerPts(b,'sa') + ' ن.س / ' + buyerPts(b,'my') + ' ن.م) إلى ' + buyerLabel(creditTarget(b)) + '</div>';
+        }).join('')
+      + '</div>';
+  }
 
   var addrLine = d.district + (d.street !== '—' ? ' — ' + d.street : '') + (d.houseNo !== '—' ? ' — ' + d.houseNo : '');
   var shortRow = d.shortAddr
@@ -1966,7 +2070,7 @@ function printInvoice() {
     + '<div style="text-align:center;font-size:15px;font-weight:800;color:#1a5c2a;margin-bottom:14px">متجر صحتك بالدنيا يشكر زيارتكم ، ويتمنى لكم يوما سعيدا</div>'
     + '<div class="igrid">'
     +   '<div class="ibox"><h4>👤 بيانات العميل</h4>'
-    +     '<div class="irow"><span>الاسم بالعربي</span><span>' + d.nameAr + '</span></div>'
+    +     '<div class="irow"><span>الاسم بالعربي</span>' + '<span style="display:inline-flex;align-items:center;gap:6px;direction:rtl">' + (custWa ? '<a href="' + custWa + '" title="واتساب العميل" style="text-decoration:none;display:inline-flex">' + WA_SVG(16) + '</a>' : '') + '<strong style="color:#222">' + d.nameAr + '</strong>' + '</span></div>'
     +     '<div class="irow"><span>Full Name</span><span style="direction:ltr;display:inline-block">' + d.nameEn + '</span></div>'
     +     '<div class="irow"><span>رقم العضوية</span><span>' + d.memberId + '</span></div>'
     +     '<div class="irow"><span>رقم الهاتف</span><span style="direction:ltr;display:inline-block;unicode-bidi:embed">' + d.phone + '</span></div>'
@@ -1991,7 +2095,7 @@ function printInvoice() {
     + '<div class="pb"><h4>⭐ ملخص النقاط لكل مستخدم</h4>' + ptsBlock + '</div>'
     + '<div class="wa">'
     +   '<div class="wa-title">رقم التواصل مع المشرف في الواتساب</div>'
-    +   '<a class="wa-link" href="https://api.whatsapp.com/send/?phone=%E2%81%A6966506434783%E2%81%A9&text&type=phone_number&app_absent=0">+966 50 643 4783</a>'
+    +   '<a class="wa-link" href="' + supWa + '" style="display:inline-flex;align-items:center;gap:8px">' + WA_SVG(18) + '<span>+966 50 643 4783</span></a>'
     + '</div>'
     + '<div class="ft">'
     +   '<div class="w">⚠️ يجب توفر المبلغ نقداً قبل التوصيل</div>'
@@ -2001,13 +2105,44 @@ function printInvoice() {
     +   '</div>'
     + '</div>'
     + '</div>'
-    + '<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700);};<' + '/script>'
     + '</body></html>';
 
-  var w = window.open('', '_blank', 'width=900,height=750');
-  if (!w) { showToast('يرجى السماح بالنوافذ المنبثقة'); return; }
-  w.document.write(html);
-  w.document.close();
+  // اطبع عبر iframe مخفي (يعمل حتى لو مُنعت النوافذ المنبثقة)
+  var old = document.getElementById('print-frame');
+  if (old) old.parentNode.removeChild(old);
+
+  var frame = document.createElement('iframe');
+  frame.id = 'print-frame';
+  frame.style.position = 'fixed';
+  frame.style.right = '0';
+  frame.style.bottom = '0';
+  frame.style.width = '0';
+  frame.style.height = '0';
+  frame.style.border = '0';
+  document.body.appendChild(frame);
+
+  var doc = frame.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+
+  var done = false;
+  function doPrint() {
+    if (done) return;
+    done = true;
+    try {
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+    } catch (e) {
+      // احتياط: افتح نافذة جديدة إن فشل الـ iframe
+      var w = window.open('', '_blank');
+      if (w) { w.document.write(html); w.document.close(); w.focus(); w.print(); }
+      else { showToast('تعذّرت الطباعة — جرّب من متصفح آخر'); }
+    }
+  }
+  frame.onload = function() { setTimeout(doPrint, 400); };
+  // احتياط زمني لو لم يُطلق onload
+  setTimeout(doPrint, 900);
 }
 
 // ── تنبيه ───────────────────────────────────────────────────
