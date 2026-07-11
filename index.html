@@ -435,8 +435,51 @@
   /* RESPONSIVE */
   @media(max-width:700px){
     .modal-content{grid-template-columns:1fr}
-    .delivery-grid{grid-template-columns:1fr}
+    .delivery-grid{grid-template-columns:1fr;gap:1.2rem}
     .fields-grid{grid-template-columns:1fr}
+
+    /* ── الهيدر والقائمة ── */
+    .shop-nav{flex-wrap:wrap;gap:0.5rem;padding:0.6rem 0.8rem}
+    .nav-btn{font-size:0.78rem;padding:0.32rem 0.6rem}
+    .cart-badge, .cart-summary{font-size:0.78rem !important}
+
+    /* ── جدول المنتجات: تمرير أفقي + خط أصغر ── */
+    .products-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .products-table{min-width:640px;font-size:0.8rem}
+    .products-table th{padding:0.5rem 0.35rem;font-size:0.75rem}
+    .products-table td{padding:0.45rem 0.35rem}
+    .price-tag{font-size:0.78rem;white-space:nowrap}
+    .points-badge{font-size:0.7rem;padding:1px 6px}
+    .add-cart-btn,.details-btn{font-size:0.74rem;padding:0.3rem 0.5rem;white-space:nowrap}
+    .qty-btn{width:22px;height:22px}
+    .thumb-placeholder{width:34px;height:34px;font-size:1.1rem}
+
+    /* ── شريط المشترين ── */
+    #buyer-bar-nm,#buyer-bar-m{padding:0.5rem 0.8rem !important}
+
+    /* ── صفحة الدفع ── */
+    .delivery-card{padding:1.1rem;border-radius:18px}
+    .delivery-card h2{font-size:1.15rem !important}
+    .order-summary-box{padding:0.9rem}
+
+    /* ── عرض السعر داخل الصفحة ── */
+    .inv-page-bg{padding:0.8rem !important}
+    .inv-logo-title{font-size:1.1rem !important}
+    .inv-grid{grid-template-columns:1fr !important;gap:0.8rem !important}
+    #inv-items-body td{font-size:0.75rem !important;padding:0.4rem 0.3rem !important}
+    .invoice-actions{flex-direction:column;gap:0.6rem}
+    .invoice-actions button{width:100%}
+
+    /* ── زر الواتساب العائم أصغر قليلاً ── */
+    #wa-fab .wa-fab-btn{width:50px;height:50px}
+    #wa-fab .wa-fab-ring{width:50px;height:50px}
+  }
+
+  @media(max-width:430px){
+    .nav-btn{font-size:0.72rem;padding:0.28rem 0.5rem}
+    .products-table{min-width:560px}
+    .menu-card{padding:0.9rem 1rem;font-size:0.95rem}
+    .menu-card-icon{font-size:1.4rem}
   }
 </style>
 </head>
@@ -718,9 +761,9 @@
 
 <!-- PAGE 11: INVOICE -->
 <div class="page" id="page-invoice">
-  <div style="background:#f0f4f1;min-height:100vh;padding:2rem">
-    <div style="max-width:780px;margin:0 auto">
-      <div style="display:flex;gap:1rem;margin-bottom:1.2rem;justify-content:flex-end" class="no-print">
+  <div class="inv-page-bg" style="background:#f0f4f1;min-height:100vh;padding:2rem">
+    <div class="inv-wrap" style="max-width:780px;margin:0 auto">
+      <div style="display:flex;gap:1rem;margin-bottom:1.2rem;justify-content:flex-end" class="no-print invoice-actions">
         <button onclick="printInvoice()" style="padding:0.7rem 1.8rem;background:var(--green-dark);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem">🖨️ طباعة عرض السعر</button>
         <button onclick="goTo('page-success')" style="padding:0.7rem 1.5rem;background:transparent;color:var(--green-dark);border:2px solid var(--green-mid);border-radius:50px;font-size:0.95rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer">← رجوع</button>
       </div>
@@ -750,7 +793,7 @@
         </div>
 
         <!-- CLIENT + DELIVERY INFO -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <div class="inv-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
           <div style="background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:14px;padding:1rem">
             <div style="font-size:0.88rem;font-weight:800;color:var(--green-dark);margin-bottom:0.7rem;border-bottom:1px solid #c8e6c9;padding-bottom:0.4rem">بيانات العميل</div>
             <div style="font-size:0.88rem;color:#555;margin-bottom:0.3rem">الاسم: <span style="font-weight:700;color:#222" id="inv-name">—</span></div>
@@ -921,6 +964,27 @@
     <button class="btn-primary" style="margin-bottom:0" onclick="submitClientInfo()">متابعة إلى المنتجات ←</button>
   </div>
 </div>
+
+
+<!-- WHATSAPP FLOATING SUPPORT -->
+<a href="https://wa.me/966506434783" target="_blank" rel="noopener" id="wa-fab" title="للدعم الفني">
+  <span class="wa-fab-ring"></span>
+  <span class="wa-fab-btn">
+    <svg width="30" height="30" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#fff" d="M16 5C9.9 5 5 9.9 5 16c0 1.94.51 3.83 1.48 5.5L5 27l5.66-1.48A10.94 10.94 0 0 0 16 27c6.08 0 11-4.92 11-11S22.08 5 16 5zm6.43 15.53c-.27.76-1.57 1.46-2.16 1.5-.58.06-1.12.28-3.79-.79-3.2-1.26-5.22-4.56-5.38-4.78-.15-.22-1.28-1.7-1.28-3.24 0-1.54.8-2.29 1.09-2.6.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.27.62.9 2.24.98 2.4.08.16.13.35.02.56-.1.22-.16.35-.31.54-.16.19-.34.42-.48.56-.16.16-.33.34-.14.66.19.32.84 1.38 1.8 2.24 1.24 1.1 2.28 1.44 2.6 1.6.32.16.5.14.69-.08.19-.22.8-.93 1.01-1.25.21-.32.42-.27.71-.16.29.11 1.84.87 2.16 1.03.32.16.53.24.6.37.08.13.08.75-.19 1.53z"/>
+    </svg>
+  </span>
+  <span class="wa-fab-label">للدعم الفني</span>
+</a>
+<style>
+  #wa-fab{position:fixed;bottom:1.4rem;left:1.4rem;z-index:9000;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;font-family:'Tajawal',sans-serif}
+  #wa-fab .wa-fab-btn{position:relative;z-index:2;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(37,211,102,0.45);transition:transform .2s ease}
+  #wa-fab .wa-fab-ring{position:absolute;top:0;left:50%;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;background:#25D366;opacity:.55;z-index:1;animation:waPulse 1.8s ease-out infinite}
+  #wa-fab .wa-fab-label{background:rgba(26,92,42,0.92);color:#fff;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  #wa-fab:hover .wa-fab-btn{transform:scale(1.08)}
+  @keyframes waPulse{0%{transform:translateX(-50%) scale(1);opacity:.55}70%{transform:translateX(-50%) scale(2.1);opacity:0}100%{opacity:0}}
+  @media print{#wa-fab{display:none!important}}
+</style>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -1707,7 +1771,10 @@ document.addEventListener('click', function(e) {
 });
 
 function validateShortAddress(el) {
-  var v = el.value.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8);
+  var v = el.value
+    .replace(/[\u0660-\u0669]/g, function(d){ return String(d.charCodeAt(0) - 0x0660); })
+    .replace(/[\u06F0-\u06F9]/g, function(d){ return String(d.charCodeAt(0) - 0x06F0); })
+    .toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8);
   el.value = v;
   var note = document.getElementById('short-addr-note');
   if (v.length === 0) { note.style.display = 'none'; el.style.borderColor = '#c8e6c9'; return; }
@@ -2107,41 +2174,58 @@ function printInvoice() {
     + '</div>'
     + '</body></html>';
 
-  // اطبع عبر iframe مخفي (يعمل حتى لو مُنعت النوافذ المنبثقة)
-  var old = document.getElementById('print-frame');
-  if (old) old.parentNode.removeChild(old);
+  var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
+  // زر طباعة داخل الصفحة نفسها (للجوال) لضمان ظهور خيار الحفظ كـ PDF
+  var htmlWithBtn = html.replace('</body>',
+    '<div class="noprint" style="position:fixed;bottom:0;left:0;right:0;background:#1a5c2a;padding:12px;text-align:center;z-index:99999">'
+    + '<button onclick="window.print()" style="background:#4caf6a;color:#fff;border:none;border-radius:50px;padding:12px 28px;font-size:16px;font-weight:800;font-family:Tajawal,Arial,sans-serif;cursor:pointer">🖨️ حفظ / طباعة عرض السعر</button>'
+    + '</div><style>@media print{.noprint{display:none!important}}</style></body>');
+
+  if (isMobile) {
+    // الجوال: افتح صفحة جديدة كاملة — يمكن حفظها PDF عبر مشاركة/طباعة المتصفح
+    var w = window.open('', '_blank');
+    if (w) {
+      w.document.open();
+      w.document.write(htmlWithBtn);
+      w.document.close();
+    } else {
+      // تعذّر فتح تبويب: اعرض المحتوى داخل نفس الصفحة
+      var ov = document.getElementById('pdf-overlay');
+      if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'pdf-overlay';
+        ov.style.cssText = 'position:fixed;inset:0;z-index:99998;background:#fff;overflow:auto';
+        document.body.appendChild(ov);
+      }
+      ov.innerHTML = '<div style="position:sticky;top:0;background:#1a5c2a;padding:10px;display:flex;gap:8px;justify-content:center">'
+        + '<button onclick="window.print()" style="background:#4caf6a;color:#fff;border:none;border-radius:50px;padding:10px 20px;font-weight:800;font-family:Tajawal,Arial,sans-serif">🖨️ حفظ PDF</button>'
+        + '<button onclick="document.getElementById(\'pdf-overlay\').remove()" style="background:#fff;color:#1a5c2a;border:none;border-radius:50px;padding:10px 20px;font-weight:800;font-family:Tajawal,Arial,sans-serif">✕ إغلاق</button>'
+        + '</div>' + html.replace(/^[\s\S]*?<body[^>]*>/, '').replace('</body></html>', '');
+    }
+    return;
+  }
+
+  // الكمبيوتر: طباعة عبر iframe مخفي
+  var oldF = document.getElementById('print-frame');
+  if (oldF) oldF.parentNode.removeChild(oldF);
   var frame = document.createElement('iframe');
   frame.id = 'print-frame';
-  frame.style.position = 'fixed';
-  frame.style.right = '0';
-  frame.style.bottom = '0';
-  frame.style.width = '0';
-  frame.style.height = '0';
-  frame.style.border = '0';
+  frame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
   document.body.appendChild(frame);
-
   var doc = frame.contentWindow.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
-
+  doc.open(); doc.write(html); doc.close();
   var done = false;
   function doPrint() {
-    if (done) return;
-    done = true;
-    try {
-      frame.contentWindow.focus();
-      frame.contentWindow.print();
-    } catch (e) {
-      // احتياط: افتح نافذة جديدة إن فشل الـ iframe
+    if (done) return; done = true;
+    try { frame.contentWindow.focus(); frame.contentWindow.print(); }
+    catch (e) {
       var w = window.open('', '_blank');
       if (w) { w.document.write(html); w.document.close(); w.focus(); w.print(); }
-      else { showToast('تعذّرت الطباعة — جرّب من متصفح آخر'); }
+      else { showToast('تعذّرت الطباعة — جرّب متصفحاً آخر'); }
     }
   }
   frame.onload = function() { setTimeout(doPrint, 400); };
-  // احتياط زمني لو لم يُطلق onload
   setTimeout(doPrint, 900);
 }
 
