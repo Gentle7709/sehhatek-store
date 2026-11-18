@@ -659,6 +659,10 @@ body.theme-modern .sf-foot svg.ic{width:18px;height:18px;color:var(--spore)}
 body.theme-modern .sf-foot-bar{border-top:1px solid rgba(255,255,255,.12);text-align:center;font-size:13px;padding:16px 16px 20px;color:rgba(255,255,255,.7)}
 body.theme-modern .sf-foot-bar span[dir]{display:inline-block}
 
+/* البانر نفسه أعلى صفحة الطلب */
+body.theme-modern .shop-hero{width:100%;padding-bottom:6px}
+body.theme-modern .shop-page .search-bar{scroll-margin-top:68px}
+
 /* اختيار نوع الطلب: تذكير بما اختاره العميل من الواجهة */
 body.theme-modern .mm-intent{background:var(--canopy-t);color:var(--canopy-d);border-radius:12px;padding:12px 14px;font-size:14.5px;font-weight:500;line-height:1.6;margin:0 0 16px}
 body.theme-modern .mm-intent[hidden]{display:none}
@@ -1187,6 +1191,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
     </div>
     <button class="m-only m-cart" onclick="goToDelivery()" aria-label="السلة وإتمام الطلب"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.5-1.2L21 7H6"/></svg><span class="m-cart-n zero" id="mcart-n-nm">0</span></button>
   </nav>
+  <div class="m-only shop-hero" id="shop-hero-nm"></div>
   <div class="search-bar">
     <span class="points-hint">ن.س = نقاط سعودية | ن.م = نقاط ماليزية</span>
     <div class="search-wrap">
@@ -1243,6 +1248,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
     </div>
     <button class="m-only m-cart" onclick="goToDelivery()" aria-label="السلة وإتمام الطلب"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.5-1.2L21 7H6"/></svg><span class="m-cart-n zero" id="mcart-n-m">0</span></button>
   </nav>
+  <div class="m-only shop-hero" id="shop-hero-m"></div>
   <div class="search-bar">
     <span class="points-hint">ن.س = نقاط سعودية | ن.م = نقاط ماليزية</span>
     <div class="search-wrap">
@@ -2297,6 +2303,7 @@ function goTo(id) {
     currentPage = (id.indexOf('no') > -1) ? 'nm' : 'm';
     productFilter = { type: 'all', value: '' };
     renderProducts();
+    mountShopHero(currentPage);
   } else {
     el.classList.add('active');
   }
@@ -2432,6 +2439,29 @@ function renderHome() {
   }).join('');
 }
 
+// نفس بانر الواجهة الرئيسية ومميزاتها أعلى صفحة الطلب
+function mountShopHero(sfx) {
+  var box = document.getElementById('shop-hero-' + sfx);
+  if (!box || !document.body.classList.contains('theme-modern')) return;
+  renderHome();
+  var hero = document.querySelector('#page-welcome .sf-hero');
+  var feats = document.querySelector('#page-welcome .sf-feats');
+  if (!hero) return;
+  box.innerHTML = '';
+  [hero, feats].forEach(function(n) {
+    if (!n) return;
+    var c = n.cloneNode(true);
+    c.querySelectorAll('[id]').forEach(function(e) { e.removeAttribute('id'); });
+    box.appendChild(c);
+  });
+  var cta = box.querySelector('[data-test="start"]');
+  if (cta) { cta.removeAttribute('data-test'); cta.setAttribute('onclick', 'scrollToProducts()'); }
+}
+function scrollToProducts() {
+  var el = document.querySelector('.shop-page.active .search-bar');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function homeStart(intent) {
   pendingIntent = intent || null;
   closeModal();
@@ -2456,10 +2486,11 @@ function applyPendingIntent() {
   var note = document.getElementById('mm-intent');
   if (note) note.hidden = true;
   if (!it) return;
-  if (it.category) { setProductFilter('category', it.category); return; }
+  if (it.category) { setProductFilter('category', it.category); scrollToProducts(); return; }
   if (it.q) {
     var sEl = document.getElementById(currentPage === 'm' ? 'search-m' : 'search-nm');
     if (sEl) { sEl.value = it.q; renderProducts(); }
+    scrollToProducts();
     return;
   }
   if (it.product) {
@@ -4383,7 +4414,7 @@ function applyTheme(mode) {
   if (icon)  icon.innerHTML    = isModern ? '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg>' : '✨';
   if (label) label.textContent = isModern ? 'التصميم الكلاسيكي' : 'التصميم العصري';
   try { localStorage.setItem('sehhatek-theme', mode); } catch (e) {}
-  if (document.querySelector('.shop-page.active')) renderProducts();
+  if (document.querySelector('.shop-page.active')) { renderProducts(); mountShopHero(currentPage); }
   if (document.querySelector('#page-welcome.active')) renderHome();
 }
 function toggleTheme() {
