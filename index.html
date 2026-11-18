@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>صفحة منتجات صحتك بالدنيا</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
@@ -528,7 +528,7 @@ body.theme-modern{
   --lacquer:#8C2F1B; --spore:#C9A24A; --spore-t:#F6EDD6; --spore-ink:#765A12;
   --sky:#2F5E7E; --sky-t:#E4EDF3;
   --f-ui:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif;
-  --f-display:'Reem Kufi','IBM Plex Sans Arabic',sans-serif;
+  --f-display:'Baloo Bhaijaan 2','IBM Plex Sans Arabic',sans-serif;
   /* المتغيرات القديمة المستخدمة في الأنماط المضمّنة */
   --green-dark:#1F5A43; --green-mid:#1F5A43; --green-light:#2C7A5B; --green-pale:#E4EEE8;
   --green-card:#FFFFFF; --teal-bg:#F3F5F1; --teal-dark:#E2E7E2; --gray-light:#F3F5F1;
@@ -733,6 +733,23 @@ body.theme-modern .mm-main .mm-t b{font-size:21px;font-weight:700}
 body.theme-modern .mm-main .mm-t small{font-size:14.5px;color:rgba(255,255,255,.88)}
 body.theme-modern .mm-main > svg.ic{color:#fff;width:24px;height:24px}
 body.theme-modern .mm-vip{border-color:#E8D9AE}
+/* تلميح بسهم بجانب كل خيار */
+body.theme-modern .mm-row{position:relative;display:flex;flex-direction:column}
+body.theme-modern .mm-hint{display:flex;align-items:flex-end;gap:8px;padding:6px 14px 2px;font-family:var(--f-display)!important;font-size:16px;font-weight:600;line-height:1.45;color:var(--lacquer)}
+body.theme-modern .mm-hint span{font-family:inherit!important}
+body.theme-modern .mm-arrow{flex:0 0 auto;width:34px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-58deg) translateY(3px)}
+body.theme-modern .mm-row-l .mm-hint{flex-direction:row-reverse;color:var(--canopy)}
+body.theme-modern .mm-row-l .mm-arrow{transform:scaleX(-1) rotate(-58deg) translateY(3px)}
+body.theme-modern .mm-row:last-child .mm-hint{color:var(--spore-ink)}
+body.theme-modern .mm-list{gap:6px}
+@media(min-width:1100px){
+  body.theme-modern .mm-list{gap:14px}
+  body.theme-modern .mm-hint{position:absolute;top:50%;transform:translateY(-50%);width:210px;padding:0;align-items:center;font-size:17px}
+  body.theme-modern .mm-row-r .mm-hint{left:calc(100% + 14px);flex-direction:row}
+  body.theme-modern .mm-row-l .mm-hint{right:calc(100% + 14px);flex-direction:row-reverse;text-align:left}
+  body.theme-modern .mm-arrow{width:52px;height:32px;transform:none}
+  body.theme-modern .mm-row-l .mm-arrow{transform:scaleX(-1)}
+}
 body.theme-modern .mm-vip .mm-ic{background:var(--spore-t);color:var(--spore-ink)}
 
 /* ══════════════ المتجر ══════════════ */
@@ -1107,10 +1124,14 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
       <p class="m-lead">اختر نوع الطلب لنحسب لك السعر والنقاط بشكل صحيح.</p>
       <p class="mm-intent" id="mm-intent" hidden></p>
       <div class="mm-list">
-      <button class="mm-opt mm-main" onclick="startNoMembershipFlow()"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 7h13l1 13h-15z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="mm-t"><b>طلب بدون عضوية</b><small>أسرع طريقة: اطلب مباشرة بدون رقم عضوية</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button class="mm-opt" onclick="startMembershipFlow('active')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 14h3"/></svg></span><span class="mm-t"><b>طلب بعضوية</b><small>عندك رقم عضوية DXN مفعّل وتُحسب لك النقاط</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button class="mm-opt" onclick="startMembershipFlow('frozen')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></span><span class="mm-t"><b>عضوية تحتاج تفعيل</b><small>عضوية مجمّدة، يلزمها 100 نقطة سعودية لإعادة التفعيل</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button class="mm-opt mm-vip" onclick="startMembershipFlow('active')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg></span><span class="mm-t"><b>العملاء المميزون</b><small>قسم خاص بعملائنا المميزين</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="mm-row mm-row-r"><span class="mm-hint" id="mm-hint-1"><span>إذا انت جديد وتبي تطلب بسرعة اضغط هنا</span><svg class="mm-arrow" viewBox="0 0 56 34" aria-hidden="true"><path d="M52 6C36 4 18 10 7 25"/><path d="M5 12l2 13 12-4"/></svg></span>
+        <button aria-describedby="mm-hint-1" class="mm-opt mm-main" onclick="startNoMembershipFlow()"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 7h13l1 13h-15z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="mm-t"><b>طلب بدون عضوية</b><small>أسرع طريقة: اطلب مباشرة بدون رقم عضوية</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+      <div class="mm-row mm-row-l"><span class="mm-hint" id="mm-hint-2"><span>إذا انت عندك عضوية اطلب من هنا</span><svg class="mm-arrow" viewBox="0 0 56 34" aria-hidden="true"><path d="M52 6C36 4 18 10 7 25"/><path d="M5 12l2 13 12-4"/></svg></span>
+        <button aria-describedby="mm-hint-2" class="mm-opt" onclick="startMembershipFlow('active')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 14h3"/></svg></span><span class="mm-t"><b>طلب بعضوية</b><small>عندك رقم عضوية DXN مفعّل وتُحسب لك النقاط</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+      <div class="mm-row mm-row-r"><span class="mm-hint" id="mm-hint-3"><span>إذا انت سجلت عضويتك وهذا أول طلب لك اضغط هنا</span><svg class="mm-arrow" viewBox="0 0 56 34" aria-hidden="true"><path d="M52 6C36 4 18 10 7 25"/><path d="M5 12l2 13 12-4"/></svg></span>
+        <button aria-describedby="mm-hint-3" class="mm-opt" onclick="startMembershipFlow('frozen')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></span><span class="mm-t"><b>عضوية تحتاج تفعيل</b><small>عضوية مجمّدة، يلزمها 100 نقطة سعودية لإعادة التفعيل</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+      <div class="mm-row mm-row-l"><span class="mm-hint" id="mm-hint-4"><span>عميلنا المميز حياك الله</span><svg class="mm-arrow" viewBox="0 0 56 34" aria-hidden="true"><path d="M52 6C36 4 18 10 7 25"/><path d="M5 12l2 13 12-4"/></svg></span>
+        <button aria-describedby="mm-hint-4" class="mm-opt mm-vip" onclick="startMembershipFlow('active')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg></span><span class="mm-t"><b>العملاء المميزون</b><small>قسم خاص بعملائنا المميزين</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
       </div>
     </div>
   </section>
