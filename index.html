@@ -1382,9 +1382,8 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
         <!-- INVOICE HEADER -->
         <div class="inv-head" style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--green-dark);padding-bottom:1.5rem;margin-bottom:1.5rem">
           <div>
-            <div style="font-size:0.85rem;color:#666;margin-bottom:0.3rem">رقم عرض السعر</div>
-            <div style="font-size:1.3rem;font-weight:800;color:var(--green-dark)" id="inv-number">#QT-001</div>
-            <div style="font-size:0.85rem;color:#666;margin-top:0.6rem">تاريخ الإصدار</div>
+            <div style="font-size:1.3rem;font-weight:800;color:var(--green-dark);margin-bottom:0.6rem">عرض سعر</div>
+            <div style="font-size:0.85rem;color:#666">تاريخ الإصدار</div>
             <div style="font-size:0.95rem;font-weight:600;color:#333" id="inv-date"></div>
           </div>
           <div style="text-align:center">
@@ -1635,7 +1634,6 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
         <button class="admin-tab" onclick="adminTab('add')">➕ إضافة منتج</button>
         <button class="admin-tab" onclick="adminTab('sort')">↕️ الترتيب</button>
         <button class="admin-tab" onclick="adminTab('customers')">👥 العملاء</button>
-        <button class="admin-tab" onclick="adminTab('stats')">📊 الإحصائيات</button>
         <button class="admin-tab" onclick="adminTab('users')">🛡️ المستخدمون</button>
         <button class="admin-tab" onclick="adminTab('settings')">🔧 الإعدادات</button>
       </div>
@@ -1645,7 +1643,6 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
       <div class="admin-panel" id="admin-panel-add" style="display:none"></div>
       <div class="admin-panel" id="admin-panel-sort" style="display:none"></div>
       <div class="admin-panel" id="admin-panel-customers" style="display:none"></div>
-      <div class="admin-panel" id="admin-panel-stats" style="display:none"></div>
       <div class="admin-panel" id="admin-panel-users" style="display:none"></div>
       <div class="admin-panel" id="admin-panel-settings" style="display:none"></div>
 
@@ -1850,22 +1847,18 @@ function nextProductId() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  سجلّ العملاء + الفواتير + المستخدمين (لوحة المشرف)
+//  سجلّ العملاء + المستخدمين (لوحة المشرف)
 // ═══════════════════════════════════════════════════════════
 LS_KEYS.customers = 'sehhatek-customers';
-LS_KEYS.invoices  = 'sehhatek-invoices';
 LS_KEYS.users     = 'sehhatek-users';
 
-var customers = {};   // { memberId: {memberId,name,phone,money,ptsSa,ptsMy,invoiceIds:[]} }
-var invoices  = [];   // [{id,date,ts,buyerName,memberId,phone,city,district,total,fee,items:[],buyers:[...]}]
+var customers = {};   // { memberId: {memberId,name,phone,money,ptsSa,ptsMy} }
 var USERS     = [];   // [{username,pass,role,name}]
 
 function loadRecords() {
   try {
     var cs = localStorage.getItem(LS_KEYS.customers);
     if (cs) customers = JSON.parse(cs) || {};
-    var iv = localStorage.getItem(LS_KEYS.invoices);
-    if (iv) invoices = JSON.parse(iv) || [];
     var us = localStorage.getItem(LS_KEYS.users);
     if (us) USERS = JSON.parse(us) || [];
   } catch (e) {}
@@ -1876,79 +1869,14 @@ function loadRecords() {
   }
 }
 function saveCustomers() { try { localStorage.setItem(LS_KEYS.customers, JSON.stringify(customers)); } catch (e) {} }
-function saveInvoices()  { try { localStorage.setItem(LS_KEYS.invoices,  JSON.stringify(invoices));  } catch (e) {} }
 function saveUsers()     { try { localStorage.setItem(LS_KEYS.users,     JSON.stringify(USERS));     } catch (e) {} }
 
 // إضافة/تحديث عميل يدوياً أو تلقائياً
-function upsertCustomer(memberId, name, phone) {
-  if (!memberId) return null;
-  if (!customers[memberId]) {
-    customers[memberId] = { memberId: memberId, name: name || '', phone: phone || '', money: 0, ptsSa: 0, ptsMy: 0, invoiceIds: [] };
-  } else {
-    if (name)  customers[memberId].name  = name;
-    if (phone) customers[memberId].phone = phone;
-  }
-  return customers[memberId];
-}
-
-// حفظ الفاتورة عند إتمام الطلب + تحديث ذمم العملاء
-function recordInvoice() {
-  var d = getDeliveryData();
-  var now = new Date();
-  var inv = {
-    id: d.invNum,
-    ts: now.getTime(),
-    dateKey: now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate()),
-    monthKey: now.getFullYear() + '-' + pad2(now.getMonth()+1),
-    dateStr: d.dateStr,
-    buyerName: d.nameAr,
-    memberId: d.memberId,
-    phone: d.phone,
-    city: d.city,
-    district: d.district,
-    total: d.grand,
-    fee: d.fee,
-    buyers: buyers.map(function(b) {
-      return {
-        name: buyerLabel(b), memberId: b.memberId || '', orderType: b.orderType,
-        money: buyerMoney(b),
-        ptsSa: (b.orderType === 'none') ? 0 : creditedPts(b, 'sa'),
-        ptsMy: (b.orderType === 'none') ? 0 : creditedPts(b, 'my'),
-        creditTo: (b.orderType === 'none') ? buyerLabel(creditTarget(b)) : '',
-        items: b.items.map(function(i){ return { name:i.name, qty:i.qty, price:i.price, ptsSa:i.ptsSa||0, ptsMy:i.ptsMy||0 }; })
-      };
-    })
-  };
-  invoices.push(inv);
-  saveInvoices();
-
-  // تحديث ذمم كل مشترٍ صاحب عضوية في هذه الفاتورة
-  buyers.forEach(function(b) {
-    if (b.orderType === 'none') return;
-    var mid = b.memberId;
-    if (!mid) return;
-    var cust = upsertCustomer(mid, buyerLabel(b), (b.main ? d.phone : ''));
-    cust.money += buyerMoney(b);
-    cust.ptsSa += creditedPts(b, 'sa');
-    cust.ptsMy += creditedPts(b, 'my');
-    if (cust.invoiceIds.indexOf(inv.id) < 0) cust.invoiceIds.push(inv.id);
-  });
-  saveCustomers();
-  return inv;
-}
-
 function pad2(n) { return n < 10 ? ('0' + n) : ('' + n); }
 
-// إرسال الطلب للمشرف: حفظ في اللوحة + فتح واتساب بملخّص
-var _lastSentInvId = null;
+// إرسال الطلب للمشرف: فتح واتساب بملخّص الطلب
 function sendOrderToSupervisor() {
   var d = getDeliveryData();
-  var inv;
-  if (_lastSentInvId === d.invNum) {
-    inv = invoices.find(function(x){ return x.id === d.invNum; });
-  } else {
-    try { inv = recordInvoice(); _lastSentInvId = d.invNum; } catch (e) {}
-  }
 
   // تحويل الأرقام إلى عربية-هندية
   function ar(n) {
@@ -2018,12 +1946,12 @@ function sendOrderToSupervisor() {
 
   var win = null;
   try { win = window.open(url, '_blank'); } catch (e) {}
-  if (win) { showToast('✓ تم حفظ الطلب — يتم فتح واتساب المشرف'); return; }
+  if (win) { showToast('✓ يتم فتح واتساب المشرف لإرسال الطلب'); return; }
   // المتصفح منع فتح نافذة جديدة: افتح واتساب في نفس الصفحة
   var framed = false;
   try { framed = window.top !== window.self; } catch (e) { framed = true; }
-  if (!framed) { showToast('✓ تم حفظ الطلب — يتم فتح واتساب المشرف'); window.location.href = url; return; }
-  showToast('✓ تم حفظ الطلب. فتح واتساب محجوب داخل نافذة المعاينة ويعمل على الموقع الفعلي');
+  if (!framed) { showToast('✓ يتم فتح واتساب المشرف لإرسال الطلب'); window.location.href = url; return; }
+  showToast('⚠️ فتح واتساب محجوب داخل نافذة المعاينة ويعمل على الموقع الفعلي');
 }
 
 
@@ -3201,16 +3129,6 @@ function goToDelivery() {
 }
 
 // ── بيانات الطلب ────────────────────────────────────────────
-var currentInvNum = null;
-// رقم عرض السعر تسلسلي يبدأ من 001 ويزيد مع كل عرض سعر جديد (يُحفظ على هذا الجهاز)
-LS_KEYS.quoteSeq = 'sehhatek-quote-seq';
-function nextQuoteNumber() {
-  var n = 0;
-  try { n = parseInt(localStorage.getItem(LS_KEYS.quoteSeq), 10) || 0; } catch (e) {}
-  n += 1;
-  try { localStorage.setItem(LS_KEYS.quoteSeq, String(n)); } catch (e) {}
-  return 'QT-' + (n < 1000 ? ('00' + n).slice(-3) : String(n));
-}
 function getDeliveryData() {
   var inside  = isInsideRiyadh();
   var city    = inside ? 'الرياض' : selectedCityName();
@@ -3230,12 +3148,10 @@ function getDeliveryData() {
   var months  = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   var now     = new Date();
   var dateStr = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-  if (!currentInvNum) currentInvNum = nextQuoteNumber();
-  var invNum  = currentInvNum;
   var sub     = ordersTotal();
   return {city:city, district:dist, street:street, houseNo:houseNo, shortAddr:shortAd,
           fee:fee, dlText:dlText, phone:phone, nameAr:nameAr, nameEn:nameEn, memberId:memberId,
-          dateStr:dateStr, invNum:invNum, subtotal:sub, grand:sub + fee, mapsUrl:mapsUrl};
+          dateStr:dateStr, fileDate:now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate()), subtotal:sub, grand:sub + fee, mapsUrl:mapsUrl};
 }
 
 function completeOrder() {
@@ -3257,7 +3173,6 @@ function completeOrder() {
       if (!other.value.trim()) { showToast('⚠️ يرجى كتابة اسم المدينة'); other.focus(); return; }
     }
   }
-  currentInvNum = null;
   goTo('page-invoice');
 }
 
@@ -3267,7 +3182,6 @@ function generateInvoice() {
   if (d.nameAr !== '—')   buyers[0].name = d.nameAr;
   if (d.memberId !== '—') buyers[0].memberId = d.memberId;
 
-  document.getElementById('inv-number').textContent   = '#' + d.invNum;
   document.getElementById('inv-date').textContent     = d.dateStr;
   document.getElementById('inv-phone').textContent    = d.phone;
   document.getElementById('inv-name').textContent     = d.nameAr + (d.nameEn !== '—' ? ' / ' + d.nameEn : '');
@@ -3555,7 +3469,7 @@ function printInvoice() {
 
   var html = '<!DOCTYPE html><html lang="ar" dir="rtl"><head>'
     + '<meta charset="UTF-8">'
-    + '<title>عرض السعر - #' + d.invNum + '</title>'
+    + '<title>عرض السعر - ' + d.dateStr + '</title>'
     + '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">'
     + '<style>' + css + '</style>'
     + '</head><body>'
@@ -3563,7 +3477,7 @@ function printInvoice() {
     + '<div class="pg">'
     + '<div class="hdr">'
     +   '<div><div class="logo">🌿 صحتك بالدنيا</div><div style="color:#777;font-size:11px;margin-top:4px">sehhatek-beddonya.com</div></div>'
-    +   '<div style="text-align:center"><div class="inv-n">#' + d.invNum + '</div><div class="inv-d">📅 ' + d.dateStr + '</div></div>'
+    +   '<div style="text-align:center"><div class="inv-n">عرض سعر</div><div class="inv-d">📅 ' + d.dateStr + '</div></div>'
     +   '<div><img src="' + ((document.getElementById('dxn-logo') || {}).src || '') + '" alt="DXN" style="height:58px;width:auto;display:block"></div>'
     + '</div>'
     + '<div class="deco"></div>'
@@ -3607,7 +3521,7 @@ function printInvoice() {
     + '</body></html>';
 
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  downloadInvoicePDF(html, css, 'Sehhatek_Quote_' + d.invNum + '.pdf', function () {
+  downloadInvoicePDF(html, css, 'Sehhatek_Quote_' + d.fileDate + '.pdf', function () {
     legacyDeliverInvoice(html, isMobile);
   });
 }
@@ -3725,7 +3639,7 @@ function submitAdminLogin() {
 }
 
 function adminTab(name) {
-  var order = ['products','add','sort','customers','stats','users','settings'];
+  var order = ['products','add','sort','customers','users','settings'];
   order.forEach(function(t) {
     var panel = document.getElementById('admin-panel-' + t);
     if (panel) panel.style.display = (t === name) ? 'block' : 'none';
@@ -3738,7 +3652,6 @@ function adminTab(name) {
   if (name === 'add')       renderAdminAdd();
   if (name === 'sort')      renderAdminSort();
   if (name === 'customers') renderAdminCustomers();
-  if (name === 'stats')     renderAdminStats();
   if (name === 'users')     renderAdminUsers();
   if (name === 'settings')  renderAdminSettings();
 }
@@ -3981,7 +3894,6 @@ function renderCustomerList() {
       +     '<span style="background:#fff3cd;color:#856404;padding:2px 9px;border-radius:20px;font-size:0.78rem;font-weight:800">ذمّة: ' + fmt(c.money) + ' ريال</span>'
       +     '<span style="background:#d4edda;color:#1a5c2a;padding:2px 9px;border-radius:20px;font-size:0.78rem;font-weight:800">' + fmt(c.ptsSa) + ' ن.س</span>'
       +     '<span style="background:#e3f2fd;color:#0d47a1;padding:2px 9px;border-radius:20px;font-size:0.78rem;font-weight:800">' + fmt(c.ptsMy) + ' ن.م</span>'
-      +     '<span style="background:#f0f0f0;color:#555;padding:2px 9px;border-radius:20px;font-size:0.78rem;font-weight:700">📄 ' + (c.invoiceIds||[]).length + ' فاتورة</span>'
       +   '</div>'
       + '</div>'
       + '<div style="display:flex;flex-direction:column;gap:4px">'
@@ -4024,8 +3936,7 @@ function saveCustomerForm(id) {
     phone: document.getElementById('c-phone').value.trim(),
     money: parseFloat(document.getElementById('c-money').value) || 0,
     ptsSa: parseFloat(document.getElementById('c-psa').value) || 0,
-    ptsMy: parseFloat(document.getElementById('c-pmy').value) || 0,
-    invoiceIds: (id && customers[id]) ? customers[id].invoiceIds : []
+    ptsMy: parseFloat(document.getElementById('c-pmy').value) || 0
   };
   customers[mid] = obj;
   saveCustomers();
@@ -4045,14 +3956,6 @@ function viewCustomer(id) {
   var c = customers[id];
   if (!c) return;
   var el = document.getElementById('admin-panel-customers');
-  var invs = invoices.filter(function(iv){ return (c.invoiceIds||[]).indexOf(iv.id) > -1; });
-  var rows = invs.length ? invs.map(function(iv) {
-    return '<div class="admin-prod-row" style="cursor:pointer" onclick="showInvoiceDetail(\'' + iv.id + '\')">'
-      + '<div style="flex:1"><div style="font-weight:700">' + iv.id + '</div>'
-      +   '<div style="font-size:0.78rem;color:#777">' + iv.dateStr + ' · ' + fmt(iv.total) + ' ريال</div></div>'
-      + '<span style="color:#1a5c2a">›</span></div>';
-  }).join('') : '<div style="color:#aaa;padding:0.8rem">لا توجد فواتير مسجّلة</div>';
-
   el.innerHTML =
       '<button class="admin-btn-sm" style="background:#f0f0f0;color:#555;padding:0.5rem 1rem;margin-bottom:1rem" onclick="renderAdminCustomers()">← رجوع للعملاء</button>'
     + '<div style="background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:14px;padding:1.2rem;margin-bottom:1rem">'
@@ -4063,226 +3966,7 @@ function viewCustomer(id) {
     +     '<span style="background:#d4edda;color:#1a5c2a;padding:5px 12px;border-radius:20px;font-weight:800">' + fmt(c.ptsSa) + ' ن.س</span>'
     +     '<span style="background:#e3f2fd;color:#0d47a1;padding:5px 12px;border-radius:20px;font-weight:800">' + fmt(c.ptsMy) + ' ن.م</span>'
     +   '</div>'
-    + '</div>'
-    + '<div style="font-weight:800;color:#2e7d3e;margin-bottom:0.5rem">📄 فواتير العميل (' + invs.length + ')</div>'
-    + rows;
-}
-
-// ═══════════════════════════════════════════════════════════
-//  📊 الإحصائيات (شهري → يومي → فواتير)
-// ═══════════════════════════════════════════════════════════
-function renderAdminStats() {
-  var el = document.getElementById('admin-panel-stats');
-  if (!invoices.length) { el.innerHTML = '<div style="color:#aaa;padding:1.5rem;text-align:center">لا توجد طلبات مسجّلة بعد</div>'; return; }
-  var months = {};
-  invoices.forEach(function(iv) {
-    if (!months[iv.monthKey]) months[iv.monthKey] = { count:0, total:0, key:iv.monthKey };
-    months[iv.monthKey].count += 1;
-    months[iv.monthKey].total += iv.total;
-  });
-  var keys = Object.keys(months).sort().reverse();
-  var html = '<div style="font-size:1.05rem;font-weight:800;color:#1a5c2a;margin-bottom:1rem">📊 إحصائيات الطلبات الشهرية</div>';
-  html += keys.map(function(k) {
-    var m = months[k];
-    return '<div class="admin-prod-row" style="cursor:pointer" onclick="statsMonth(\'' + k + '\')">'
-      + '<span style="font-size:1.3rem">📅</span>'
-      + '<div style="flex:1"><div style="font-weight:800;color:#222">' + monthLabel(k) + '</div>'
-      +   '<div style="font-size:0.8rem;color:#777">' + m.count + ' طلب · إجمالي ' + fmt(m.total) + ' ريال</div></div>'
-      + '<span style="color:#1a5c2a;font-size:1.2rem">›</span></div>';
-  }).join('');
-  el.innerHTML = html;
-}
-
-
-// ── رسم بياني لعدد الطلبات اليومي (SVG بدون مكتبات) ──
-function dayChartSVG(monthKey, metric) {
-  metric = metric || 'count'; // count | total
-  var p = monthKey.split('-');
-  var year = parseInt(p[0]), mon = parseInt(p[1]);
-  var daysInMonth = new Date(year, mon, 0).getDate();
-
-  // اجمع القيم لكل يوم
-  var vals = [];
-  for (var d = 1; d <= daysInMonth; d++) {
-    var key = year + '-' + pad2(mon) + '-' + pad2(d);
-    var sum = 0;
-    invoices.forEach(function(iv) {
-      if (iv.dateKey === key) sum += (metric === 'total' ? iv.total : 1);
-    });
-    vals.push(sum);
-  }
-
-  var W = 720, H = 240, padL = 34, padR = 14, padT = 18, padB = 26;
-  var plotW = W - padL - padR, plotH = H - padT - padB;
-  var maxV = Math.max.apply(null, vals.concat([metric === 'total' ? 100 : 4]));
-  // قرّب الأعلى لرقم لطيف
-  var niceMax = niceCeil(maxV);
-
-  function xAt(i) { return padL + (daysInMonth <= 1 ? 0 : (i / (daysInMonth - 1)) * plotW); }
-  function yAt(v) { return padT + plotH - (v / niceMax) * plotH; }
-
-  // خطوط شبكية أفقية + تسميات المحور Y
-  var grid = '', yLabels = '';
-  var steps = 4;
-  for (var g = 0; g <= steps; g++) {
-    var gv = (niceMax / steps) * g;
-    var gy = yAt(gv);
-    grid += '<line x1="' + padL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(26,92,42,0.10)" stroke-width="1"/>';
-    yLabels += '<text x="' + (padL - 6) + '" y="' + (gy + 4).toFixed(1) + '" font-size="11" fill="#9aa" text-anchor="end">' + fmtShort(gv) + '</text>';
-  }
-
-  // تسميات المحور X (كل 5 أيام + آخر يوم)
-  var xLabels = '';
-  for (var xi = 1; xi <= daysInMonth; xi++) {
-    if (xi === 1 || xi % 5 === 0 || xi === daysInMonth) {
-      var xx = xAt(xi - 1);
-      xLabels += '<text x="' + xx.toFixed(1) + '" y="' + (H - 6) + '" font-size="11" fill="#9aa" text-anchor="middle">' + xi + '</text>';
-    }
-  }
-
-  // مسار منحنى ناعم (Catmull-Rom → Bézier)
-  var pts = vals.map(function(v, i) { return [xAt(i), yAt(v)]; });
-  var linePath = smoothPath(pts);
-  var areaPath = linePath + ' L ' + xAt(daysInMonth - 1).toFixed(1) + ' ' + yAt(0).toFixed(1)
-    + ' L ' + xAt(0).toFixed(1) + ' ' + yAt(0).toFixed(1) + ' Z';
-
-  // نقطة على أعلى قيمة
-  var peakIdx = 0; for (var pi = 1; pi < vals.length; pi++) if (vals[pi] > vals[peakIdx]) peakIdx = pi;
-  var peakDot = vals[peakIdx] > 0
-    ? '<circle cx="' + xAt(peakIdx).toFixed(1) + '" cy="' + yAt(vals[peakIdx]).toFixed(1) + '" r="5" fill="#fff" stroke="#1FA2BC" stroke-width="3"/>'
-    : '';
-
-  return ''
-    + '<div style="background:#fff;border:1.5px solid #e8f0e9;border-radius:16px;padding:1rem 0.8rem 0.4rem;margin-bottom:1.2rem;overflow-x:auto">'
-    +   '<div style="display:flex;justify-content:space-between;align-items:center;padding:0 0.5rem 0.6rem;flex-wrap:wrap;gap:0.4rem">'
-    +     '<div style="font-weight:800;color:#1a5c2a;font-size:0.95rem">📈 ' + (metric === 'total' ? 'مبيعات الشهر اليومية (ريال)' : 'عدد الطلبات اليومي') + '</div>'
-    +     '<div style="display:flex;gap:0.3rem">'
-    +       '<button class="admin-btn-sm" style="background:' + (metric==='count'?'#1a5c2a':'#eef4ef') + ';color:' + (metric==='count'?'#fff':'#1a5c2a') + '" onclick="setStatMetric(\'' + monthKey + '\',\'count\')">الطلبات</button>'
-    +       '<button class="admin-btn-sm" style="background:' + (metric==='total'?'#1a5c2a':'#eef4ef') + ';color:' + (metric==='total'?'#fff':'#1a5c2a') + '" onclick="setStatMetric(\'' + monthKey + '\',\'total\')">المبيعات</button>'
-    +     '</div>'
-    +   '</div>'
-    +   '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;min-width:520px;height:auto;display:block" xmlns="http://www.w3.org/2000/svg">'
-    +     '<defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">'
-    +       '<stop offset="0%" stop-color="#1FA2BC" stop-opacity="0.22"/>'
-    +       '<stop offset="100%" stop-color="#1FA2BC" stop-opacity="0"/>'
-    +     '</linearGradient></defs>'
-    +     grid + yLabels + xLabels
-    +     '<path d="' + areaPath + '" fill="url(#chartFill)"/>'
-    +     '<path d="' + linePath + '" fill="none" stroke="#1FA2BC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
-    +     peakDot
-    +   '</svg>'
     + '</div>';
-}
-
-var _statMetric = 'count';
-function setStatMetric(monthKey, metric) {
-  _statMetric = metric;
-  statsMonth(monthKey);
-}
-
-// منحنى ناعم عبر Catmull-Rom
-function smoothPath(pts) {
-  if (!pts.length) return '';
-  if (pts.length === 1) return 'M ' + pts[0][0] + ' ' + pts[0][1];
-  var d = 'M ' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-  for (var i = 0; i < pts.length - 1; i++) {
-    var p0 = pts[i - 1] || pts[i];
-    var p1 = pts[i];
-    var p2 = pts[i + 1];
-    var p3 = pts[i + 2] || p2;
-    var c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    var c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    var c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    var c2y = p2[1] - (p3[1] - p1[1]) / 6;
-    d += ' C ' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ', ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ', ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
-  }
-  return d;
-}
-
-function niceCeil(v) {
-  if (v <= 4) return 4;
-  var pow = Math.pow(10, Math.floor(Math.log(v) / Math.LN10));
-  var n = Math.ceil(v / pow) * pow;
-  if (n < v * 1.05) n += pow;
-  return n;
-}
-function fmtShort(v) {
-  if (v >= 1000) return (v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + 'ك';
-  return '' + Math.round(v);
-}
-
-function statsMonth(monthKey) {
-  var el = document.getElementById('admin-panel-stats');
-  var days = {};
-  invoices.filter(function(iv){ return iv.monthKey === monthKey; }).forEach(function(iv) {
-    if (!days[iv.dateKey]) days[iv.dateKey] = { count:0, total:0, key:iv.dateKey };
-    days[iv.dateKey].count += 1;
-    days[iv.dateKey].total += iv.total;
-  });
-  var keys = Object.keys(days).sort().reverse();
-  var mTot = keys.reduce(function(s,k){ return s + days[k].total; }, 0);
-  var mCnt = keys.reduce(function(s,k){ return s + days[k].count; }, 0);
-  var html =
-      '<button class="admin-btn-sm" style="background:#f0f0f0;color:#555;padding:0.5rem 1rem;margin-bottom:1rem" onclick="renderAdminStats()">← رجوع للأشهر</button>'
-    + '<div style="font-size:1.1rem;font-weight:800;color:#1a5c2a;margin-bottom:0.3rem">' + monthLabel(monthKey) + '</div>'
-    + '<div style="font-size:0.85rem;color:#777;margin-bottom:1rem">' + mCnt + ' طلب · إجمالي الشهر ' + fmt(mTot) + ' ريال</div>'
-    + dayChartSVG(monthKey, _statMetric);
-  html += keys.map(function(k) {
-    var day = days[k];
-    return '<div class="admin-prod-row" style="cursor:pointer" onclick="statsDay(\'' + k + '\')">'
-      + '<span style="font-size:1.2rem">🗓️</span>'
-      + '<div style="flex:1"><div style="font-weight:800;color:#222">' + dayLabel(k) + '</div>'
-      +   '<div style="font-size:0.8rem;color:#777">' + day.count + ' طلب · ' + fmt(day.total) + ' ريال</div></div>'
-      + '<span style="color:#1a5c2a;font-size:1.2rem">›</span></div>';
-  }).join('');
-  el.innerHTML = html;
-}
-
-function statsDay(dateKey) {
-  var el = document.getElementById('admin-panel-stats');
-  var list = invoices.filter(function(iv){ return iv.dateKey === dateKey; });
-  var tot = list.reduce(function(s,iv){ return s + iv.total; }, 0);
-  var html =
-      '<button class="admin-btn-sm" style="background:#f0f0f0;color:#555;padding:0.5rem 1rem;margin-bottom:1rem" onclick="statsMonth(\'' + dateKey.substring(0,7) + '\')">← رجوع لأيام الشهر</button>'
-    + '<div style="font-size:1.1rem;font-weight:800;color:#1a5c2a;margin-bottom:0.3rem">' + dayLabel(dateKey) + '</div>'
-    + '<div style="font-size:0.85rem;color:#777;margin-bottom:1rem">' + list.length + ' فاتورة · إجمالي اليوم ' + fmt(tot) + ' ريال</div>';
-  html += list.map(function(iv) {
-    return '<div class="admin-prod-row" style="cursor:pointer" onclick="showInvoiceDetail(\'' + iv.id + '\')">'
-      + '<span style="font-size:1.1rem">🧾</span>'
-      + '<div style="flex:1"><div style="font-weight:700">' + iv.id + ' — ' + (iv.buyerName||'—') + '</div>'
-      +   '<div style="font-size:0.78rem;color:#777">' + fmt(iv.total) + ' ريال · ' + (iv.buyers ? iv.buyers.length : 1) + ' مشترٍ</div></div>'
-      + '<span style="color:#1a5c2a">›</span></div>';
-  }).join('');
-  el.innerHTML = html;
-}
-
-function showInvoiceDetail(invId) {
-  var iv = invoices.find(function(x){ return x.id === invId; });
-  if (!iv) return;
-  var el = document.getElementById('admin-panel-stats');
-  var buyersHtml = (iv.buyers||[]).map(function(b) {
-    var items = b.items.map(function(it) {
-      return '<div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:2px 0;color:#444">'
-        + '<span>' + it.qty + '× ' + it.name + '</span><span>' + fmt(it.price*it.qty) + ' ريال</span></div>';
-    }).join('');
-    return '<div style="border:1px solid #e8f0e9;border-radius:10px;padding:0.7rem;margin-bottom:0.6rem">'
-      + '<div style="font-weight:800;color:#1a5c2a">' + b.name + ' <span style="font-weight:400;color:#888;font-size:0.78rem">' + orderTypeLabel(b.orderType) + (b.memberId?' · '+b.memberId:'') + '</span></div>'
-      + items
-      + '<div style="display:flex;justify-content:space-between;border-top:1px dashed #ccc;margin-top:4px;padding-top:4px;font-size:0.82rem;font-weight:700">'
-      +   '<span>' + fmt(b.money) + ' ريال</span>'
-      +   '<span>' + (b.orderType==='none' ? '↩ إلى ' + b.creditTo : (fmt(b.ptsSa)+' ن.س / '+fmt(b.ptsMy)+' ن.م')) + '</span></div>'
-      + '</div>';
-  }).join('');
-  el.innerHTML =
-      '<button class="admin-btn-sm" style="background:#f0f0f0;color:#555;padding:0.5rem 1rem;margin-bottom:1rem" onclick="statsDay(\'' + iv.dateKey + '\')">← رجوع</button>'
-    + '<div style="background:#f9fdf9;border:1.5px solid #c8e6c9;border-radius:14px;padding:1rem;margin-bottom:1rem">'
-    +   '<div style="font-size:1.1rem;font-weight:800;color:#1a5c2a">🧾 ' + iv.id + '</div>'
-    +   '<div style="font-size:0.82rem;color:#777">' + iv.dateStr + ' · ' + iv.buyerName + (iv.memberId&&iv.memberId!=='—'?' · '+iv.memberId:'') + '</div>'
-    +   '<div style="font-size:0.82rem;color:#777">' + iv.city + ' — ' + iv.district + ' · 📱 ' + iv.phone + '</div>'
-    +   '<div style="margin-top:6px;font-weight:800;color:#1a5c2a">الإجمالي: ' + fmt(iv.total) + ' ريال (منها توصيل ' + fmt(iv.fee) + ')</div>'
-    + '</div>'
-    + '<div style="font-weight:800;color:#2e7d3e;margin-bottom:0.5rem">المشترون</div>'
-    + buyersHtml;
 }
 
 // ═══════════════════════════════════════════════════════════
