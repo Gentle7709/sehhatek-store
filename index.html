@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>متجر صحتك بالدنيا</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600&display=swap" rel="stylesheet">
@@ -254,6 +255,9 @@
   .row-normal td{background:#fff}
   .row-highlight td{background:#fff9e6}
   .row-red td{background:#fff0f0}
+  .add-cart-btn:disabled{background:#bdbdbd;cursor:not-allowed}
+  .soldout-tag{display:inline-block;background:#c0392b;color:#fff;font-size:0.7rem;font-weight:700;padding:1px 8px;border-radius:20px;margin-right:4px;vertical-align:middle}
+  .btn-cart:disabled,.btn-buy:disabled{opacity:.45;cursor:not-allowed}
 
   .product-thumb{
     width:42px;height:42px;border-radius:8px;object-fit:cover;
@@ -498,7 +502,7 @@
   .admin-panel{background:#fff;border:1.5px solid #e8f0e9;border-radius:18px;padding:1.4rem;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
   .admin-field{margin-bottom:0.9rem}
   .admin-field label{display:block;font-size:0.82rem;font-weight:700;color:var(--green-dark);margin-bottom:4px}
-  .admin-field input,.admin-field select,.admin-field textarea{width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box}
+  .admin-field input,.admin-field select,.admin-field textarea{background:#fff;color:#222;width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box}
   .admin-field textarea{resize:vertical;min-height:70px}
   .admin-prod-row{display:flex;align-items:center;gap:0.7rem;padding:0.7rem;border:1.5px solid #eef4ef;border-radius:12px;margin-bottom:0.6rem;flex-wrap:wrap}
   .admin-btn-sm{padding:0.35rem 0.8rem;border-radius:8px;border:none;font-family:'Tajawal',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer}
@@ -649,8 +653,13 @@ body.theme-modern .pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1f
 body.theme-modern .pgrid-empty{grid-column:1/-1;text-align:center;padding:56px 16px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:14px}
 
 body.theme-modern .pc{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
-body.theme-modern .pc.hl-yellow{border-color:var(--spore);box-shadow:inset 0 0 0 1px var(--spore)}
-body.theme-modern .pc.hl-red{border-color:var(--lacquer);box-shadow:inset 0 0 0 1px var(--lacquer)}
+body.theme-modern .pc.stock-low{border-color:var(--spore);box-shadow:inset 0 0 0 1px var(--spore)}
+body.theme-modern .pc.stock-critical{border-color:var(--lacquer);box-shadow:inset 0 0 0 1px var(--lacquer)}
+body.theme-modern .pc.stock-out .pc-art > svg,body.theme-modern .pc.stock-out .pc-art > img{opacity:.45;filter:grayscale(1)}
+body.theme-modern .pc-stock{position:absolute;top:8px;right:8px;padding:4px 9px;border-radius:999px;font-size:11.5px;font-weight:600;line-height:1.2;background:var(--spore-t);color:var(--spore-ink)}
+body.theme-modern .stock-critical .pc-stock{background:#F6E1DB;color:var(--lacquer)}
+body.theme-modern .stock-out .pc-stock{background:var(--ink);color:#fff}
+body.theme-modern .pc-add:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
 body.theme-modern .pc-art{display:block;width:100%;aspect-ratio:1/1;padding:0;border:0;cursor:pointer;background:var(--tint,#E7EEEA);position:relative}
 body.theme-modern .pc-art svg,body.theme-modern .pc-art img{width:100%;height:100%;display:block;object-fit:cover}
 body.theme-modern .pc-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:7px;flex:1}
@@ -1510,6 +1519,15 @@ function inferCategory(name) {
   return 'أخرى';
 }
 
+// ── حالة المخزون: 20 فأكثر متوفر · 10–19 أصفر · أقل من 10 أحمر · 0 أو "منتهي" لا يُطلب ──
+function isSoldOut(p) { return p.available === false || (Number(p.stock) || 0) <= 0; }
+function stockLevel(p) {
+  if (isSoldOut(p)) return 'out';
+  var n = Number(p.stock) || 0;
+  return n >= 20 ? 'ok' : n >= 10 ? 'low' : 'critical';
+}
+var STOCK_LABEL = { ok:'متوفر', low:'كمية محدودة', critical:'كمية قليلة جداً', out:'منتهي الكمية' };
+
 // أضف تصنيفاً افتراضياً لكل منتج لا يملكه
 products.forEach(function(p) { if (!p.category) p.category = inferCategory(p.name); });
 
@@ -2113,10 +2131,12 @@ function ptsBadges(p) {
 }
 
 function productCardHTML(p) {
-  var hl = p.highlight === 'yellow' ? ' hl-yellow' : p.highlight === 'red' ? ' hl-red' : '';
+  var lv = stockLevel(p);
+  var hl = ' stock-' + lv;
   var name = escHtml(p.name);
   return '<article class="pc' + hl + '" data-id="' + p.id + '">'
-    + '<button class="pc-art" onclick="showProduct(' + p.id + ')" aria-label="تفاصيل ' + name + '">' + productVisual(p) + '</button>'
+    + '<button class="pc-art" onclick="showProduct(' + p.id + ')" aria-label="تفاصيل ' + name + '">' + productVisual(p)
+    +   (lv === 'ok' ? '' : '<span class="pc-stock">' + STOCK_LABEL[lv] + '</span>') + '</button>'
     + '<div class="pc-body">'
     +   '<h3 class="pc-name">' + name + '</h3>'
     +   '<div class="pc-pts">' + ptsBadges(p) + '</div>'
@@ -2165,6 +2185,7 @@ var CART_IC = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx
 
 // زر الإضافة يتحول إلى عدّاد للكمية الموجودة في سلة المشتري الحالي
 function cardActionsHTML(p) {
+  if (isSoldOut(p)) return '<button class="pc-add" disabled>منتهي الكمية</button>';
   var b = activeBuyer();
   var it = b && b.items.find(function(i) { return i.key === String(p.id); });
   if (!it) return '<button class="pc-add" data-add onclick="addToCart(' + p.id + ',1)">' + CART_IC + 'أضف للسلة</button>';
@@ -2231,7 +2252,9 @@ function renderProducts() {
   }
   tbody.innerHTML = list.map(function(p, idx) {
     var qty = 1;
-    var hl  = p.highlight === 'yellow' ? 'row-highlight' : p.highlight === 'red' ? 'row-red' : 'row-normal';
+    var lv  = stockLevel(p);
+    var hl  = lv === 'low' ? 'row-highlight' : (lv === 'critical' || lv === 'out') ? 'row-red' : 'row-normal';
+    var out = lv === 'out';
     return '<tr class="' + hl + '">'
       + '<td style="color:#9aa;font-size:0.72rem;font-weight:700;width:42px">' + (idx + 1) + '</td>'
       + '<td><div class="qty-ctrl">'
@@ -2239,13 +2262,13 @@ function renderProducts() {
       +   '<span class="qty-num" id="qty-' + p.id + '">' + qty + '</span>'
       +   '<button class="qty-btn" onclick="changeQty(' + p.id + ',1)">↑</button>'
       + '</div></td>'
-      + '<td style="text-align:right;min-width:170px">' + p.name + '</td>'
+      + '<td style="text-align:right;min-width:170px">' + p.name + (out ? ' <span class="soldout-tag">منتهي الكمية</span>' : '') + '</td>'
       + '<td><span class="price-tag">' + p.price + ' ريال</span></td>'
       + '<td><span class="points-badge">' + p.pts + ' ن.س</span></td>'
       + '<td><span class="points-badge" style="background:#e3f2fd;color:#0d47a1">' + (p.ptsMy || 0) + ' ن.م</span></td>'
       + '<td><div class="thumb-placeholder">' + p.emoji + '</div></td>'
       + '<td><button class="details-btn" onclick="showProduct(' + p.id + ')">تفاصيل ▼</button></td>'
-      + '<td><button class="add-cart-btn" onclick="addToCart(' + p.id + ')">أضف ←</button></td>'
+      + '<td>' + (out ? '<button class="add-cart-btn" disabled>منتهي</button>' : '<button class="add-cart-btn" onclick="addToCart(' + p.id + ')">أضف ←</button>') + '</td>'
       + '</tr>';
   }).join('');
   renderBuyerChips();
@@ -2315,6 +2338,7 @@ function changeQty(id, delta) {
 function addToCart(id, qtyArg) {
   var p = products.find(function(x) { return x.id === id; });
   if (!p) return;
+  if (isSoldOut(p)) { showToast('⚠️ هذا المنتج منتهي الكمية حالياً'); return; }
   var qEl = document.getElementById('qty-' + id);
   var qty = qtyArg || (qEl ? parseInt(qEl.textContent) : 1);
   var b   = activeBuyer();
@@ -2457,7 +2481,11 @@ function showProduct(id) {
   currentProduct = p; modalQtyVal = 1;
   document.getElementById('modal-title').textContent = p.name;
   document.getElementById('modal-price').textContent = p.price;
-  document.getElementById('modal-stock').textContent = p.stock;
+  var soldOut = isSoldOut(p);
+  document.getElementById('modal-stock').parentNode.innerHTML = soldOut
+    ? '<span id="modal-stock" style="color:#c0392b;font-weight:700">منتهي الكمية — غير متاح للطلب حالياً</span>'
+    : 'الكمية المتبقية : <span id="modal-stock">' + p.stock + '</span> حبة';
+  document.querySelectorAll('#product-modal .btn-cart, #product-modal .btn-buy').forEach(function(btn) { btn.disabled = soldOut; });
   document.getElementById('modal-desc').textContent  = p.desc;
   var img = document.getElementById('modal-img');
   img.textContent = p.emoji; img.style.fontSize = '5rem';
@@ -3360,13 +3388,20 @@ function renderAdminProducts() {
       html += '<div class="admin-prod-row">'
         + '<span style="font-size:1.3rem">' + (p.emoji || '🌿') + '</span>'
         + '<div style="flex:1;min-width:120px"><div style="font-weight:700;color:#222">' + p.name + '</div>'
-        +   '<div style="font-size:0.78rem;color:#777">' + p.price + ' ريال · ' + p.pts + ' ن.س · ' + (p.ptsMy||0) + ' ن.م</div></div>'
+        +   '<div style="font-size:0.78rem;color:#777">' + p.price + ' ريال · ' + p.pts + ' ن.س · ' + (p.ptsMy||0) + ' ن.م · المخزون: ' + (Number(p.stock) || 0) + '</div></div>'
+        + adminStockBadge(p)
         + '<button class="admin-btn-sm" style="background:#e8f5e9;color:#1a5c2a" onclick="editProduct(' + p.id + ')">✏️ تعديل</button>'
         + '<button class="admin-btn-sm" style="background:#fdecea;color:#c0392b" onclick="deleteProduct(' + p.id + ')">🗑️ حذف</button>'
         + '</div>';
     });
   });
   el.innerHTML = html;
+}
+
+function adminStockBadge(p) {
+  var lv = stockLevel(p);
+  var c = { ok:['#e8f5e9','#1a5c2a'], low:['#fff3cd','#856404'], critical:['#fdecea','#c0392b'], out:['#c0392b','#fff'] }[lv];
+  return '<span style="background:' + c[0] + ';color:' + c[1] + ';padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:800;white-space:nowrap">' + STOCK_LABEL[lv] + '</span>';
 }
 
 function editProduct(id) {
@@ -3407,8 +3442,9 @@ function renderAdminAdd() {
     +   '<div class="admin-field"><label>النقاط الماليزية (ن.م)</label><input type="number" id="f-ptsmy" inputmode="decimal" placeholder="0"></div>'
     + '</div>'
     + '<div class="admin-grid2">'
-    +   '<div class="admin-field"><label>المخزون</label><input type="number" id="f-stock" inputmode="numeric" placeholder="30"></div>'
-    +   '<div class="admin-field"><label>تمييز الصف</label><select id="f-hl"><option value="">بدون</option><option value="yellow">أصفر</option><option value="red">أحمر</option></select></div>'
+    +   '<div class="admin-field"><label>المخزون (الكمية)</label><input type="number" id="f-stock" inputmode="numeric" min="0" placeholder="30">'
+    +     '<div style="font-size:0.74rem;color:#777;margin-top:4px">20 فأكثر: متوفر · 10–19: أصفر · أقل من 10: أحمر · 0: منتهي</div></div>'
+    +   '<div class="admin-field"><label>حالة التوفر</label><select id="f-avail"><option value="yes">متوفر الكمية</option><option value="no">منتهي الكمية (يظهر ولا يُطلب)</option></select></div>'
     + '</div>'
     + '<div class="admin-field"><label>الوصف</label><textarea id="f-desc" placeholder="وصف المنتج..."></textarea></div>'
     + '<div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.4rem">'
@@ -3426,8 +3462,8 @@ function fillProductForm(p) {
   document.getElementById('f-emoji').value = p.emoji || '';
   document.getElementById('f-pts').value   = p.pts;
   document.getElementById('f-ptsmy').value = p.ptsMy || 0;
-  document.getElementById('f-stock').value = p.stock || 30;
-  document.getElementById('f-hl').value    = p.highlight || '';
+  document.getElementById('f-stock').value = (p.stock === undefined || p.stock === null) ? 30 : p.stock;
+  document.getElementById('f-avail').value = p.available === false ? 'no' : 'yes';
   document.getElementById('f-desc').value  = p.desc || '';
   editingId = p.id;
 }
@@ -3439,6 +3475,8 @@ function resetProductForm() {
 function saveProductForm() {
   var name = document.getElementById('f-name').value.trim();
   if (!name) { showToast('⚠️ اكتب اسم المنتج'); return; }
+  var stockRaw = document.getElementById('f-stock').value.trim();
+  var stockInput = stockRaw === '' ? 30 : Math.max(0, parseInt(stockRaw, 10) || 0);
   var obj = {
     name: name,
     category: document.getElementById('f-cat').value,
@@ -3446,8 +3484,8 @@ function saveProductForm() {
     emoji: document.getElementById('f-emoji').value.trim() || '🌿',
     pts: parseFloat(document.getElementById('f-pts').value) || 0,
     ptsMy: parseFloat(document.getElementById('f-ptsmy').value) || 0,
-    stock: parseInt(document.getElementById('f-stock').value) || 30,
-    highlight: document.getElementById('f-hl').value,
+    stock: stockInput,
+    available: document.getElementById('f-avail').value !== 'no',
     desc: document.getElementById('f-desc').value.trim()
   };
   if (editingId !== null) {
