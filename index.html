@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>متجر صحتك بالدنيا</title>
+<title>صفحة منتجات صحتك بالدنيا</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -898,6 +898,12 @@ body.theme-modern .pc.stock-low{border-color:var(--spore);box-shadow:inset 0 0 0
 body.theme-modern .pc.stock-critical{border-color:var(--lacquer);box-shadow:inset 0 0 0 1px var(--lacquer)}
 body.theme-modern .pc-art{padding:8px 8px 0;background:#fff}
 body.theme-modern .pc-art .pv{border-radius:12px}
+body.theme-modern .pc-art img.pi{object-fit:contain;background:#fff;border-radius:12px}
+/* خلفية رمادية فاتحة خلف صورة المنتج مثل متاجر سلة */
+body.theme-modern .pc-art:has(> img.pi){padding:0;background:#F3F4F1}
+body.theme-modern .pc-art:has(> img.pi) > img.pi{background:transparent;mix-blend-mode:multiply;border-radius:0;padding:6%}
+body.theme-modern .sf-hs-card img.pi{width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;border-radius:11px;display:block}
+body.theme-modern .modal-img-placeholder img.pi{object-fit:contain;background:#fff}
 body.theme-modern .pc.stock-out .pc-art .pv,body.theme-modern .pc.stock-out .pc-art > img{opacity:.5;filter:grayscale(1)}
 body.theme-modern .pc-stock{top:16px;right:16px;z-index:1}
 body.theme-modern .pc-body{padding:10px 12px 12px;gap:6px}
@@ -984,7 +990,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
       </div>
     </div>
 
-    <section class="sf-feats" aria-label="مميزات المتجر">
+    <section class="sf-feats" aria-label="مميزاتنا">
       <div class="sf-feat"><span class="sf-feat-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.2c0 4.4-2.9 7.9-7 9.8-4.1-1.9-7-5.4-7-9.8V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><span><b>منتجات أصلية</b><small>من DXN مباشرة</small></span></div>
       <div class="sf-feat"><span class="sf-feat-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 10h4l3 3.2V16h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg></span><span><b>توصيل لكل المدن</b><small>داخل الرياض وخارجها</small></span></div>
       <div class="sf-feat"><span class="sf-feat-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5h.01M18 14.5h.01"/></svg></span><span><b>الدفع عند الاستلام</b><small>نقداً عند التوصيل</small></span></div>
@@ -1021,7 +1027,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
       <div class="sf-foot-in">
         <div class="sf-foot-about">
           <span class="mw-brand"><span class="mw-mark" aria-hidden="true">ص</span><span class="mw-name">صحتك بالدنيا</span></span>
-          <p>متجر لمنتجات DXN الطبيعية: فطر الريشي، السبيرولينا، الكورديسبس، المورنزي وغيرها.</p>
+          <p>صفحة منتجات DXN الطبيعية: فطر الريشي، السبيرولينا، الكورديسبس، المورنزي وغيرها.</p>
         </div>
         <div>
           <h3>تواصل معنا</h3>
@@ -1034,7 +1040,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
           <span class="sf-foot-li"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>عرض سعر PDF لكل طلب</span>
         </div>
       </div>
-      <div class="sf-foot-bar">مالك المتجر: عامر محمد وليد دادو<span aria-hidden="true"> · </span><span dir="ltr">sehhatek-beddonya.com</span></div>
+      <div class="sf-foot-bar">صفحة منتجات صحتك بالدنيا<span aria-hidden="true"> · </span><span dir="ltr">sehhatek-beddonya.com</span></div>
     </footer>
   </section>
   <div class="leaf-bg" style="flex-direction:column;gap:0;position:relative">
@@ -1045,10 +1051,6 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
         id="dxn-logo" alt="DXN" style="height:56px;width:auto;display:block">
     </div>
 
-    <!-- مالك المتجر أسفل اليمين -->
-    <div style="position:absolute;bottom:0.5rem;left:50%;transform:translateX(-50%);z-index:3;color:rgba(20,70,40,0.65);font-size:0.8rem;font-weight:700;white-space:nowrap">
-      مالك المتجر : عامر محمد وليد دادو
-    </div>
     <!-- زر دخول المشرف -->
     <button onclick="openAdminLogin()" title="صفحة المشرف"
       style="position:absolute;top:1.3rem;right:1.3rem;z-index:5;background:rgba(255,255,255,0.9);color:var(--green-dark);border:1.5px solid rgba(26,92,42,0.2);border-radius:50px;padding:9px 18px;font-family:'Tajawal',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.1)">
@@ -1070,7 +1072,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
     <div class="welcome-card" style="background:rgba(30,90,45,0.82);backdrop-filter:blur(14px);border-radius:28px;padding:2.8rem 2.5rem;max-width:440px;width:100%;text-align:center;border:1.5px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <div style="font-size:2.8rem;margin-bottom:1rem">🌿</div>
       <h1 style="color:#fff;font-size:1.6rem;font-weight:800;margin-bottom:0.7rem;line-height:1.4">
-        حياك الله بمتجر صحتك بالدنيا
+        حياك الله بصفحة منتجات صحتك بالدنيا
       </h1>
       <p style="color:rgba(255,255,255,0.75);font-size:0.95rem;margin-bottom:2rem;line-height:1.7">
         منتجات طبيعية عالية الجودة من DXN<br>لصحتك ولصحة عائلتك
@@ -1430,7 +1432,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
         <!-- FOOTER NOTE -->
         <div style="border-top:2px dashed #c8e6c9;padding-top:1rem;text-align:center">
           <div style="font-size:0.85rem;color:#c0392b;font-weight:700;margin-bottom:0.4rem"><span class="emo" aria-hidden="true">⚠️</span> يجب توفر المبلغ نقداً قبل التوصيل</div>
-          <div style="font-size:0.8rem;color:#666">شكراً لتسوقك من متجر صحتك بالدنيا • sehhatek-beddonya.com</div>
+          <div style="font-size:0.8rem;color:#666">شكراً لتسوقك من صفحة منتجات صحتك بالدنيا • sehhatek-beddonya.com</div>
           <div style="font-size:0.8rem;color:#666;margin-top:0.3rem">هذا العرض صادر إلكترونياً ولا يحتاج إلى توقيع</div>
         </div>
       </div>
@@ -1597,7 +1599,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
           <span style="font-size:1.8rem">⚙️</span>
           <div>
             <div style="font-size:1.4rem;font-weight:800;color:var(--green-dark)">لوحة تحكم الإدارة</div>
-            <div style="font-size:0.82rem;color:#777">إدارة كاملة للمتجر</div>
+            <div style="font-size:0.82rem;color:#777">إدارة كاملة لصفحة المنتجات</div>
           </div>
         </div>
         <button onclick="goTo('page-welcome')" class="btn-outline"
@@ -2312,8 +2314,33 @@ function productLabel(p) {
   return { base: base || p.name, size: sizes.join(' · ') };
 }
 
+// صور المنتجات الرسمية من كتالوج DXN (dxn2u.com) — حسب رقم المنتج الأساسي
+var IMG_DIR = 'images/products/';
+var PRODUCT_IMAGES = {
+  1:'reishi-powder', 2:'reishi-powder', 3:'mycovita-sachet', 4:'mycovita-sachet', 5:'mycovita-box', 6:'mycovita-box', 7:'mycovita-box',
+  8:'ganocelium-gl', 9:'ganocelium-gl', 10:'reishi-gano-rg', 11:'reishi-gano-rg',
+  12:'spirulina-powder', 13:'spirulina-powder', 14:'spirulina-tablet', 15:'spirulina-tablet', 16:'spirulina-tablet', 17:'spirulina-tablet', 18:'spirulina-tablet', 19:'spirulina-tablet',
+  20:'morinzhi', 21:'morinzhi', 22:'mengkudu-capsule', 23:'morinzyme',
+  24:'lions-mane-powder', 25:'lions-mane-powder', 26:'lions-mane-powder', 27:'lions-mane-tablet',
+  28:'cordyceps-powder', 29:'cordyceps-powder', 30:'cordyceps-tablet', 31:'mycoveggie', 32:'mycoveggie',
+  33:'bee-pollen-120', 34:'bee-pollen-300', 36:'pearl-powder', 37:'potenzhi', 38:'potenzhi', 39:'lignosus-syrup', 40:'roselle-juice'
+};
+function productImage(p) {
+  return p.image || (PRODUCT_IMAGES[p.id] ? IMG_DIR + PRODUCT_IMAGES[p.id] + '.webp' : '');
+}
+// إذا تعذّر تحميل الصورة تظهر البطاقة التصميمية بدلها
+function imgFallback(img, id) {
+  var p = products.find(function(x) { return x.id === id; });
+  if (p) img.outerHTML = productTile(p);
+}
+
 function productVisual(p) {
-  if (p.image) return '<img src="' + escHtml(p.image) + '" alt="" loading="lazy">';
+  var src = productImage(p);
+  if (src) return '<img class="pi" src="' + escHtml(src) + '" alt="" loading="lazy" onerror="imgFallback(this,' + p.id + ')">';
+  return productTile(p);
+}
+
+function productTile(p) {
   var l = productLabel(p);
   return '<span class="pv" style="' + catStyle(p.category) + '" aria-hidden="true">'
     + '<span class="pv-brand"></span>'
@@ -2540,7 +2567,7 @@ function renderProducts() {
       + '<td><span class="price-tag">' + p.price + ' ريال</span></td>'
       + '<td><span class="points-badge">' + p.pts + ' ن.س</span></td>'
       + '<td><span class="points-badge" style="background:#e3f2fd;color:#0d47a1">' + (p.ptsMy || 0) + ' ن.م</span></td>'
-      + '<td><div class="thumb-placeholder">' + p.emoji + '</div></td>'
+      + '<td><div class="thumb-placeholder">' + (productImage(p) ? '<img src="' + escHtml(productImage(p)) + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;background:#fff" onerror="this.replaceWith(document.createTextNode(\'' + p.emoji + '\'))">' : p.emoji) + '</div></td>'
       + '<td><button class="details-btn" onclick="showProduct(' + p.id + ')">تفاصيل ▼</button></td>'
       + '<td>' + (out ? '<button class="add-cart-btn" disabled>منتهي</button>' : '<button class="add-cart-btn" onclick="addToCart(' + p.id + ')">أضف ←</button>') + '</td>'
       + '</tr>';
@@ -2773,6 +2800,7 @@ function showProduct(id) {
   var img = document.getElementById('modal-img');
   img.textContent = p.emoji; img.style.fontSize = '5rem';
   if (document.body.classList.contains('theme-modern')) { img.innerHTML = productVisual(p); img.style.fontSize = ''; }
+  else if (productImage(p)) { img.innerHTML = '<img src="' + escHtml(productImage(p)) + '" alt="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:12px">'; }
   document.getElementById('modal-qty-val').textContent = 1;
   document.body.classList.toggle('browsing', !!document.querySelector('#page-welcome.active'));
   document.getElementById('product-modal').classList.remove('hidden');
@@ -3476,7 +3504,7 @@ function printInvoice() {
     +   '<div><div class="sbadge"><span>✓ طلب مؤكد</span></div></div>'
     + '</div>'
     + '<div class="deco"></div>'
-    + '<div style="text-align:center;font-size:15px;font-weight:800;color:#1a5c2a;margin-bottom:14px">متجر صحتك بالدنيا يشكر زيارتكم ، ويتمنى لكم يوما سعيدا</div>'
+    + '<div style="text-align:center;font-size:15px;font-weight:800;color:#1a5c2a;margin-bottom:14px">صفحة منتجات صحتك بالدنيا تشكر زيارتكم ، وتتمنى لكم يوما سعيدا</div>'
     + '<div class="igrid">'
     +   '<div class="ibox"><h4>👤 بيانات العميل</h4>'
     +     '<div class="irow"><span>الاسم بالعربي</span>' + '<span style="display:inline-flex;align-items:center;gap:6px;direction:rtl">' + (custWa ? '<a href="' + custWa + '" title="واتساب العميل" style="text-decoration:none;display:inline-flex">' + WA_SVG(16) + '</a>' : '') + '<strong style="color:#222">' + d.nameAr + '</strong>' + '</span></div>'
@@ -3507,7 +3535,7 @@ function printInvoice() {
     + '</div>'
     + '<div class="ft">'
     +   '<div class="w">⚠️ يجب توفر المبلغ نقداً قبل التوصيل</div>'
-    +   '<div class="n">شكراً لتسوقك من متجر صحتك بالدنيا 🌿<br>'
+    +   '<div class="n">شكراً لتسوقك من صفحة منتجات صحتك بالدنيا 🌿<br>'
     +     'هذا العرض صادر إلكترونياً ولا يحتاج إلى توقيع<br>'
     +     '<strong style="color:#1a5c2a">sehhatek-beddonya.com</strong>'
     +   '</div>'
