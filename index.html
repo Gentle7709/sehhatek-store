@@ -678,6 +678,7 @@ body.theme-modern .pc-add:hover{background:var(--canopy-d)}
 body.theme-modern .pc-step{width:100%;height:42px;display:flex;align-items:center;border:1px solid var(--canopy);background:var(--canopy-t);border-radius:12px;color:var(--canopy)}
 body.theme-modern .pc-step button{width:40px;height:40px;border:0;background:transparent;color:var(--canopy);font-size:20px;font-weight:600;cursor:pointer;line-height:1}
 body.theme-modern .pc-step span{flex:1;text-align:center;font-size:13px;white-space:nowrap}
+body.theme-modern .pc-step button:disabled{opacity:.35;cursor:not-allowed}
 body.theme-modern .pc-step b{font-size:15px;font-variant-numeric:tabular-nums}
 
 body.theme-modern .shop-foot{position:sticky;bottom:0;z-index:55;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.95)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px max(16px,calc((100% - 1240px)/2 + 16px)) calc(10px + env(safe-area-inset-bottom))!important;text-align:right!important}
@@ -1526,6 +1527,15 @@ function stockLevel(p) {
   var n = Number(p.stock) || 0;
   return n >= 20 ? 'ok' : n >= 10 ? 'low' : 'critical';
 }
+// الكمية المطلوبة من منتج في كل سلال الفاتورة (الرئيسي + الإلحاقيات) — المخزون مشترك بينهم
+function cartQtyOf(id) {
+  var key = String(id);
+  return buyers.reduce(function(s, b) {
+    return s + b.items.reduce(function(t, i) { return t + (i.key === key ? i.qty : 0); }, 0);
+  }, 0);
+}
+function stockLeft(p) { return Math.max(0, (Number(p.stock) || 0) - cartQtyOf(p.id)); }
+function stockLimitToast(p) { showToast('⚠️ المتوفر من ' + p.name + ' ' + (Number(p.stock) || 0) + ' فقط'); }
 var STOCK_LABEL = { ok:'متوفر', low:'كمية محدودة', critical:'كمية قليلة جداً', out:'منتهي الكمية' };
 
 // أضف تصنيفاً افتراضياً لكل منتج لا يملكه
@@ -2190,7 +2200,7 @@ function cardActionsHTML(p) {
   var it = b && b.items.find(function(i) { return i.key === String(p.id); });
   if (!it) return '<button class="pc-add" data-add onclick="addToCart(' + p.id + ',1)">' + CART_IC + 'أضف للسلة</button>';
   return '<div class="pc-step" role="group" aria-label="الكمية في السلة">'
-    + '<button onclick="increaseQty(' + b.id + ',\'' + p.id + '\')" aria-label="زيادة الكمية">+</button>'
+    + '<button onclick="increaseQty(' + b.id + ',\'' + p.id + '\')" aria-label="زيادة الكمية"' + (stockLeft(p) <= 0 ? ' disabled title="وصلت للكمية المتوفرة"' : '') + '>+</button>'
     + '<span><b>' + it.qty + '</b> في السلة</span>'
     + '<button onclick="decreaseQty(' + b.id + ',\'' + p.id + '\')" aria-label="' + (it.qty > 1 ? 'إنقاص الكمية' : 'حذف من السلة') + '">−</button>'
     + '</div>';
@@ -2331,7 +2341,10 @@ function catMenuHTML(sfx) {
 function changeQty(id, delta) {
   var el = document.getElementById('qty-' + id);
   if (!el) return;
-  el.textContent = Math.max(1, parseInt(el.textContent) + delta);
+  var p = products.find(function(x) { return x.id === id; });
+  var want = Math.max(1, parseInt(el.textContent) + delta);
+  if (p && want > stockLeft(p)) { stockLimitToast(p); want = Math.max(1, stockLeft(p)); }
+  el.textContent = want;
 }
 
 // ── السلة ───────────────────────────────────────────────────
@@ -2341,6 +2354,9 @@ function addToCart(id, qtyArg) {
   if (isSoldOut(p)) { showToast('⚠️ هذا المنتج منتهي الكمية حالياً'); return; }
   var qEl = document.getElementById('qty-' + id);
   var qty = qtyArg || (qEl ? parseInt(qEl.textContent) : 1);
+  var left = stockLeft(p);
+  if (left <= 0) { stockLimitToast(p); return; }
+  if (qty > left) { stockLimitToast(p); qty = left; }
   var b   = activeBuyer();
   var key = String(id);
   var ex  = b.items.find(function(i) { return i.key === key; });
@@ -2461,7 +2477,10 @@ function removeFromCart(bid, key) {
 }
 function increaseQty(bid, key) {
   var i = findItem(bid, key);
-  if (i) { i.qty += 1; updateCartDisplay(); renderOrderSummary(); }
+  if (!i) return;
+  var p = products.find(function(x) { return String(x.id) === key; });
+  if (p && stockLeft(p) <= 0) { stockLimitToast(p); return; }
+  i.qty += 1; updateCartDisplay(); renderOrderSummary();
 }
 function decreaseQty(bid, key) {
   var i = findItem(bid, key);
@@ -2503,7 +2522,9 @@ function closeVideoModal() {
   document.getElementById('product-modal').classList.remove('hidden');
 }
 function modalQty(d) {
-  modalQtyVal = Math.max(1, modalQtyVal + d);
+  var want = Math.max(1, modalQtyVal + d);
+  if (currentProduct && want > stockLeft(currentProduct)) { stockLimitToast(currentProduct); want = Math.max(1, stockLeft(currentProduct)); }
+  modalQtyVal = want;
   document.getElementById('modal-qty-val').textContent = modalQtyVal;
 }
 
