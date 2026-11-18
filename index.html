@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>صفحة منتجات صحتك بالدنيا</title>
+<title>صفحة منتجات DXN</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -1061,7 +1061,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
           <span class="sf-foot-li"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>عرض سعر PDF لكل طلب</span>
         </div>
       </div>
-      <div class="sf-foot-bar">صفحة منتجات صحتك بالدنيا<span aria-hidden="true"> · </span><span dir="ltr">sehhatek-beddonya.com</span></div>
+      <div class="sf-foot-bar">صفحة منتجات DXN<span aria-hidden="true"> · </span><span dir="ltr">sehhatek-beddonya.com</span></div>
     </footer>
   </section>
   <div class="leaf-bg" style="flex-direction:column;gap:0;position:relative">
@@ -1093,7 +1093,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
     <div class="welcome-card" style="background:rgba(30,90,45,0.82);backdrop-filter:blur(14px);border-radius:28px;padding:2.8rem 2.5rem;max-width:440px;width:100%;text-align:center;border:1.5px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <div style="font-size:2.8rem;margin-bottom:1rem">🌿</div>
       <h1 style="color:#fff;font-size:1.6rem;font-weight:800;margin-bottom:0.7rem;line-height:1.4">
-        حياك الله بصفحة منتجات صحتك بالدنيا
+        حياك الله بصفحة منتجات DXN
       </h1>
       <p style="color:rgba(255,255,255,0.75);font-size:0.95rem;margin-bottom:2rem;line-height:1.7">
         منتجات طبيعية عالية الجودة من DXN<br>لصحتك ولصحة عائلتك
@@ -1459,7 +1459,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
         <!-- FOOTER NOTE -->
         <div style="border-top:2px dashed #c8e6c9;padding-top:1rem;text-align:center">
           <div style="font-size:0.85rem;color:#c0392b;font-weight:700;margin-bottom:0.4rem"><span class="emo" aria-hidden="true">⚠️</span> يجب توفر المبلغ نقداً قبل التوصيل</div>
-          <div style="font-size:0.8rem;color:#666">شكراً لتسوقك من صفحة منتجات صحتك بالدنيا • sehhatek-beddonya.com</div>
+          <div style="font-size:0.8rem;color:#666">شكراً لتسوقك من صفحة منتجات DXN • sehhatek-beddonya.com</div>
           <div style="font-size:0.8rem;color:#666;margin-top:0.3rem">هذا العرض صادر إلكترونياً ولا يحتاج إلى توقيع</div>
         </div>
       </div>
@@ -1471,8 +1471,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
 <div class="modal-overlay hidden" id="product-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:0.8rem">
-      <button class="modal-video-btn" onclick="showVideoModal()">▶ لمشاهدة مقطع مرئي</button>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:0.8rem;min-height:36px">
     </div>
     <div class="modal-content">
       <div>
@@ -2852,7 +2851,7 @@ function showProduct(id) {
   var img = document.getElementById('modal-img');
   img.textContent = p.emoji; img.style.fontSize = '5rem';
   if (document.body.classList.contains('theme-modern')) { img.innerHTML = productVisual(p); img.style.fontSize = ''; }
-  else if (productImage(p)) { img.innerHTML = '<img src="' + escHtml(productImage(p)) + '" alt="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:12px">'; }
+  else if (productImage(p)) { img.innerHTML = '<img src="' + escHtml(productImage(p)) + '" alt="" style="max-width:100%;max-height:230px;object-fit:contain;border-radius:12px">'; }
   document.getElementById('modal-qty-val').textContent = 1;
   document.body.classList.toggle('browsing', !!document.querySelector('#page-welcome.active'));
   document.getElementById('product-modal').classList.remove('hidden');
@@ -3556,7 +3555,7 @@ function printInvoice() {
     +   '<div><div class="sbadge"><span>✓ طلب مؤكد</span></div></div>'
     + '</div>'
     + '<div class="deco"></div>'
-    + '<div style="text-align:center;font-size:15px;font-weight:800;color:#1a5c2a;margin-bottom:14px">صفحة منتجات صحتك بالدنيا تشكر زيارتكم ، وتتمنى لكم يوما سعيدا</div>'
+    + '<div style="text-align:center;font-size:15px;font-weight:800;color:#1a5c2a;margin-bottom:14px">صفحة منتجات DXN تشكر زيارتكم ، وتتمنى لكم يوما سعيدا</div>'
     + '<div class="igrid">'
     +   '<div class="ibox"><h4>👤 بيانات العميل</h4>'
     +     '<div class="irow"><span>الاسم بالعربي</span>' + '<span style="display:inline-flex;align-items:center;gap:6px;direction:rtl">' + (custWa ? '<a href="' + custWa + '" title="واتساب العميل" style="text-decoration:none;display:inline-flex">' + WA_SVG(16) + '</a>' : '') + '<strong style="color:#222">' + d.nameAr + '</strong>' + '</span></div>'
@@ -3587,7 +3586,7 @@ function printInvoice() {
     + '</div>'
     + '<div class="ft">'
     +   '<div class="w">⚠️ يجب توفر المبلغ نقداً قبل التوصيل</div>'
-    +   '<div class="n">شكراً لتسوقك من صفحة منتجات صحتك بالدنيا 🌿<br>'
+    +   '<div class="n">شكراً لتسوقك من صفحة منتجات DXN 🌿<br>'
     +     'هذا العرض صادر إلكترونياً ولا يحتاج إلى توقيع<br>'
     +     '<strong style="color:#1a5c2a">sehhatek-beddonya.com</strong>'
     +   '</div>'
