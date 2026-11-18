@@ -752,6 +752,24 @@ body.theme-modern #theme-toggle svg.ic{width:16px;height:16px}
 body.theme-modern.on-shop #wa-fab,body.theme-modern.on-shop #theme-toggle{bottom:calc(84px + env(safe-area-inset-bottom))}
 body.theme-modern .toast.show{transform:translateY(0)}
 
+/* ══════════════ مراجعة ui-ux-pro-max: أهداف لمس 44px · بدون إيموجي كأيقونات ══════════════ */
+body.theme-modern button,body.theme-modern a,body.theme-modern input,body.theme-modern select{touch-action:manipulation}
+body.theme-modern .emo{display:none}
+body.theme-modern .invoice-actions button svg.ic{width:20px;height:20px}
+body.theme-modern .m-ghost,body.theme-modern .m-cart{height:44px}
+body.theme-modern .m-icon-btn{width:44px;height:44px}
+body.theme-modern .chip{height:44px}
+body.theme-modern .pc-add,body.theme-modern .pc-step{height:46px}
+body.theme-modern .pc-step button{flex:0 0 44px;width:44px;height:44px}
+body.theme-modern .buyer-chip{height:44px!important}
+body.theme-modern .modal-qty button{width:44px;height:44px}
+body.theme-modern .modal-close{width:44px!important;height:44px!important}
+body.theme-modern #order-summary-items button{min-width:44px!important;min-height:44px!important}
+body.theme-modern #order-summary-items > div[style*="text-align:center"] button{min-height:44px!important;padding:0 1.2rem!important}
+body.theme-modern .mw,body.theme-modern .shop-page{min-height:100dvh}
+/* زر "مقطع مرئي" يفتح مربعاً فارغاً لعدم وجود فيديوهات بعد */
+body.theme-modern .modal-video-btn{display:none}
+
 @media(prefers-reduced-motion:reduce){
   body.theme-modern *{animation:none!important;transition:none!important}
   body.theme-modern .ring-draw{stroke-dashoffset:0}
@@ -776,6 +794,9 @@ body.theme-modern .toast.show{transform:translateY(0)}
 body:not(.theme-modern) #theme-toggle{background:#1a5c2a;color:#fff;border-color:rgba(255,255,255,0.5)}
 @media print{#theme-toggle{display:none!important}}
 body.in-admin #theme-toggle{display:none!important}
+/* لا تغطي الأزرار العائمة عناصر النوافذ المفتوحة */
+body:has(.modal-overlay:not(.hidden)) #theme-toggle,body:has(.order-modal-wrap:not(.hidden)) #theme-toggle,
+body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hidden)) #wa-fab{display:none!important}
 @media(max-width:430px){#theme-toggle{padding:6px 10px;font-size:0.74rem}}
 </style>
 </head>
@@ -945,7 +966,7 @@ body.in-admin #theme-toggle{display:none!important}
   <div class="search-bar">
     <span class="points-hint">ن.س = نقاط سعودية | ن.م = نقاط ماليزية</span>
     <div class="search-wrap">
-      <input type="text" placeholder="البحث عن منتج" id="search-nm">
+      <input type="search" placeholder="البحث عن منتج" aria-label="البحث عن منتج" id="search-nm">
       <button class="search-btn">🔍</button>
     </div>
     <span></span>
@@ -1001,7 +1022,7 @@ body.in-admin #theme-toggle{display:none!important}
   <div class="search-bar">
     <span class="points-hint">ن.س = نقاط سعودية | ن.م = نقاط ماليزية</span>
     <div class="search-wrap">
-      <input type="text" placeholder="البحث عن منتج" id="search-m">
+      <input type="search" placeholder="البحث عن منتج" aria-label="البحث عن منتج" id="search-m">
       <button class="search-btn">🔍</button>
     </div>
     <button class="addon-btn addon-btn-green" onclick="showOrderModal('addon')">+ إضافة إلحاقية</button>
@@ -1057,7 +1078,7 @@ body.in-admin #theme-toggle{display:none!important}
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem">
             <!-- المدينة -->
             <div>
-              <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">المدينة</label>
+              <label for="addr-city" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">المدينة</label>
               <input type="text" id="addr-city" value="الرياض" readonly
                 style="width:100%;padding:0.55rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;background:#f0f7f1;font-weight:700;color:#1a5c2a">
               <select id="addr-city-select" style="display:none;width:100%;padding:0.55rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;background:#fff"
@@ -1068,7 +1089,7 @@ body.in-admin #theme-toggle{display:none!important}
             </div>
             <!-- الحي -->
             <div style="position:relative">
-              <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">الحي</label>
+              <label for="addr-district" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">الحي</label>
               <input type="text" id="addr-district" placeholder="اكتب اسم الحي..." autocomplete="off"
                 oninput="onDistrictInput()" onfocus="onDistrictInput()"
                 style="width:100%;padding:0.55rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none">
@@ -1078,21 +1099,21 @@ body.in-admin #theme-toggle{display:none!important}
             </div>
             <!-- الشارع -->
             <div>
-              <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">اسم الشارع</label>
+              <label for="addr-street" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">اسم الشارع</label>
               <input type="text" id="addr-street" placeholder="الشارع"
                 style="width:100%;padding:0.55rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none">
             </div>
             <!-- رقم البيت -->
             <div>
-              <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">رقم البيت</label>
+              <label for="addr-house" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">رقم البيت</label>
               <input type="text" id="addr-house" placeholder="رقم"
                 style="width:100%;padding:0.55rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none">
             </div>
           </div>
           <!-- العنوان الوطني المختصر -->
           <div style="margin-bottom:1rem">
-            <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">
-              العنوان الوطني المختصر <span style="color:#888;font-weight:400">(اختياري)</span>
+            <label for="addr-short" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">
+              العنوان الوطني المختصر <span style="color:#666;font-weight:400">(اختياري)</span>
             </label>
             <input type="text" id="addr-short" placeholder="مثال: RRAA1234" maxlength="8"
               oninput="validateShortAddress(this)"
@@ -1100,10 +1121,10 @@ body.in-admin #theme-toggle{display:none!important}
             <div id="short-addr-note" style="font-size:0.78rem;font-weight:600;margin-top:4px;display:none"></div>
           </div>
           <div class="contact-section">
-            <label>رابط الموقع</label>
+            <label for="addr-maps">رابط الموقع</label>
             <input type="text" id="addr-maps" placeholder="https://maps.app.goo.gl/..." style="margin-bottom:0.8rem">
-            <label>رقم التواصل</label>
-            <input type="tel" id="phone-input" placeholder="5XXXXXXXX" maxlength="9"
+            <label for="phone-input">رقم التواصل</label>
+            <input type="tel" autocomplete="tel-national" id="phone-input" placeholder="5XXXXXXXX" maxlength="9"
               inputmode="numeric" oninput="validatePhone(this)" style="direction:ltr;text-align:right">
             <div id="phone-warning" style="color:#c0392b;font-size:0.82rem;font-weight:600;margin-top:4px;display:none"></div>
           </div>
@@ -1121,8 +1142,8 @@ body.in-admin #theme-toggle{display:none!important}
   <div class="inv-page-bg" style="background:#f0f4f1;min-height:100vh;padding:2rem">
     <div class="inv-wrap" style="max-width:780px;margin:0 auto">
       <div style="display:flex;gap:1rem;margin-bottom:1.2rem;justify-content:flex-end" class="no-print invoice-actions">
-        <button onclick="sendOrderToSupervisor()" style="padding:0.7rem 1.8rem;background:#25D366;color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 14px rgba(37,211,102,0.35)">📤 إرسال الطلب إلى المشرف</button>
-        <button onclick="printInvoice()" style="padding:0.7rem 1.8rem;background:var(--green-dark);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem">⬇️ تحميل عرض السعر PDF</button>
+        <button onclick="sendOrderToSupervisor()" style="padding:0.7rem 1.8rem;background:#15803D;color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 14px rgba(21,128,61,0.3)"><span class="emo" aria-hidden="true">📤</span><svg class="ic m-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg> إرسال الطلب إلى المشرف</button>
+        <button onclick="printInvoice()" style="padding:0.7rem 1.8rem;background:var(--green-dark);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem"><span class="emo" aria-hidden="true">⬇️</span><svg class="ic m-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> تحميل عرض السعر PDF</button>
         <button onclick="goTo('page-delivery')" style="padding:0.7rem 1.5rem;background:transparent;color:var(--green-dark);border:2px solid var(--green-mid);border-radius:50px;font-size:0.95rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer">← رجوع</button>
       </div>
       <!-- INVOICE DOCUMENT -->
@@ -1131,16 +1152,16 @@ body.in-admin #theme-toggle{display:none!important}
         <!-- INVOICE HEADER -->
         <div class="inv-head" style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--green-dark);padding-bottom:1.5rem;margin-bottom:1.5rem">
           <div>
-            <div style="font-size:0.85rem;color:#777;margin-bottom:0.3rem">رقم عرض السعر</div>
+            <div style="font-size:0.85rem;color:#666;margin-bottom:0.3rem">رقم عرض السعر</div>
             <div style="font-size:1.3rem;font-weight:800;color:var(--green-dark)" id="inv-number">#QT-0001</div>
-            <div style="font-size:0.85rem;color:#777;margin-top:0.6rem">تاريخ الإصدار</div>
+            <div style="font-size:0.85rem;color:#666;margin-top:0.6rem">تاريخ الإصدار</div>
             <div style="font-size:0.95rem;font-weight:600;color:#333" id="inv-date"></div>
           </div>
           <div style="text-align:center">
             <div style="background:var(--green-dark);border-radius:16px;padding:0.7rem 1.8rem;display:inline-flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem">
-              <span style="color:#fff;font-size:1.5rem;font-weight:800">صحتك بالدنيا 🌿</span>
+              <span style="color:#fff;font-size:1.5rem;font-weight:800">صحتك بالدنيا <span class="emo" aria-hidden="true">🌿</span></span>
             </div>
-            <div style="font-size:0.82rem;color:#777">sehhatek-beddonya.com</div>
+            <div style="font-size:0.82rem;color:#666">sehhatek-beddonya.com</div>
           </div>
           <div style="text-align:left">
             <div style="background:#e8f5e9;border-radius:12px;padding:0.5rem 1rem;display:inline-block">
@@ -1207,9 +1228,9 @@ body.in-admin #theme-toggle{display:none!important}
 
         <!-- FOOTER NOTE -->
         <div style="border-top:2px dashed #c8e6c9;padding-top:1rem;text-align:center">
-          <div style="font-size:0.85rem;color:#c0392b;font-weight:700;margin-bottom:0.4rem">⚠️ يجب توفر المبلغ نقداً قبل التوصيل</div>
-          <div style="font-size:0.8rem;color:#777">شكراً لتسوقك من متجر صحتك بالدنيا • sehhatek-beddonya.com</div>
-          <div style="font-size:0.8rem;color:#777;margin-top:0.3rem">هذا العرض صادر إلكترونياً ولا يحتاج إلى توقيع</div>
+          <div style="font-size:0.85rem;color:#c0392b;font-weight:700;margin-bottom:0.4rem"><span class="emo" aria-hidden="true">⚠️</span> يجب توفر المبلغ نقداً قبل التوصيل</div>
+          <div style="font-size:0.8rem;color:#666">شكراً لتسوقك من متجر صحتك بالدنيا • sehhatek-beddonya.com</div>
+          <div style="font-size:0.8rem;color:#666;margin-top:0.3rem">هذا العرض صادر إلكترونياً ولا يحتاج إلى توقيع</div>
         </div>
       </div>
     </div>
@@ -1238,7 +1259,7 @@ body.in-admin #theme-toggle{display:none!important}
             <button onclick="modalQty(1)">+</button>
           </div>
           <button class="btn-cart" onclick="addToCartFromModal()">+ أضف للسلة</button>
-          <button class="btn-buy" onclick="addToCartFromModal();goToDelivery()">اشتري الآن 🛒</button>
+          <button class="btn-buy" onclick="addToCartFromModal();goToDelivery()">اشترِ الآن <span class="emo" aria-hidden="true">🛒</span></button>
         </div>
       </div>
       <div>
@@ -1299,7 +1320,7 @@ body.in-admin #theme-toggle{display:none!important}
     <div style="font-size:0.85rem;color:#666;margin-bottom:1.2rem;text-align:center">تُسجَّل باسمك طلباتك الرئيسية في عرض السعر</div>
 
     <div id="client-member-wrap" style="margin-bottom:1.1rem">
-      <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">رقم العضوية <span id="client-member-hint" style="color:#888;font-weight:400">(9 أرقام)</span></label>
+      <label for="client-member" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">رقم العضوية <span id="client-member-hint" style="color:#888;font-weight:400">(9 أرقام)</span></label>
       <input type="text" id="client-member" placeholder="رقم عضوية DXN" maxlength="9" inputmode="numeric"
         oninput="validateMemberNo(this,'client-member-note')"
         style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;direction:ltr;text-align:right">
@@ -1308,12 +1329,12 @@ body.in-admin #theme-toggle{display:none!important}
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem">
       <div>
-        <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">الاسم الثلاثي بالعربي</label>
-        <input type="text" id="client-name-ar" placeholder="الاسم بالعربي"
+        <label for="client-name-ar" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">الاسم الثلاثي بالعربي</label>
+        <input type="text" autocomplete="name" id="client-name-ar" placeholder="الاسم بالعربي"
           style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none">
       </div>
       <div>
-        <label style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">Full Name (EN)</label>
+        <label for="client-name-en" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">Full Name (EN)</label>
         <input type="text" id="client-name-en" placeholder="Full Name in English"
           style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;direction:ltr">
       </div>
@@ -1411,7 +1432,7 @@ body.in-admin #theme-toggle{display:none!important}
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ════════════════════════════════════════════════════════════
@@ -2820,7 +2841,7 @@ function renderOrderSummary() {
 
       return '<div style="border:1.5px solid ' + (isNone ? '#bbdefb' : '#c8e6c9') + ';border-radius:12px;padding:0.6rem;margin-bottom:0.7rem;background:#fff">'
         + '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.4rem;flex-wrap:wrap;border-bottom:1px solid #e8f5e9;padding-bottom:0.4rem;margin-bottom:0.4rem">'
-        +   '<span style="font-size:0.85rem;font-weight:800;color:#1a5c2a">' + (b.main ? '👤 ' : '➕ ') + buyerLabel(b) + '</span>'
+        +   '<span style="font-size:0.85rem;font-weight:800;color:#1a5c2a">' + '<span class="emo" aria-hidden="true">' + (b.main ? '👤 ' : '➕ ') + '</span>' + buyerLabel(b) + '</span>'
         +   '<span style="font-size:0.82rem;color:#222;font-weight:700">' + orderTypeLabel(b.orderType) + (b.memberId ? ' • ' + b.memberId : '') + '</span>'
         + '</div>'
         + rows
@@ -2836,7 +2857,7 @@ function renderOrderSummary() {
         + '</div>';
     }).join('')
     + '<div style="text-align:center;margin-top:0.5rem">'
-    +   '<button onclick="clearCart()" style="background:#c0392b;color:#fff;border:none;border-radius:50px;padding:0.4rem 1.2rem;font-family:\'Tajawal\',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">🗑️ حذف كل المنتجات</button>'
+    +   '<button onclick="clearCart()" style="background:#c0392b;color:#fff;border:none;border-radius:50px;padding:0.4rem 1.2rem;font-family:\'Tajawal\',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer"><span class="emo" aria-hidden="true">🗑️ </span>حذف كل المنتجات</button>'
     + '</div>';
   }
 
@@ -2925,8 +2946,8 @@ function generateInvoice() {
     if (b.items.length === 0) return;
     html += '<tr style="background:#eef7f0">'
       + '<td colspan="4" style="padding:0.5rem 0.8rem;text-align:right;font-weight:800;color:#1a5c2a;font-size:0.85rem">'
-      + (b.main ? '👤 ' : '➕ ') + buyerLabel(b)
-      + '<span style="font-weight:400;color:#777;font-size:0.78rem"> — ' + orderTypeLabel(b.orderType) + (b.memberId ? ' • ' + b.memberId : '') + '</span>'
+      + '<span class="emo" aria-hidden="true">' + (b.main ? '👤 ' : '➕ ') + '</span>' + buyerLabel(b)
+      + '<span style="font-weight:400;color:#666;font-size:0.78rem"> — ' + orderTypeLabel(b.orderType) + (b.memberId ? ' • ' + b.memberId : '') + '</span>'
       + '</td></tr>';
     b.items.forEach(function(p, i) {
       var bg  = i % 2 === 0 ? '#fff' : '#f5fbf6';
@@ -2969,7 +2990,7 @@ function generateInvoice() {
         +   '<span style="background:#e3f2fd;color:#0d47a1;padding:2px 10px;border-radius:20px;font-size:0.82rem;font-weight:800">' + creditedPts(r,'my') + ' ن.م</span>'
         + '</span>'
         + '</div>';
-    }).join('') || '<div style="font-size:0.85rem;color:#777">لا يوجد</div>';
+    }).join('') || '<div style="font-size:0.85rem;color:#666">لا يوجد</div>';
   }
   if (trEl) {
     var transfers = noMembershipBuyers().filter(function(b){ return b.items.length; });
