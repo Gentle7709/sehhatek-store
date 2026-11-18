@@ -725,6 +725,13 @@ body.theme-modern .mm-t{flex:1;display:flex;flex-direction:column;gap:3px;min-wi
 body.theme-modern .mm-t b{font-size:17px;font-weight:600}
 body.theme-modern .mm-t small{font-size:13.5px;color:var(--muted);line-height:1.6}
 body.theme-modern .mm-opt > svg.ic{color:var(--muted)}
+body.theme-modern .mm-main{background:var(--canopy);border-color:var(--canopy);color:#fff;padding:22px 18px;box-shadow:0 10px 26px rgba(31,90,67,.24)}
+body.theme-modern .mm-main:hover{background:var(--canopy-d);border-color:var(--canopy-d)}
+body.theme-modern .mm-main .mm-ic{width:58px;height:58px;border-radius:15px;background:rgba(255,255,255,.16);color:#fff}
+body.theme-modern .mm-main .mm-ic svg.ic{width:28px;height:28px}
+body.theme-modern .mm-main .mm-t b{font-size:21px;font-weight:700}
+body.theme-modern .mm-main .mm-t small{font-size:14.5px;color:rgba(255,255,255,.88)}
+body.theme-modern .mm-main > svg.ic{color:#fff;width:24px;height:24px}
 body.theme-modern .mm-vip{border-color:#E8D9AE}
 body.theme-modern .mm-vip .mm-ic{background:var(--spore-t);color:var(--spore-ink)}
 
@@ -1098,8 +1105,8 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
       <p class="m-lead">اختر نوع الطلب لنحسب لك السعر والنقاط بشكل صحيح.</p>
       <p class="mm-intent" id="mm-intent" hidden></p>
       <div class="mm-list">
+      <button class="mm-opt mm-main" onclick="startNoMembershipFlow()"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 7h13l1 13h-15z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="mm-t"><b>طلب بدون عضوية</b><small>أسرع طريقة: اطلب مباشرة بدون رقم عضوية</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
       <button class="mm-opt" onclick="startMembershipFlow('active')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 14h3"/></svg></span><span class="mm-t"><b>طلب بعضوية</b><small>عندك رقم عضوية DXN مفعّل وتُحسب لك النقاط</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button class="mm-opt" onclick="startNoMembershipFlow()"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 7h13l1 13h-15z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="mm-t"><b>طلب بدون عضوية</b><small>اطلب مباشرة بدون رقم عضوية</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
       <button class="mm-opt" onclick="startMembershipFlow('frozen')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></span><span class="mm-t"><b>عضوية تحتاج تفعيل</b><small>عضوية مجمّدة، يلزمها 100 نقطة سعودية لإعادة التفعيل</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
       <button class="mm-opt mm-vip" onclick="startMembershipFlow('active')"><span class="mm-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg></span><span class="mm-t"><b>العملاء المميزون</b><small>قسم خاص بعملائنا المميزين</small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
       </div>
@@ -1522,16 +1529,11 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
       <div id="client-member-note" style="font-size:0.78rem;font-weight:600;margin-top:4px;display:none"></div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem">
+    <div style="margin-bottom:0.7rem">
       <div>
         <label for="client-name-ar" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">الاسم الثلاثي بالعربي</label>
         <input type="text" autocomplete="name" id="client-name-ar" placeholder="الاسم بالعربي"
           style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none">
-      </div>
-      <div>
-        <label for="client-name-en" style="font-size:0.8rem;font-weight:700;color:#1a5c2a;display:block;margin-bottom:3px">Full Name (EN)</label>
-        <input type="text" id="client-name-en" placeholder="Full Name in English"
-          style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid #c8e6c9;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;direction:ltr">
       </div>
     </div>
 
@@ -3478,7 +3480,6 @@ function printInvoice() {
     + '<div class="igrid">'
     +   '<div class="ibox"><h4>👤 بيانات العميل</h4>'
     +     '<div class="irow"><span>الاسم بالعربي</span>' + '<span style="display:inline-flex;align-items:center;gap:6px;direction:rtl">' + (custWa ? '<a href="' + custWa + '" title="واتساب العميل" style="text-decoration:none;display:inline-flex">' + WA_SVG(16) + '</a>' : '') + '<strong style="color:#222">' + d.nameAr + '</strong>' + '</span></div>'
-    +     '<div class="irow"><span>Full Name</span><span style="direction:ltr;display:inline-block">' + d.nameEn + '</span></div>'
     +     '<div class="irow"><span>رقم العضوية</span><span>' + d.memberId + '</span></div>'
     +     '<div class="irow"><span>رقم الهاتف</span><span style="direction:ltr;display:inline-block;unicode-bidi:embed">' + d.phone + '</span></div>'
     +   '</div>'
