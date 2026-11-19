@@ -542,6 +542,11 @@ body.theme-modern *{font-family:var(--f-ui)!important;letter-spacing:0}
 body.theme-modern .m-display{font-family:var(--f-display)!important}
 body.theme-modern #pdf-render-area *{font-family:Tajawal,Arial,sans-serif!important}
 body:not(.theme-modern) .m-only{display:none!important}
+#product-modal.no-price .modal-price,#product-modal.no-price .modal-price-sub{display:none}
+body.theme-modern .pc-noprice{font-size:14px;font-weight:600;color:var(--muted)}
+/* منتج بلا سعر: صورته تبقى بألوانها (الرمادي للمنتهي فقط) */
+body.theme-modern .pc.no-price .pc-art .pv,body.theme-modern .pc.no-price .pc-art > img{opacity:1!important;filter:none!important}
+body.theme-modern .pc.no-price .pc-stock{background:var(--canopy-t);color:var(--canopy-d)}
 body.theme-modern :focus-visible{outline:2px solid var(--canopy);outline-offset:2px}
 body.theme-modern svg.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
 
@@ -801,7 +806,7 @@ body.theme-modern .pc.stock-out .pc-art > svg,body.theme-modern .pc.stock-out .p
 body.theme-modern .pc-stock{position:absolute;top:8px;right:8px;padding:4px 9px;border-radius:999px;font-size:11.5px;font-weight:600;line-height:1.2;background:var(--spore-t);color:var(--spore-ink)}
 body.theme-modern .stock-critical .pc-stock{background:#F6E1DB;color:var(--lacquer)}
 body.theme-modern .stock-out .pc-stock{background:var(--ink);color:#fff}
-body.theme-modern .pc-add:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+body.theme-modern .pc-add:disabled{background:var(--line);color:var(--ink-2);cursor:not-allowed}
 body.theme-modern .pc-art{display:block;width:100%;aspect-ratio:1/1;padding:0;border:0;cursor:pointer;background:var(--tint,#E7EEEA);position:relative}
 body.theme-modern .pc-art svg,body.theme-modern .pc-art img{width:100%;height:100%;display:block;object-fit:cover}
 body.theme-modern .pc-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:7px;flex:1}
@@ -1001,7 +1006,7 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
         <div class="sf-hero-copy">
           <span class="sf-eyebrow"><img data-dxn-logo alt="DXN">منتجات DXN الأصلية</span>
           <h1>منتجات طبيعية لصحتك ولصحة عائلتك</h1>
-          <p>الريشي، السبيرولينا، الكورديسبس وأكثر من ٤٠ منتجاً. اختر منتجاتك، واحسب نقاطك، واستلم عرض السعر فوراً.</p>
+          <p>الريشي، السبيرولينا، الكورديسبس وأكثر من ٧٠ منتجاً. اختر منتجاتك، واحسب نقاطك، واستلم عرض السعر فوراً.</p>
           <div class="sf-hero-cta">
             <button class="sf-btn-light" data-test="start" onclick="homeStart()">تسوق الآن<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
             <a class="sf-btn-line" href="https://wa.me/966506434783" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.6L3.5 20.5l1-4.4A8.5 8.5 0 1 1 20.5 12z"/><path d="M8.5 10.5h7M8.5 13.8h4.5"/></svg>تواصل معنا</a>
@@ -1738,13 +1743,82 @@ var products = [
   {id:39, name:'شراب حليب النمور', price:68, pts:0, ptsMy:13.5, stock:30, emoji:'🥛', highlight:'',
    desc:''},
   {id:40, name:'كركديه 285 مل', price:73, pts:12, ptsMy:0, stock:30, emoji:'🌺', highlight:'',
-   desc:''}
+   desc:''},
+  // ── منتجات مضافة من صور المالك: بلا سعر بعد، وتصنيفها "غير مصنف" حتى تُصنَّف ──
+  {id:41, name:'قهوة لينجزي 3 في 1 نيو', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة سريعة التحضير 3 في 1 مع خلاصة الجانوديرما والمبيّض (Lingzhi Coffee 3 in 1 Neo)'},
+  {id:42, name:'قهوة لينجزي 3 في 1 لايت نيو', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة سريعة التحضير 3 في 1 لايت مع خلاصة الجانوديرما والمبيّض (Lingzhi Coffee 3 in 1 Lite Neo)'},
+  {id:43, name:'قهوة لينجزي 3 في 1 لايت', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة جاهزة 3 في 1 لايت مع خلاصة الجانوديرما (Lingzhi Coffee 3 in 1 Lite)'},
+  {id:44, name:'قهوة لينجزي 2 في 1', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة جاهزة 2 في 1 مع خلاصة الجانوديرما (Lingzhi Coffee 2 in 1)'},
+  {id:45, name:'قهوة لينجزي السوداء', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة سوداء مع خلاصة فطر الجانوديرما، بدون سكر (Lingzhi Black Coffee)'},
+  {id:46, name:'قهوة كورديسبس 3 في 1', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة جاهزة 3 في 1 مع الكورديسبس (Cordyceps Coffee 3 in 1)'},
+  {id:47, name:'كريم كوفي', price:0, pts:0, ptsMy:0, stock:30, emoji:'☕', highlight:'', category:'غير مصنف',
+   desc:'قهوة جاهزة مع خلاصة الجانوديرما (Cream Coffee)'},
+  {id:48, name:'كوكوزي', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍫', highlight:'', category:'غير مصنف',
+   desc:'مشروب الكاكاو مع خلاصة الجانوديرما (Cocozhi)'},
+  {id:49, name:'كوكوزي نيو', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍫', highlight:'', category:'غير مصنف',
+   desc:'مشروب الكاكاو مع خلاصة الجانوديرما (Cocozhi Neo)'},
+  {id:50, name:'شاي لينجزي الأسود 75 كيس', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍵', highlight:'', category:'غير مصنف',
+   desc:'شاي أسود مع الجانوديرما، 75 كيس شاي (Lingzhi Black Tea)'},
+  {id:51, name:'شاي لاتيه نيو', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍵', highlight:'', category:'غير مصنف',
+   desc:'مشروب الشاي بالحليب مع خلاصة الجانوديرما (Lingzhi Tea Latte Neo)'},
+  {id:52, name:'دي لاتيه', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍵', highlight:'', category:'غير مصنف',
+   desc:'شاي مشكّل مع خلاصة الجانوديرما (D’Latte)'},
+  {id:53, name:'ليمونزي', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍋', highlight:'', category:'غير مصنف',
+   desc:'مشروب الليمون مع خلاصة الجانوديرما (Lemonzhi)'},
+  {id:54, name:'سكر DXN', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍬', highlight:'', category:'غير مصنف',
+   desc:'سكر أبيض ناعم بأظرف (DXN Sugar)'},
+  {id:55, name:'زي منت', price:0, pts:0, ptsMy:0, stock:30, emoji:'🍬', highlight:'', category:'غير مصنف',
+   desc:'حلوى النعناع مع المحليات (Zhi Mint)'},
+  {id:56, name:'مسحوق روز إل', price:0, pts:0, ptsMy:0, stock:30, emoji:'🌺', highlight:'', category:'غير مصنف',
+   desc:'مسحوق الكركديه (DXN Ros L Powder)'},
+  {id:57, name:'معجون أسنان جانوزي بلس 150 غرام', price:0, pts:0, ptsMy:0, stock:30, emoji:'🪥', highlight:'', category:'غير مصنف',
+   desc:'معجون أسنان يحتوي على الجانوديرما (Ganozhi Plus Toothpaste)'},
+  {id:58, name:'فرشاة أسنان DXN', price:0, pts:0, ptsMy:0, stock:30, emoji:'🪥', highlight:'', category:'غير مصنف',
+   desc:'فرشاة أسنان للكبار (DXN Toothbrush)'},
+  {id:59, name:'فرشاة أسنان DXN للأطفال', price:0, pts:0, ptsMy:0, stock:30, emoji:'🪥', highlight:'', category:'غير مصنف',
+   desc:'فرشاة أسنان للأطفال (DXN Toothbrush for Children)'},
+  {id:60, name:'صابون جانوزي', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧼', highlight:'', category:'غير مصنف',
+   desc:'صابون جانوزي (Ganozhi Soap)'},
+  {id:61, name:'صابون أوتشا الشفاف', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧼', highlight:'', category:'غير مصنف',
+   desc:'صابون شفاف بالشاي الأخضر (Oocha Trans Soap)'},
+  {id:62, name:'شامبو جانوزي', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'شامبو جانوزي (Ganozhi Shampoo)'},
+  {id:63, name:'جانوزي رغوة تنظيف الجسم 250 مل', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'رغوة تنظيف الجسم (Ganozhi Body Foam)'},
+  {id:64, name:'بودرة التلك', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'بودرة التلك (DXN Talcum Powder)'},
+  {id:65, name:'أحمر شفاه جانوزي', price:0, pts:0, ptsMy:0, stock:30, emoji:'💄', highlight:'', category:'غير مصنف',
+   desc:'أحمر شفاه جانوزي (Ganozhi Lipstick)'},
+  {id:66, name:'مرهم زيميكو', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'مرهم زيميكو (Zhimeko Ointment)'},
+  {id:67, name:'مقشر الوجه بابايا', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'مقشر الوجه بالبابايا (Papaya Facial Scrub)'},
+  {id:68, name:'كريم شجرة الشاي 30 غرام', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'كريم شجرة الشاي (Tea Tree Cream)'},
+  {id:69, name:'ألوفيرا جل منظف', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'جل منظف بالألوفيرا (Aloe V Cleansing Gel)'},
+  {id:70, name:'ألوفيرا تونر مرطب 100 مل', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'تونر مرطب بالألوفيرا (Aloe V Hydrating Toner)'},
+  {id:71, name:'ألوفيرا جل مائي', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'جل مائي بالألوفيرا (Aloe V Aqua Gel)'},
+  {id:72, name:'ألوفيرا كريم مغذي 30 مل', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'كريم مغذي بالألوفيرا (Aloe V Nutricare Cream)'},
+  {id:73, name:'ألوفيرا قناع الترطيب', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'قناع ترطيب بالألوفيرا (Aloe V Hydrating Mask)'},
+  {id:74, name:'ألوفيرا لوشن الأيدي والجسم 250 مل', price:0, pts:0, ptsMy:0, stock:30, emoji:'🧴', highlight:'', category:'غير مصنف',
+   desc:'لوشن للأيدي والجسم بالألوفيرا (Aloe V Hand & Body Lotion)'}
 ];
 
 // ═══════════════════════════════════════════════════════════
 //  طبقة البيانات + التخزين المحلي (لوحة الأدمن)
 // ═══════════════════════════════════════════════════════════
-var CATEGORIES = ['ريشي','سبيرولينا','مورنزي','عرف أسد','كرديسبس','ميكوفيجي','لقاح','لؤلؤ','بوتنزي','أخرى'];
+var CATEGORIES = ['ريشي','سبيرولينا','مورنزي','عرف أسد','كرديسبس','ميكوفيجي','لقاح','لؤلؤ','بوتنزي','أخرى','غير مصنف'];
 
 function inferCategory(name) {
   var n = name || '';
@@ -1761,7 +1835,10 @@ function inferCategory(name) {
 }
 
 // ── حالة المخزون: 20 فأكثر متوفر · 10–19 أصفر · أقل من 10 أحمر · 0 أو "منتهي" لا يُطلب ──
-function isSoldOut(p) { return p.available === false || (Number(p.stock) || 0) <= 0; }
+// منتج بلا سعر بعد: يظهر للعميل لكن لا يُطلب حتى يُحدَّد سعره
+function noPrice(p) { return !(Number(p.price) > 0); }
+function outLabel(p) { return noPrice(p) ? 'السعر قريباً' : 'منتهي الكمية'; }
+function isSoldOut(p) { return noPrice(p) || p.available === false || (Number(p.stock) || 0) <= 0; }
 function stockLevel(p) {
   if (isSoldOut(p)) return 'out';
   var n = Number(p.stock) || 0;
@@ -1790,14 +1867,27 @@ var ADMIN = {
   customOrder: null     // مصفوفة معرّفات بالترتيب المخصص
 };
 
-var LS_KEYS = { products:'sehhatek-products', admin:'sehhatek-admin' };
+var LS_KEYS = { products:'sehhatek-products', admin:'sehhatek-admin', dataVer:'sehhatek-data-ver' };
+var DATA_VER = 2;
 
 function loadStore() {
   try {
     var sp = localStorage.getItem(LS_KEYS.products);
+    var fromStore = false;
     if (sp) {
       var arr = JSON.parse(sp);
-      if (Array.isArray(arr) && arr.length) products = arr;
+      if (Array.isArray(arr) && arr.length) { products = arr; fromStore = true; }
+    }
+    // قائمة محفوظة قديمة على هذا الجهاز: أضف المنتجات الجديدة مرة واحدة
+    var ver = parseInt(localStorage.getItem(LS_KEYS.dataVer), 10) || 1;
+    if (ver < DATA_VER) {
+      if (fromStore) {
+        DEFAULT_PRODUCTS.forEach(function(d) {
+          if (d.id > 40 && !products.some(function(p) { return p.id === d.id; })) products.push(JSON.parse(JSON.stringify(d)));
+        });
+        saveProducts();
+      }
+      localStorage.setItem(LS_KEYS.dataVer, String(DATA_VER));
     }
     var sa = localStorage.getItem(LS_KEYS.admin);
     if (sa) {
@@ -2263,7 +2353,8 @@ var CAT_STYLE = {
   'لقاح':      { t:'#F8F0D9', a:'#765A12' },
   'لؤلؤ':      { t:'#E8EEF3', a:'#40607A' },
   'بوتنزي':    { t:'#ECEDEA', a:'#13221C' },
-  'أخرى':      { t:'#E6EEEA', a:'#1F5A43' }
+  'أخرى':      { t:'#E6EEEA', a:'#1F5A43' },
+  'غير مصنف':  { t:'#EEF0EC', a:'#34443D' }
 };
 function catStyle(cat) { var c = CAT_STYLE[cat] || CAT_STYLE['أخرى']; return '--t:' + c.t + ';--a:' + c.a; }
 
@@ -2284,7 +2375,9 @@ var PRODUCT_IMAGES = {
   20:'morinzhi', 21:'morinzhi', 22:'mengkudu-capsule', 23:'morinzyme',
   24:'lions-mane-powder', 25:'lions-mane-powder', 26:'lions-mane-powder', 27:'lions-mane-tablet',
   28:'cordyceps-powder', 29:'cordyceps-powder', 30:'cordyceps-tablet', 31:'mycoveggie', 32:'mycoveggie',
-  33:'bee-pollen-120', 34:'bee-pollen-300', 36:'pearl-powder', 37:'potenzhi', 38:'potenzhi', 39:'lignosus-syrup', 40:'roselle-juice'
+  33:'bee-pollen-120', 34:'bee-pollen-300', 36:'pearl-powder', 37:'potenzhi', 38:'potenzhi', 39:'lignosus-syrup', 40:'roselle-juice',
+  // صور المالك بعد إزالة الخلفية
+  41:'lingzhi-coffee-3in1-neo', 42:'lingzhi-coffee-3in1-lite-neo', 43:'lingzhi-coffee-3in1-lite', 44:'lingzhi-coffee-2in1', 45:'lingzhi-black-coffee', 46:'cordyceps-coffee-3in1', 47:'cream-coffee', 48:'cocozhi', 49:'cocozhi-neo', 50:'lingzhi-black-tea', 51:'tea-latte-neo', 52:'dlatte', 53:'lemonzhi', 54:'dxn-sugar', 55:'zhi-mint', 56:'ros-l-powder', 57:'ganozhi-plus-toothpaste', 58:'toothbrush', 59:'kids-toothbrush', 60:'ganozhi-soap', 61:'oocha-trans-soap', 62:'ganozhi-shampoo', 63:'ganozhi-body-foam', 64:'talcum-powder', 65:'ganozhi-lipstick', 66:'zhimeko-ointment', 67:'papaya-facial-scrub', 68:'tea-tree-cream', 69:'aloe-v-cleansing-gel', 70:'aloe-v-hydrating-toner', 71:'aloe-v-aqua-gel', 72:'aloe-v-nutricare-cream', 73:'aloe-v-hydrating-mask', 74:'aloe-v-hand-body-lotion'
 };
 function productImage(p) {
   return p.image || (PRODUCT_IMAGES[p.id] ? IMG_DIR + PRODUCT_IMAGES[p.id] + '.webp' : '');
@@ -2320,16 +2413,16 @@ function ptsBadges(p) {
 function productCardHTML(p, mode) {
   var home = mode === 'home';
   var lv = stockLevel(p);
-  var hl = ' stock-' + lv;
+  var hl = ' stock-' + lv + (noPrice(p) ? ' no-price' : '');
   var name = escHtml(p.name);
   return '<article class="pc' + hl + '" data-id="' + p.id + '">'
     + '<button class="pc-art" onclick="showProduct(' + p.id + ')" aria-label="تفاصيل ' + name + '">' + productVisual(p)
-    +   (lv === 'ok' ? '' : '<span class="pc-stock">' + STOCK_LABEL[lv] + '</span>') + '</button>'
+    +   (lv === 'ok' ? '' : '<span class="pc-stock">' + (lv === 'out' ? outLabel(p) : STOCK_LABEL[lv]) + '</span>') + '</button>'
     + '<div class="pc-body">'
     +   '<span class="pc-cat">' + escHtml(p.category || 'أخرى') + '</span>'
     +   '<h3 class="pc-name">' + name + '</h3>'
     +   '<div class="pc-pts">' + ptsBadges(p) + '</div>'
-    +   '<div class="pc-price"><b>' + p.price + '</b> ر.س</div>'
+    +   (noPrice(p) ? '<div class="pc-price pc-noprice">السعر قريباً</div>' : '<div class="pc-price"><b>' + p.price + '</b> ر.س</div>')
     +   '<div class="pc-actions">' + (home ? homeActionHTML(p) : cardActionsHTML(p)) + '</div>'
     + '</div>'
     + '</article>';
@@ -2339,7 +2432,7 @@ function productCardHTML(p, mode) {
 var pendingIntent = null;
 
 function homeActionHTML(p) {
-  if (isSoldOut(p)) return '<button class="pc-add" disabled>منتهي الكمية</button>';
+  if (isSoldOut(p)) return '<button class="pc-add" disabled>' + (noPrice(p) ? 'غير متاح للطلب' : 'منتهي الكمية') + '</button>';
   return '<button class="pc-add" onclick="homeStart({product:' + p.id + '})">اطلب الآن</button>';
 }
 
@@ -2471,7 +2564,7 @@ var CART_IC = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx
 
 // زر الإضافة يتحول إلى عدّاد للكمية الموجودة في سلة المشتري الحالي
 function cardActionsHTML(p) {
-  if (isSoldOut(p)) return '<button class="pc-add" disabled>منتهي الكمية</button>';
+  if (isSoldOut(p)) return '<button class="pc-add" disabled>' + (noPrice(p) ? 'غير متاح للطلب' : 'منتهي الكمية') + '</button>';
   var b = activeBuyer();
   var it = b && b.items.find(function(i) { return i.key === String(p.id); });
   if (!it) return '<button class="pc-add" data-add onclick="addToCart(' + p.id + ',1)">' + CART_IC + 'أضف للسلة</button>';
@@ -2548,13 +2641,13 @@ function renderProducts() {
       +   '<span class="qty-num" id="qty-' + p.id + '">' + qty + '</span>'
       +   '<button class="qty-btn" onclick="changeQty(' + p.id + ',1)">↑</button>'
       + '</div></td>'
-      + '<td style="text-align:right;min-width:170px">' + p.name + (out ? ' <span class="soldout-tag">منتهي الكمية</span>' : '') + '</td>'
-      + '<td><span class="price-tag">' + p.price + ' ريال</span></td>'
+      + '<td style="text-align:right;min-width:170px">' + p.name + (out ? ' <span class="soldout-tag">' + outLabel(p) + '</span>' : '') + '</td>'
+      + '<td><span class="price-tag">' + (noPrice(p) ? '—' : p.price + ' ريال') + '</span></td>'
       + '<td><span class="points-badge">' + p.pts + ' ن.س</span></td>'
       + '<td><span class="points-badge" style="background:#e3f2fd;color:#0d47a1">' + (p.ptsMy || 0) + ' ن.م</span></td>'
       + '<td><div class="thumb-placeholder">' + (productImage(p) ? '<img src="' + escHtml(productImage(p)) + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;background:#fff" onerror="this.replaceWith(document.createTextNode(\'' + p.emoji + '\'))">' : p.emoji) + '</div></td>'
       + '<td><button class="details-btn" onclick="showProduct(' + p.id + ')">تفاصيل ▼</button></td>'
-      + '<td>' + (out ? '<button class="add-cart-btn" disabled>منتهي</button>' : '<button class="add-cart-btn" onclick="addToCart(' + p.id + ')">أضف ←</button>') + '</td>'
+      + '<td>' + (out ? '<button class="add-cart-btn" disabled>' + (noPrice(p) ? 'قريباً' : 'منتهي') + '</button>' : '<button class="add-cart-btn" onclick="addToCart(' + p.id + ')">أضف ←</button>') + '</td>'
       + '</tr>';
   }).join('');
   renderBuyerChips();
@@ -2627,7 +2720,7 @@ function changeQty(id, delta) {
 function addToCart(id, qtyArg) {
   var p = products.find(function(x) { return x.id === id; });
   if (!p) return;
-  if (isSoldOut(p)) { showToast('⚠️ هذا المنتج منتهي الكمية حالياً'); return; }
+  if (isSoldOut(p)) { showToast(noPrice(p) ? '⚠️ هذا المنتج غير متاح للطلب حالياً' : '⚠️ هذا المنتج منتهي الكمية حالياً'); return; }
   var qEl = document.getElementById('qty-' + id);
   var qty = qtyArg || (qEl ? parseInt(qEl.textContent) : 1);
   var left = stockLeft(p);
@@ -2776,9 +2869,10 @@ function showProduct(id) {
   currentProduct = p; modalQtyVal = 1;
   document.getElementById('modal-title').textContent = p.name;
   document.getElementById('modal-price').textContent = p.price;
+  document.getElementById('product-modal').classList.toggle('no-price', noPrice(p));
   var soldOut = isSoldOut(p);
   document.getElementById('modal-stock').parentNode.innerHTML = soldOut
-    ? '<span id="modal-stock" style="color:#c0392b;font-weight:700">منتهي الكمية — غير متاح للطلب حالياً</span>'
+    ? '<span id="modal-stock" style="color:#c0392b;font-weight:700">' + (noPrice(p) ? 'السعر يحدد قريباً' : 'منتهي الكمية') + ' — غير متاح للطلب حالياً</span>'
     : 'الكمية المتبقية : <span id="modal-stock">' + p.stock + '</span> حبة';
   document.querySelectorAll('#product-modal .btn-cart, #product-modal .btn-buy').forEach(function(btn) { btn.disabled = soldOut; });
   document.getElementById('modal-desc').textContent  = p.desc;
