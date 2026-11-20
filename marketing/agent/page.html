@@ -145,13 +145,12 @@ input[type=range]{width:100%;accent-color:var(--green)}
 
   <div class="page" id="v-media" hidden>
     <div class="jump">
-      <a class="btn small" href="#posters">البوسترات</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a>
+      <a class="btn small" href="#posters">البوسترات</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
     </div>
     <section class="sec" id="posters">
       <h2>البوسترات</h2>
       <p class="note">كل بوستر معه الكابشن والهاشتاقات. «وافق وانشر» يسجل موافقتك وأنا أجدوله في بفر في أفضل وقت. التحديث اليومي الساعة 4:40 الفجر، وزر «حدّث الصور الآن» ينفذ فوراً.</p>
       <div class="cards" id="pcards"></div>
-      <details id="ignoredbox" hidden><summary class="note">البوسترات المتجاهلة</summary><div class="cards" id="icards" style="margin-top:12px"></div></details>
     </section>
     <section class="sec" id="reels">
       <h2>الريلز</h2>
@@ -166,6 +165,13 @@ input[type=range]{width:100%;accent-color:var(--green)}
     <section class="sec" id="ideas-r">
       <h2>اقتراحاتي للريلز</h2>
       <div class="ideas" id="ircards"></div>
+    </section>
+    <section class="sec" id="ignored">
+      <h2>المتجاهلة</h2>
+      <p class="note">كل شي تجاهلته يجي هنا مع سببه، وتقدر ترجعه في أي وقت. الأسباب أستخدمها عشان ما أكرر نفس الغلط.</p>
+      <div class="empty" id="iempty">ما تجاهلت شي للحين.</div>
+      <div class="cards" id="icards"></div>
+      <div class="ideas" id="iideas"></div>
     </section>
   </div>
 
@@ -578,7 +584,7 @@ function posterCard(id){
   h+='<b>'+esc(m.title)+(m.price?' · '+esc(m.price)+' ريال':'')+'</b>';
   h+='<details><summary>الكابشن والهاشتاقات</summary><pre>'+esc(m.cap)+'</pre><div class="meta">'+(m.style==='a'?'الهاشتاقات في الكابشن (طريقة أ)':'الهاشتاقات في أول تعليق (طريقة ب)')+'</div><pre>'+esc(m.tags)+'</pre><div class="row"><button class="btn small" data-a="cap">انسخ الكابشن</button><button class="btn small" data-a="tags">انسخ الهاشتاقات</button></div></details>';
   if(s.status==='ignored'){
-    h+='<div class="why">السبب (اختياري):'+WHY.map(function(w){return '<button class="btn small" data-a="why" data-w="'+w+'" aria-pressed="'+(s.reason===w)+'">'+w+'</button>'}).join('')+'</div>';
+    h+='<p class="note">'+(s.reason?'السبب: '+esc(s.reason):'بدون سبب')+'</p>';
     h+='<div class="acts"><button class="btn" data-a="restore">رجّعه</button></div>';
   } else if(s.status==='approved'||s.status==='scheduled'||s.status==='published'){
     h+='<div class="acts"><button class="btn" data-a="edit">افتح المحرر</button>'+(s.status==='approved'?'<button class="btn quiet" data-a="restore">ألغِ الموافقة</button>':'')+'</div>';
@@ -599,19 +605,29 @@ function ideaCard(o,reel){
   h+='</div><h3>'+esc(o.title)+'</h3><p>'+esc(o.text)+'</p>';
   if(o.cap)h+='<p class="note">'+esc(o.cap).replace(/\n/g,'<br>')+'</p>';
   if(s==='new')h+='<div class="acts">'+(reel?'<button class="btn primary" data-a="approved">وافق على الإنتاج</button>':'<button class="btn primary" data-a="approved-poster">سوّها بوستر</button><button class="btn" data-a="approved-carousel">سوّها كاروسيل</button>')+'<button class="btn quiet" data-a="ignored">تجاهل</button></div>';
-  else if(s==='ignored')h+='<div class="why">السبب (اختياري):'+WHY.map(function(w){return '<button class="btn small" data-a="why" data-w="'+w+'" aria-pressed="'+(o.reason===w)+'">'+w+'</button>'}).join('')+'</div><div class="acts"><button class="btn" data-a="new">رجّعه</button></div>';
+  else if(s==='ignored')h+='<p class="note">'+(o.reason?'السبب: '+esc(o.reason):'بدون سبب')+'</p><div class="acts"><button class="btn" data-a="new">رجّعه</button></div>';
   else if(s!=='done')h+='<p class="note">'+(o.nowAt?'طلبت إنتاجه الآن · '+esc(fmt(o.nowAt)):'موعد الإنتاج: '+esc(fmt(nextRun()))+' (تحديث الفجر)')+'</p><div class="acts"><button class="btn glow" data-a="now">أنتجه الآن</button><button class="btn quiet" data-a="new">ألغِ الموافقة</button></div>';
   return '<div class="idea" data-id="'+esc(o.id)+'">'+h+'</div>';
 }
 function renderMedia(){
-  var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=0;
+  var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=0,ig=[];
   IDS.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else pc.appendChild(posterCard(id))});
-  $('ignoredbox').hidden=!n;
-  $('rcards').innerHTML=REELS.map(function(r){return ideaCard({id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:(state[r[0]]||{}).status||'new',reason:(state[r[0]]||{}).reason,nowAt:(state[r[0]]||{}).nowAt},true)}).join('');
-  var ip=ideas.filter(function(o){return o.kind!=='reel'}),ir=ideas.filter(function(o){return o.kind==='reel'});
+  var reels=REELS.map(function(r){var st=state[r[0]]||{};return {o:{id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:st.status||'new',reason:st.reason,nowAt:st.nowAt},reel:true}});
+  reels.forEach(function(x){if(x.o.status==='ignored')ig.push(x)});
+  ideas.forEach(function(o){if(o.status==='ignored')ig.push({o:o,reel:o.kind==='reel'})});
+  $('rcards').innerHTML=reels.filter(function(x){return x.o.status!=='ignored'}).map(function(x){return ideaCard(x.o,true)}).join('')||'<div class="empty">كل ريلز الأسبوع متجاهلة. تلقاها تحت في «المتجاهلة».</div>';
+  $('iideas').innerHTML=ig.map(function(x){return ideaCard(x.o,x.reel)}).join('');
+  n+=ig.length;$('iempty').hidden=!!n;$('icount').textContent=n?'('+n+')':'';
+  var live=ideas.filter(function(o){return o.status!=='ignored'}),ip=live.filter(function(o){return o.kind!=='reel'}),ir=live.filter(function(o){return o.kind==='reel'});
   var wait='<div class="empty">'+(db?'ما فيه اقتراحات جديدة الحين. أكتب لك 10 اقتراحات بوسترات و5 ريلز كل أسبوع.':'الاقتراحات تظهر لما تفتح الصفحة من حسابك في Claude.')+'</div>';
   $('ipcards').innerHTML=ip.length?ip.map(function(o){return ideaCard(o,false)}).join(''):wait;
   $('ircards').innerHTML=ir.length?ir.map(function(o){return ideaCard(o,true)}).join(''):wait;
+}
+function askWhy(title,cb){
+  modal('<h3>تتجاهل «'+esc(title)+'»؟</h3><p class="note">اكتب السبب إذا فيه عشان ما أكرره. وتقدر تتجاهل بدون سبب.</p><div class="row" id="w-chips">'+WHY.map(function(w){return '<button class="btn small" data-w="'+w+'" aria-pressed="false">'+w+'</button>'}).join('')+'</div><textarea id="w-text" placeholder="سبب ثاني أو تفاصيل (اختياري)"></textarea><div class="row"><button class="btn primary" id="w-yes">تجاهل</button><button class="btn" id="m-no">رجوع</button></div>');
+  $('w-chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var on=b.getAttribute('aria-pressed')==='true';$('w-chips').querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed',String(!on))});
+  $('m-no').onclick=closeModal;
+  $('w-yes').onclick=function(){var c=$('w-chips').querySelector('[aria-pressed="true"]'),t=$('w-text').value.trim().slice(0,300),r=[c?c.dataset.w:'',t].filter(Boolean).join(' · ');closeModal();cb(r);toast('تم التجاهل. تلقاه في قسم «المتجاهلة» آخر الصفحة')};
 }
 function approve(id,btn){
   btn.disabled=true;btn.textContent='جارٍ التجهيز…';
@@ -636,7 +652,7 @@ $('v-media').addEventListener('click',function(ev){
     if(a==='cap')copy(fullCap(id));
     else if(a==='tags')copy(META[id].tags);
     else if(a==='ok')approve(id,b);
-    else if(a==='no'){setState(id,{status:'ignored',reason:''});renderMedia();toast('تم التجاهل. تلقاه تحت في «البوسترات المتجاهلة»')}
+    else if(a==='no')askWhy(META[id].title,function(r){setState(id,{status:'ignored',reason:r,planAt:0});renderMedia()});
     else if(a==='restore'){setState(id,{status:'ready',reason:'',planAt:0});renderMedia()}
     else if(a==='why'){setState(id,{reason:b.dataset.w});renderMedia()}
     return;
@@ -650,6 +666,15 @@ $('v-media').addEventListener('click',function(ev){
       else{var it=ideas.filter(function(x){return x.id===iid})[0];if(!it)return;it.nowAt=ts;it.at=ts;var dd={};for(var kk in it)if(kk!=='id')dd[kk]=it[kk];saved=put('ideas/'+iid,dd)}
       saved.then(function(){return put('requests/now',{type:'produce-now',id:iid,title:title,at:ts})}).then(function(){return poke('أنتجه الآن: '+iid)}).then(function(ok){
         renderMedia();toast(ok?'وصل الطلب، أبدأ إنتاجه الحين':'سجلت طلبك. اكتب لي «نفذ» في المحادثة عشان أبدأ الحين');
+      });
+      return;
+    }
+    if(act==='ignored'){
+      var ttl=idea.querySelector('h3').textContent;
+      askWhy(ttl,function(r){
+        if(iid.indexOf('reel-')===0)setState(iid,{status:'ignored',reason:r,nowAt:0,planAt:0});
+        else{var x=ideas.filter(function(q){return q.id===iid})[0];if(x){x.status='ignored';x.reason=r;x.nowAt=0;x.at=Date.now();var xd={};for(var xk in x)if(xk!=='id')xd[xk]=x[xk];put('ideas/'+iid,xd)}}
+        renderMedia();
       });
       return;
     }
