@@ -703,7 +703,7 @@ function sendMine(now){
   var t=$('my-text').value.trim();if(!t)return toast('اكتب اقتراحك أول');
   if(!db)return toast('افتح الصفحة من حسابك في Claude عشان يوصلني اقتراحك');
   var kind=$('mine').querySelector('[data-kind][aria-pressed="true"]').dataset.kind,ts=Date.now(),id='u-'+ts,first=t.split('\n')[0];
-  var o={kind:'poster',mine:true,product:'اقتراحك',title:first.length>44?first.slice(0,44)+'…':first,text:t.slice(0,2000),status:kind,order:-Math.floor(ts/1000),at:ts};
+  var o={kind:'poster',mine:true,product:'فكرتك',title:first.length>44?first.slice(0,44)+'…':first,text:t.slice(0,2000),status:kind,order:-Math.floor(ts/1000),at:ts};
   if(now)o.nowAt=ts;
   $('my-now').disabled=$('my-later').disabled=true;
   put('ideas/'+id,o).then(function(ok){
