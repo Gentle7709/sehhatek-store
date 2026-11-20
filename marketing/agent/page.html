@@ -584,6 +584,7 @@ function posterCard(id){
   var box=document.createElement('div');box.style.display='contents';box.innerHTML=h;d.appendChild(box);
   return d;
 }
+function nextRun(){var d=new Date(),t=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),1,40);if(t<=d.getTime())t+=864e5;return t}
 function ideaCard(o,reel){
   var s=o.status||'new',h='<div class="row"><span class="chip">'+esc(o.product||'عام')+'</span>';
   if(s==='approved-poster')h+='<span class="chip wait">موافق: بوستر</span>';
@@ -595,14 +596,14 @@ function ideaCard(o,reel){
   if(o.cap)h+='<p class="note">'+esc(o.cap).replace(/\n/g,'<br>')+'</p>';
   if(s==='new')h+='<div class="acts">'+(reel?'<button class="btn primary" data-a="approved">وافق على الإنتاج</button>':'<button class="btn primary" data-a="approved-poster">سوّها بوستر</button><button class="btn" data-a="approved-carousel">سوّها كاروسيل</button>')+'<button class="btn quiet" data-a="ignored">تجاهل</button></div>';
   else if(s==='ignored')h+='<div class="why">السبب (اختياري):'+WHY.map(function(w){return '<button class="btn small" data-a="why" data-w="'+w+'" aria-pressed="'+(o.reason===w)+'">'+w+'</button>'}).join('')+'</div><div class="acts"><button class="btn" data-a="new">رجّعه</button></div>';
-  else if(s!=='done')h+='<div class="acts"><button class="btn quiet" data-a="new">ألغِ الموافقة</button></div>';
+  else if(s!=='done')h+='<p class="note">'+(o.nowAt?'طلبت إنتاجه الآن · '+esc(fmt(o.nowAt)):'موعد الإنتاج: '+esc(fmt(nextRun()))+' (تحديث الفجر)')+'</p><div class="acts"><button class="btn primary" data-a="now">أنتجه الآن</button><button class="btn quiet" data-a="new">ألغِ الموافقة</button></div>';
   return '<div class="idea" data-id="'+esc(o.id)+'">'+h+'</div>';
 }
 function renderMedia(){
   var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=0;
   IDS.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else pc.appendChild(posterCard(id))});
   $('ignoredbox').hidden=!n;
-  $('rcards').innerHTML=REELS.map(function(r){return ideaCard({id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:(state[r[0]]||{}).status||'new',reason:(state[r[0]]||{}).reason},true)}).join('');
+  $('rcards').innerHTML=REELS.map(function(r){return ideaCard({id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:(state[r[0]]||{}).status||'new',reason:(state[r[0]]||{}).reason,nowAt:(state[r[0]]||{}).nowAt},true)}).join('');
   var ip=ideas.filter(function(o){return o.kind!=='reel'}),ir=ideas.filter(function(o){return o.kind==='reel'});
   var wait='<div class="empty">'+(db?'ما فيه اقتراحات جديدة الحين. أكتب لك 10 اقتراحات بوسترات و5 ريلز كل أسبوع.':'الاقتراحات تظهر لما تفتح الصفحة من حسابك في Claude.')+'</div>';
   $('ipcards').innerHTML=ip.length?ip.map(function(o){return ideaCard(o,false)}).join(''):wait;
@@ -638,16 +639,26 @@ $('v-media').addEventListener('click',function(ev){
   }
   if(idea&&b){
     var iid=idea.dataset.id,act=b.dataset.a;
+    if(act==='now'){
+      b.disabled=true;var ts=Date.now(),isReel=iid.indexOf('reel-')===0,title=idea.querySelector('h3').textContent;
+      var saved;
+      if(isReel)saved=setState(iid,{nowAt:ts,title:title,kind:'ريلز'});
+      else{var it=ideas.filter(function(x){return x.id===iid})[0];if(!it)return;it.nowAt=ts;it.at=ts;var dd={};for(var kk in it)if(kk!=='id')dd[kk]=it[kk];saved=put('ideas/'+iid,dd)}
+      saved.then(function(){return put('requests/now',{type:'produce-now',id:iid,title:title,at:ts})}).then(function(){return poke('أنتجه الآن: '+iid)}).then(function(ok){
+        renderMedia();toast(ok?'وصل الطلب، أبدأ إنتاجه الحين':'سجلت طلبك. اكتب لي «نفذ» في المحادثة عشان أبدأ الحين');
+      });
+      return;
+    }
     if(iid.indexOf('reel-')===0){
-      if(act==='why')setState(iid,{reason:b.dataset.w});else setState(iid,{status:act,reason:'',planAt:act==='approved'?planDate(iid):0});
-      renderMedia();if(act==='approved')toast('تمت الموافقة. أرسل لك تكلفة الإنتاج قبل ما أبدأ');
+      if(act==='why')setState(iid,{reason:b.dataset.w});else setState(iid,{status:act,reason:'',nowAt:0,planAt:act==='approved'?planDate(iid):0});
+      renderMedia();if(act==='approved')toast('تمت الموافقة. الإنتاج في تحديث الفجر، أو اضغط «أنتجه الآن»');
       return;
     }
     var o=ideas.filter(function(x){return x.id===iid})[0];if(!o)return;
-    if(act==='why')o.reason=b.dataset.w;else{o.status=act;o.reason=''}
+    if(act==='why')o.reason=b.dataset.w;else{o.status=act;o.reason='';o.nowAt=0}
     o.at=Date.now();var data={};for(var k in o)if(k!=='id')data[k]=o[k];
     put('ideas/'+iid,data);renderMedia();
-    if(act==='approved-poster'||act==='approved-carousel'||act==='approved')toast('تمت الموافقة. التنفيذ في تحديث الفجر أو من «حدّث الصور الآن»');
+    if(act==='approved-poster'||act==='approved-carousel'||act==='approved')toast('تمت الموافقة. الإنتاج في تحديث الفجر، أو اضغط «أنتجه الآن»');
   }
 });
 $('b-now').onclick=function(){
