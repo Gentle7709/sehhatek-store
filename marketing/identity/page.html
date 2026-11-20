@@ -1,0 +1,161 @@
+<title>هوية صحتك بالدنيا</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: an identity board. What we keep from the site, then three colour directions shown on the same two posters. */
+:root{
+  --bg:#F3F5F1; --surface:#FFFFFF; --ink:#13221C; --muted:#5B6B63; --line:#D5DED8;
+  --green:#1F5A43; --green-deep:#174634; --green-soft:#E4EEE8; --gold:#C9A24A;
+  --display:"Baloo Bhaijaan 2","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic","Baloo Bhaijaan 2",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0F1A15; --surface:#17251F; --ink:#E9F0EB; --muted:#9DB0A6; --line:#2B3D34;
+  --green:#5FB58F; --green-deep:#A9DCC3; --green-soft:#1E3329; --gold:#D9B665; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0F1A15; --surface:#17251F; --ink:#E9F0EB; --muted:#9DB0A6; --line:#2B3D34;
+  --green:#5FB58F; --green-deep:#A9DCC3; --green-soft:#1E3329; --gold:#D9B665; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.75;
+  padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:36px}
+h1{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1.25;margin:0;color:var(--green-deep);text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:0;color:var(--green-deep)}
+h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin:0}
+p{margin:0;max-width:68ch}
+.lead{color:var(--muted)}
+.sec{display:flex;flex-direction:column;gap:14px}
+.base{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.base div{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+.base b{display:block;font-family:var(--display);color:var(--green-deep)}
+.base span{font-size:.9rem;color:var(--muted)}
+.dir{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.dirhead{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.tag{font-family:var(--display);font-weight:800;font-size:1.6rem;color:var(--gold)}
+.sws{display:flex;gap:10px;flex-wrap:wrap}
+.sws div{display:flex;flex-direction:column;gap:4px;font-size:.74rem;color:var(--muted);align-items:center;font-variant-numeric:tabular-nums}
+.sws i{width:54px;height:54px;border-radius:18px;border:1px solid var(--line);display:block}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.rules{margin:0;padding-inline-start:20px}
+.rules li{margin-block:4px}
+
+/* ---- posters: fixed look, sized in container units ---- */
+.poster{container-type:inline-size;aspect-ratio:4/5;width:100%;max-width:440px;margin-inline:auto;border-radius:10px;overflow:hidden;position:relative;
+  background:var(--p-bg);color:var(--p-ink);box-shadow:0 8px 28px rgba(19,34,28,.14)}
+.poster *{line-height:1.25}
+.brand{position:absolute;top:4.5cqw;right:5cqw;display:flex;align-items:center;gap:2cqw;z-index:3}
+.brand img{width:10cqw;height:10cqw;background:#fff;border-radius:50%;padding:.8cqw}
+.brand b{font-family:var(--display);font-weight:700;font-size:4.4cqw;color:var(--p-title)}
+.orig{position:absolute;top:6cqw;left:5cqw;font-size:2.7cqw;font-weight:600;color:var(--p-title);background:var(--p-tint);border-radius:99px;padding:1.2cqw 3cqw;z-index:3}
+.cta{position:absolute;bottom:4.5cqw;left:5cqw;right:5cqw;background:var(--p-title);color:#fff;border-radius:99px;text-align:center;font-family:var(--display);font-weight:700;font-size:4.2cqw;padding:2.6cqw 0;z-index:3}
+.prod{mix-blend-mode:multiply;object-fit:contain}
+.price{position:absolute;background:var(--p-price);color:var(--p-price-ink);border-radius:50%;width:25cqw;height:25cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;box-shadow:0 1.2cqw 3cqw rgba(19,34,28,.16)}
+.price b{font-family:var(--display);font-weight:800;font-size:10cqw;line-height:1}
+.price span{font-size:3.2cqw;font-weight:600}
+
+/* poster 1: arch + question */
+.p1 .q{position:absolute;top:19cqw;right:6cqw;left:6cqw;text-align:center;font-family:var(--display);font-weight:800;font-size:9.4cqw;color:var(--p-title)}
+.p1 .s{position:absolute;top:32.5cqw;right:6cqw;left:6cqw;text-align:center;font-size:4.2cqw;font-weight:500}
+.p1 .arch{position:absolute;top:43cqw;left:17cqw;right:17cqw;bottom:21cqw;background:var(--p-tint);border-radius:50cqw 50cqw 6cqw 6cqw}
+.p1 .leaf{position:absolute;width:20cqw;height:20cqw;border-radius:0 70% 0 70%;background:var(--p-tint2);top:48cqw;right:7cqw;transform:rotate(12deg)}
+.p1 .leaf.b{top:86cqw;right:auto;left:6cqw;width:14cqw;height:14cqw;transform:rotate(200deg)}
+.p1 .prod{position:absolute;top:49cqw;left:26cqw;width:48cqw;height:52cqw}
+.p1 .price{bottom:19cqw;left:8cqw}
+.p1 .name{position:absolute;bottom:14.5cqw;right:6cqw;left:6cqw;text-align:center;font-size:3.6cqw;font-weight:600;color:var(--p-title)}
+
+/* poster 2: wave + direct benefit */
+.p2 .top{position:absolute;inset:0 0 44cqw 0;background:var(--p-tint)}
+.p2 .ring{position:absolute;top:19cqw;left:50%;width:58cqw;height:58cqw;margin-left:-29cqw;border-radius:50%;background:var(--p-tint2)}
+.p2 .prod{position:absolute;top:20cqw;left:24cqw;width:52cqw;height:56cqw;z-index:2}
+.p2 svg{position:absolute;left:0;right:0;top:66cqw;width:100%;height:18cqw;display:block;z-index:1}
+.p2 .h{position:absolute;top:84cqw;right:6cqw;left:36cqw;font-family:var(--display);font-weight:800;font-size:8cqw;color:var(--p-title);text-align:right;z-index:3}
+.p2 .name{position:absolute;top:104cqw;right:6cqw;left:36cqw;font-size:3.8cqw;font-weight:600;text-align:right;z-index:3}
+.p2 .price{top:82cqw;left:7cqw}
+
+.d-a{--p-bg:#FBF7EE;--p-ink:#2A3A33;--p-title:#1F5A43;--p-tint:#D6ECDF;--p-tint2:#EAF5EE;--p-price:#C9A24A;--p-price-ink:#FFFFFF;--p-wave:#FBF7EE}
+.d-b{--p-bg:#F4EFE6;--p-ink:#3A433C;--p-title:#3F5F4C;--p-tint:#CFDAC7;--p-tint2:#E3E9DB;--p-price:#B9895E;--p-price-ink:#FFFFFF;--p-wave:#F4EFE6}
+.d-c{--p-bg:#FFFFFF;--p-ink:#22332B;--p-title:#1F7A54;--p-tint:#CDEED9;--p-tint2:#E9F8EF;--p-price:#1F7A54;--p-price-ink:#FFFFFF;--p-wave:#FFFFFF}
+</style>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="sec">
+    <h1>الهوية البصرية لبوسترات صحتك بالدنيا</h1>
+    <p class="lead">ثلاث اتجاهات ألوان فاتحة على نفس البوسترين عشان تقارن بينها. اختر حرف واحد (أ، ب، أو ج) وأبني عليه كل البوسترات. صور المنتجات هنا من الكتالوج مؤقتاً، وتتبدل بصورك الحقيقية بعد اختيارك.</p>
+  </header>
+
+  <section class="sec">
+    <h2>اللي أخذناه من صفحة المنتجات ويبقى ثابت</h2>
+    <div class="base">
+      <div><b>الخطوط</b><span>Baloo Bhaijaan 2 للعناوين، و IBM Plex Sans Arabic للنصوص، نفس خطوط الصفحة.</span></div>
+      <div><b>الأخضر والذهبي</b><span>أخضر الصفحة للعناوين وزر الطلب فقط، والذهبي للسعر. الباقي درجات فاتحة منهم.</span></div>
+      <div><b>الانحناءات</b><span>زوايا الصفحة الناعمة وأزرارها الدائرية تتحول في البوستر إلى قوس، موجة، ودوائر.</span></div>
+      <div><b>ورقة الشعار</b><span>شكل الورقة يتكرر كعنصر خفيف في الخلفية بدل أي رسومات عشوائية.</span></div>
+    </div>
+  </section>
+
+  <section class="dir d-a">
+    <div class="dirhead"><span class="tag">أ</span><h2>نعناعي وكريمي</h2><p class="lead">دافي وهادي. الكريمي يريح العين والنعناعي يعطي إحساس الانتعاش.</p></div>
+    <div class="sws">
+      <div><i style="background:#FBF7EE"></i>#FBF7EE</div><div><i style="background:#D6ECDF"></i>#D6ECDF</div><div><i style="background:#EAF5EE"></i>#EAF5EE</div><div><i style="background:#1F5A43"></i>#1F5A43</div><div><i style="background:#C9A24A"></i>#C9A24A</div>
+    </div>
+    <div class="pair" data-pair></div>
+  </section>
+
+  <section class="dir d-b">
+    <div class="dirhead"><span class="tag">ب</span><h2>أخضر مريمي ورملي</h2><p class="lead">طبيعي وعشبي. أهدى الثلاثة، وقريب من ألوان الأعشاب والفطر.</p></div>
+    <div class="sws">
+      <div><i style="background:#F4EFE6"></i>#F4EFE6</div><div><i style="background:#CFDAC7"></i>#CFDAC7</div><div><i style="background:#E3E9DB"></i>#E3E9DB</div><div><i style="background:#3F5F4C"></i>#3F5F4C</div><div><i style="background:#B9895E"></i>#B9895E</div>
+    </div>
+    <div class="pair" data-pair></div>
+  </section>
+
+  <section class="dir d-c">
+    <div class="dirhead"><span class="tag">ج</span><h2>أبيض وأخضر منعش</h2><p class="lead">نظيف وحيوي. أكثرهم إشراقاً، ويبرز صورة المنتج على الأبيض.</p></div>
+    <div class="sws">
+      <div><i style="background:#FFFFFF"></i>#FFFFFF</div><div><i style="background:#CDEED9"></i>#CDEED9</div><div><i style="background:#E9F8EF"></i>#E9F8EF</div><div><i style="background:#1F7A54"></i>#1F7A54</div>
+    </div>
+    <div class="pair" data-pair></div>
+  </section>
+
+  <section class="sec">
+    <h2>قواعد كل بوستر</h2>
+    <ul class="rules">
+      <li>أي منتج يظهر في بوستر، يظهر معه حجمه وسعره بالضبط من صفحة المنتجات.</li>
+      <li>ثلاث ثوابت في كل بوستر: شعار صحتك بالدنيا، عبارة «منتجات DXN الأصلية»، وسطر «الرابط في البايو».</li>
+      <li>أغلب البوسترات نص قليل وقوي: عنوان، سطر فائدة، المنتج وسعره، وطريقة الطلب.</li>
+      <li>العناوين تتنوع، والأكثر سؤال يلمس المشكلة، ثم الفائدة بصياغة «يدعم» و«يساعد».</li>
+      <li>الانحناءات تتنوع: قوس لبوستر السؤال، موجة لبوستر الفائدة المباشرة، ودوائر وورقة في الخلفية.</li>
+      <li>الأشخاص حسب فائدة المنتج: بدون أشخاص، أو يد فقط، أو رجل، والمرأة من الخلف بدون وجه.</li>
+    </ul>
+  </section>
+</div>
+
+<template id="tpl">
+  <div class="poster p1">
+    <div class="brand"><img src="img/site-logo.png" alt=""><b>صحتك بالدنيا</b></div>
+    <span class="orig">منتجات DXN الأصلية</span>
+    <div class="q">تحس بثقل بعد الأكل؟</div>
+    <div class="s">عرف الأسد يدعم راحة هضمك</div>
+    <i class="leaf"></i><i class="leaf b"></i>
+    <div class="arch"></div>
+    <img class="prod" src="img/lions-mane-tablet.webp" alt="عبوة عرف الأسد">
+    <div class="price"><b>144</b><span>ريال</span></div>
+    <div class="name">عرف الأسد · 120 حبة</div>
+    <div class="cta">اطلبه من الرابط في البايو 👇</div>
+  </div>
+  <div class="poster p2">
+    <div class="top"></div>
+    <div class="brand"><img src="img/site-logo.png" alt=""><b>صحتك بالدنيا</b></div>
+    <span class="orig" style="background:#fff">منتجات DXN الأصلية</span>
+    <i class="ring"></i>
+    <img class="prod" src="img/ganocelium-gl.webp" alt="عبوة ريشي GL">
+    <svg viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12 C 22 0, 40 20, 62 9 S 90 2, 100 8 V18 H0 Z" fill="var(--p-wave)"/></svg>
+    <div class="h">يدعم مناعتك كل يوم</div>
+    <div class="name">ريشي GL · 90 كبسولة</div>
+    <div class="price"><b>127</b><span>ريال</span></div>
+    <div class="cta">اطلبه من الرابط في البايو 👇</div>
+  </div>
+</template>
+<script>
+document.querySelectorAll('[data-pair]').forEach(function(el){el.appendChild(document.getElementById('tpl').content.cloneNode(true))});
+</script>
