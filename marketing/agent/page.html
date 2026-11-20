@@ -160,6 +160,13 @@ input[type=range]{width:100%;accent-color:var(--green)}
     <section class="sec" id="ideas-p">
       <h2>اقتراحاتي للبوسترات</h2>
       <p class="note">أكتب لك الفكرة نص، وأنت تختار: بوستر واحد أو كاروسيل من 3 صور. التنفيذ في تحديث الفجر أو فوراً من «حدّث الصور الآن».</p>
+      <div class="box" id="mine">
+        <h3>اقتراحك أنت</h3>
+        <label for="my-text" class="note">اكتب فكرتك بأي طريقة: المنتج، وش تبغى ينقال، وأي صورة في بالك. وأنا أصممها بهوية الصفحة.</label>
+        <textarea id="my-text" placeholder="مثال: بوستر عن مورنزي 700 مل للعائلة، سؤال عن مشروب الغداء، وصورة السفرة"></textarea>
+        <div class="row"><span class="note">النوع:</span><button class="btn small" data-kind="approved-poster" aria-pressed="true">بوستر</button><button class="btn small" data-kind="approved-carousel" aria-pressed="false">كاروسيل 3 صور</button></div>
+        <div class="row"><button class="btn glow" id="my-now">صممه الآن</button><button class="btn" id="my-later">صممه في تحديث الفجر</button></div>
+      </div>
       <div class="ideas" id="ipcards"></div>
     </section>
     <section class="sec" id="ideas-r">
@@ -596,7 +603,7 @@ function posterCard(id){
 }
 function nextRun(){var d=new Date(),t=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),1,40);if(t<=d.getTime())t+=864e5;return t}
 function ideaCard(o,reel){
-  var s=o.status||'new',h='<div class="row"><span class="chip">'+esc(o.product||'عام')+'</span>';
+  var s=o.status||'new',h='<div class="row"><span class="chip">'+esc(o.product||'عام')+'</span>'+(o.mine?'<span class="chip gold">اقتراحك</span>':'');
   if(s==='approved-poster')h+='<span class="chip wait">موافق: بوستر</span>';
   else if(s==='approved-carousel')h+='<span class="chip wait">موافق: كاروسيل 3 صور</span>';
   else if(s==='approved')h+='<span class="chip wait">موافق عليه</span>';
@@ -619,7 +626,7 @@ function renderMedia(){
   $('iideas').innerHTML=ig.map(function(x){return ideaCard(x.o,x.reel)}).join('');
   n+=ig.length;$('iempty').hidden=!!n;$('icount').textContent=n?'('+n+')':'';
   var live=ideas.filter(function(o){return o.status!=='ignored'}),ip=live.filter(function(o){return o.kind!=='reel'}),ir=live.filter(function(o){return o.kind==='reel'});
-  var wait='<div class="empty">'+(db?'ما فيه اقتراحات جديدة الحين. أكتب لك 10 اقتراحات بوسترات و5 ريلز كل أسبوع.':'الاقتراحات تظهر لما تفتح الصفحة من حسابك في Claude.')+'</div>';
+  var wait='<div class="empty">'+(!db?'الاقتراحات تظهر لما تفتح الصفحة من حسابك في Claude.':loadErr.ideas||loadErr.page?'ما قدرت أحمّل الاقتراحات. <button class="btn small" data-reload="1">أعد التحميل</button>':'ما فيه اقتراحات جديدة الحين. أكتب لك 10 اقتراحات بوسترات و5 ريلز كل أسبوع.')+'</div>';
   $('ipcards').innerHTML=ip.length?ip.map(function(o){return ideaCard(o,false)}).join(''):wait;
   $('ircards').innerHTML=ir.length?ir.map(function(o){return ideaCard(o,true)}).join(''):wait;
 }
@@ -690,6 +697,25 @@ $('v-media').addEventListener('click',function(ev){
     if(act==='approved-poster'||act==='approved-carousel'||act==='approved')toast('تمت الموافقة. الإنتاج في تحديث الفجر، أو اضغط «أنتجه الآن»');
   }
 });
+$('v-media').addEventListener('click',function(e){if(e.target.closest('[data-reload]'))loadAll()});
+$('mine').addEventListener('click',function(e){var b=e.target.closest('[data-kind]');if(!b)return;$('mine').querySelectorAll('[data-kind]').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))})});
+function sendMine(now){
+  var t=$('my-text').value.trim();if(!t)return toast('اكتب اقتراحك أول');
+  if(!db)return toast('افتح الصفحة من حسابك في Claude عشان يوصلني اقتراحك');
+  var kind=$('mine').querySelector('[data-kind][aria-pressed="true"]').dataset.kind,ts=Date.now(),id='u-'+ts,first=t.split('\n')[0];
+  var o={kind:'poster',mine:true,product:'اقتراحك',title:first.length>44?first.slice(0,44)+'…':first,text:t.slice(0,2000),status:kind,order:-Math.floor(ts/1000),at:ts};
+  if(now)o.nowAt=ts;
+  $('my-now').disabled=$('my-later').disabled=true;
+  put('ideas/'+id,o).then(function(ok){
+    $('my-now').disabled=$('my-later').disabled=false;
+    if(!ok)return toast('ما انحفظ اقتراحك، جرب مرة ثانية');
+    var c={};for(var k in o)c[k]=o[k];c.id=id;ideas.unshift(c);$('my-text').value='';renderMedia();
+    if(!now)return toast('وصلني اقتراحك. أصممه في تحديث الفجر');
+    put('requests/now',{type:'produce-now',id:id,title:o.title,at:ts}).then(function(){return poke('صمم اقتراحي الآن: '+id)}).then(function(sent){toast(sent?'وصلني اقتراحك، أبدأ تصميمه الحين':'انحفظ اقتراحك. اكتب لي «نفذ» في المحادثة عشان أبدأ الحين')});
+  });
+}
+$('my-now').onclick=function(){sendMine(true)};
+$('my-later').onclick=function(){sendMine(false)};
 $('b-now').onclick=function(){
   var b=this;b.disabled=true;
   put('requests/now',{type:'update-now',at:Date.now()}).then(function(){return poke('حدّث الصور الآن')}).then(function(ok){
@@ -875,6 +901,34 @@ var start='media';try{start=localStorage.getItem('sb-tab2')||'media'}catch(e){}
 show(start==='stats'||start==='plan'?start:'media');
 if(document.fonts&&document.fonts.load){Promise.all(['800 60px "Baloo Bhaijaan 2"','700 60px "Baloo Bhaijaan 2"','500 40px "IBM Plex Sans Arabic"','600 40px "IBM Plex Sans Arabic"'].map(function(f){return document.fonts.load(f,'صحتك')})).then(redrawAll,redrawAll);document.fonts.ready.then(redrawAll)}
 function rerender(){if(view==='media')renderMedia();else if(view==='stats')renderStats();else if(view==='plan')renderPlan();else{redraw();renderProps();renderLayers()}}
+var loadErr={};
+function readCol(c,tries){
+  var to=new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},10000)});
+  return Promise.race([db.collection(c).get(),to]).then(function(s){
+    return s.docs.map(function(x){var v=null;try{v=JSON.parse(JSON.stringify(x.data()||null))}catch(e){}return {id:x.id,v:v}});
+  }).catch(function(){
+    if(tries>0)return new Promise(function(r){setTimeout(r,1500)}).then(function(){return readCol(c,tries-1)});
+    loadErr[c]=1;return null;
+  });
+}
+function loadAll(){
+  if(!db)return Promise.resolve();
+  loadErr={};setStatus('saving');$('status').textContent='جارٍ التحميل…';
+  var names=['state','ideas','designs','config','stats','lessons','comments'],r={};
+  return names.reduce(function(ch,c){return ch.then(function(){return readCol(c,1)}).then(function(v){r[c]=v})},Promise.resolve()).then(function(){
+    try{
+      (r.designs||[]).forEach(function(doc){var v=doc.v;if(!v||!v.json||!DEF[doc.id])return;try{var p=JSON.parse(v.json);if(p&&p.els&&(!edited[doc.id]||(p.at||0)>=(posters[doc.id].at||0))){posters[doc.id]=p;edited[doc.id]=true}}catch(e){}});
+      (r.state||[]).forEach(function(doc){var v=doc.v;if(v&&(!state[doc.id]||(v.at||0)>=(state[doc.id].at||0)))state[doc.id]=v});
+      if(r.ideas)ideas=r.ideas.map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (a.order||0)-(b.order||0)});
+      if(r.stats)stats=r.stats.map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (b.at||0)-(a.at||0)});
+      (r.lessons||[]).forEach(function(doc){if(doc.id==='main')lessons=doc.v});
+      (r.config||[]).forEach(function(doc){if(doc.id==='main')config=doc.v||{}});
+      if(r.comments)ccount=r.comments.length;
+    }catch(e){loadErr.page=1}
+    saveLocal();redrawAll();rerender();
+    var bad=Object.keys(loadErr).length;setStatus(bad?'local':'saved');if(bad)$('status').textContent='ما اكتمل التحميل';
+  });
+}
 var cl=window.claude;
 if(cl&&cl.use){
   cl.use('downloads').then(function(d){downloads=d},function(){});
@@ -882,19 +936,7 @@ if(cl&&cl.use){
   cl.use('mcp').then(function(m){mcp=m},function(){});
   cl.use('db').then(function(d){
     if(!d)return;
-    db=d;
-    var to=new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},10000)});
-    var all=function(c){return d.collection(c).get().then(function(s){return s.docs.map(function(x){var v=null;try{v=JSON.parse(JSON.stringify(x.data()||null))}catch(e){}return {id:x.id,v:v}})},function(){return []})};
-    Promise.race([Promise.all([all('designs'),all('state'),all('ideas'),all('stats'),all('lessons'),all('config'),all('comments')]),to]).then(function(r){
-      r[0].forEach(function(doc){var v=doc.v;if(!v||!v.json||!DEF[doc.id])return;try{var p=JSON.parse(v.json);if(p&&p.els&&(!edited[doc.id]||(p.at||0)>=(posters[doc.id].at||0))){posters[doc.id]=p;edited[doc.id]=true}}catch(e){}});
-      r[1].forEach(function(doc){var v=doc.v;if(v&&(!state[doc.id]||(v.at||0)>=(state[doc.id].at||0)))state[doc.id]=v});
-      ideas=r[2].map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (a.order||0)-(b.order||0)});
-      stats=r[3].map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (b.at||0)-(a.at||0)});
-      r[4].forEach(function(doc){if(doc.id==='main')lessons=doc.v});
-      r[5].forEach(function(doc){if(doc.id==='main')config=doc.v||{}});
-      ccount=r[6].length;
-      saveLocal();redrawAll();rerender();setStatus('saved');
-    },function(){setStatus('local')}).catch(function(){setStatus('local');rerender()});
+    db=d;loadAll();
   },function(){});
 }
 })();
