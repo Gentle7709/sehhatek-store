@@ -423,7 +423,7 @@ function commit(){
 }
 function snap(){var h=hist[cur]||(hist[cur]=[]);h.push(JSON.stringify(strip(posters[cur])));if(h.length>40)h.shift()}
 function setState(id,patch){
-  var s=state[id]||{};for(var k in patch)s[k]=patch[k];s.at=Date.now();state[id]=s;saveLocal();
+  var s={},old=state[id]||{},k;for(k in old)s[k]=old[k];for(k in patch)s[k]=patch[k];s.at=Date.now();state[id]=s;saveLocal();
   return put('state/'+id,s);
 }
 function poke(what){
@@ -884,17 +884,17 @@ if(cl&&cl.use){
     if(!d)return;
     db=d;
     var to=new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},10000)});
-    var all=function(c){return d.collection(c).get().then(function(s){return s.docs},function(){return []})};
+    var all=function(c){return d.collection(c).get().then(function(s){return s.docs.map(function(x){var v=null;try{v=JSON.parse(JSON.stringify(x.data()||null))}catch(e){}return {id:x.id,v:v}})},function(){return []})};
     Promise.race([Promise.all([all('designs'),all('state'),all('ideas'),all('stats'),all('lessons'),all('config'),all('comments')]),to]).then(function(r){
-      r[0].forEach(function(doc){var v=doc.data();if(!v||!v.json||!DEF[doc.id])return;try{var p=JSON.parse(v.json);if(p&&p.els&&(!edited[doc.id]||(p.at||0)>=(posters[doc.id].at||0))){posters[doc.id]=p;edited[doc.id]=true}}catch(e){}});
-      r[1].forEach(function(doc){var v=doc.data();if(v&&(!state[doc.id]||(v.at||0)>=(state[doc.id].at||0)))state[doc.id]=v});
-      ideas=r[2].map(function(doc){var v=doc.data()||{};v.id=doc.id;return v}).sort(function(a,b){return (a.order||0)-(b.order||0)});
-      stats=r[3].map(function(doc){var v=doc.data()||{};v.id=doc.id;return v}).sort(function(a,b){return (b.at||0)-(a.at||0)});
-      r[4].forEach(function(doc){if(doc.id==='main')lessons=doc.data()});
-      r[5].forEach(function(doc){if(doc.id==='main')config=doc.data()||{}});
+      r[0].forEach(function(doc){var v=doc.v;if(!v||!v.json||!DEF[doc.id])return;try{var p=JSON.parse(v.json);if(p&&p.els&&(!edited[doc.id]||(p.at||0)>=(posters[doc.id].at||0))){posters[doc.id]=p;edited[doc.id]=true}}catch(e){}});
+      r[1].forEach(function(doc){var v=doc.v;if(v&&(!state[doc.id]||(v.at||0)>=(state[doc.id].at||0)))state[doc.id]=v});
+      ideas=r[2].map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (a.order||0)-(b.order||0)});
+      stats=r[3].map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (b.at||0)-(a.at||0)});
+      r[4].forEach(function(doc){if(doc.id==='main')lessons=doc.v});
+      r[5].forEach(function(doc){if(doc.id==='main')config=doc.v||{}});
       ccount=r[6].length;
       saveLocal();redrawAll();rerender();setStatus('saved');
-    },function(){setStatus('local')});
+    },function(){setStatus('local')}).catch(function(){setStatus('local');rerender()});
   },function(){});
 }
 })();
