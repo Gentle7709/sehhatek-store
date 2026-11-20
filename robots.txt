@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gentle7709.github.io/sehhatek-store/sitemap.xml
