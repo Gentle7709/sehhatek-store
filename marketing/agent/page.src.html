@@ -46,6 +46,10 @@ h3{font-family:var(--display);font-weight:700;font-size:1.02rem;margin:0}
 .btn:hover{border-color:var(--green)}
 .btn.primary{background:var(--green);border-color:var(--green);color:var(--on-green)}
 .btn.quiet{color:var(--muted)}
+.btn.glow{background:linear-gradient(120deg,#3FA36C,#A9B94A 55%,#D9B84C);border-color:#C9B24A;color:#12301F;font-weight:700;box-shadow:0 0 0 1px rgba(217,184,76,.35),0 0 16px rgba(190,196,80,.6);animation:glow 2.4s ease-in-out infinite}
+.btn.glow:hover{border-color:#E6CB63;box-shadow:0 0 0 1px rgba(217,184,76,.5),0 0 24px rgba(205,205,90,.85)}
+@keyframes glow{50%{box-shadow:0 0 0 1px rgba(217,184,76,.5),0 0 26px rgba(205,205,90,.85)}}
+@media (prefers-reduced-motion:reduce){ .btn.glow{animation:none} }
 .btn.small{padding:3px 12px;font-size:.8rem}
 .btn[aria-pressed="true"]{background:var(--green-soft);border-color:var(--green)}
 .btn:disabled{opacity:.55;cursor:default}
@@ -596,7 +600,7 @@ function ideaCard(o,reel){
   if(o.cap)h+='<p class="note">'+esc(o.cap).replace(/\n/g,'<br>')+'</p>';
   if(s==='new')h+='<div class="acts">'+(reel?'<button class="btn primary" data-a="approved">وافق على الإنتاج</button>':'<button class="btn primary" data-a="approved-poster">سوّها بوستر</button><button class="btn" data-a="approved-carousel">سوّها كاروسيل</button>')+'<button class="btn quiet" data-a="ignored">تجاهل</button></div>';
   else if(s==='ignored')h+='<div class="why">السبب (اختياري):'+WHY.map(function(w){return '<button class="btn small" data-a="why" data-w="'+w+'" aria-pressed="'+(o.reason===w)+'">'+w+'</button>'}).join('')+'</div><div class="acts"><button class="btn" data-a="new">رجّعه</button></div>';
-  else if(s!=='done')h+='<p class="note">'+(o.nowAt?'طلبت إنتاجه الآن · '+esc(fmt(o.nowAt)):'موعد الإنتاج: '+esc(fmt(nextRun()))+' (تحديث الفجر)')+'</p><div class="acts"><button class="btn primary" data-a="now">أنتجه الآن</button><button class="btn quiet" data-a="new">ألغِ الموافقة</button></div>';
+  else if(s!=='done')h+='<p class="note">'+(o.nowAt?'طلبت إنتاجه الآن · '+esc(fmt(o.nowAt)):'موعد الإنتاج: '+esc(fmt(nextRun()))+' (تحديث الفجر)')+'</p><div class="acts"><button class="btn glow" data-a="now">أنتجه الآن</button><button class="btn quiet" data-a="new">ألغِ الموافقة</button></div>';
   return '<div class="idea" data-id="'+esc(o.id)+'">'+h+'</div>';
 }
 function renderMedia(){
