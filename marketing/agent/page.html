@@ -145,10 +145,15 @@ input[type=range]{width:100%;accent-color:var(--green)}
 
   <div class="page" id="v-media" hidden>
     <div class="jump">
-      <a class="btn small" href="#posters">البوسترات</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
+      <a class="btn small" href="#starters">بوسترات البداية</a><a class="btn small" href="#posters">بوسترات الأسبوع</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
     </div>
+    <section class="sec" id="starters">
+      <h2>بوسترات البداية</h2>
+      <p class="note">عشرة بوسترات تعرّف العميل بالصفحة وطريقة الشغل، تنشرها أول ما تفتح الحساب. لما توافق على واحد ينزل في أقرب خانة فاضية في الجدول.</p>
+      <div class="cards" id="scards"></div>
+    </section>
     <section class="sec" id="posters">
-      <h2>البوسترات</h2>
+      <h2>بوسترات الأسبوع</h2>
       <p class="note">كل بوستر معه الكابشن والهاشتاقات. «وافق وانشر» يسجل موافقتك وأنا أجدوله في بفر في أفضل وقت. التحديث اليومي الساعة 4:40 الفجر، وزر «حدّث الصور الآن» ينفذ فوراً.</p>
       <div class="cards" id="pcards"></div>
     </section>
@@ -394,13 +399,53 @@ DAYS.forEach(function(d,i){
 DEF['fri-1']=steps();DEF['fri-2']=delivery();DEF['sat-1']=prices();DEF['sat-2']=member();
 ['fri-1','fri-2','sat-1','sat-2'].forEach(function(id,i){var e=EXTRA[id];META[id]={day:id[0]==='f'?'الجمعة':'السبت',title:e.title,price:'',cap:e.cap,style:i%2?'b':'a',tags:(i%2?TAG_B:TAG_A)+' '+e.tags}});
 DAYS.forEach(function(d){IDS.push(d[0]+'-1',d[0]+'-2')});
+/* ---------- starter posters ---------- */
+function big(title,sub,emoji,dark,btn){
+  var lf=dark?K.leafd:K.tint2,a=[S('leaf',-70,260,360,360,lf,20),S('leaf',800,930,320,320,lf,190)].concat(head(dark));
+  a.push(R(380,240,320,320,dark?K.w:K.tint,160),T(emoji,380,318,320,120,{}));
+  a.push(T(title,50,610,980,96,{font:'d',weight:800,color:dark?K.w:K.title}),T(sub,100,890,880,42,{color:dark?K.tint:K.ink}));
+  return {bg:dark?K.title:K.bg,els:a.concat(cta(btn||'الرابط في البايو 👇',dark))};
+}
+function points(title,items){
+  var a=[S('leaf',820,150,280,280,K.tint2,10)].concat(head(false));
+  a.push(T(title,50,200,980,88,{font:'d',weight:800,color:K.title}));
+  items.forEach(function(t,i){var y=356+i*200;a.push(R(70,y,940,170,K.tint2,85),R(850,y+25,120,120,K.title,60),T('✓',850,y+43,120,64,{font:'d',weight:800,color:K.w}),T(t,120,y+(t.length>30?31:58),700,36,{weight:600,align:'right',color:K.deep}))});
+  return {bg:K.bg,els:a.concat(cta('الرابط في البايو 👇'))};
+}
+function grid4(title,sub,items){
+  var a=head(false);
+  a.push(T(title,50,196,980,88,{font:'d',weight:800,color:K.title}),T(sub,60,318,960,36,{}));
+  items.forEach(function(r,i){var x=i%2?80:560,y=i<2?396:776;a.push(R(x+110,y,220,220,K.tint2,110),I(P(r[0]),x+145,y+35,150,150,true),T(r[1],x,y+230,440,40,{font:'d',weight:700,color:K.title}),T(r[2]+' · '+r[3]+' ريال',x,y+288,440,31,{weight:600}))});
+  return {bg:K.bg,els:a.concat(cta('كل المنتجات في الرابط في البايو 👇'))};
+}
+function photoTop(src,title,sub,tag){
+  var im=I(src,0,0,W,680,false);im.fit='cover';
+  var a=[im,R(556,36,480,120,K.w,60)].concat(head(false,K.w));
+  a.push(R(54,476,560,64,K.w,32),T(tag,54,492,560,25,{weight:600,color:K.title}),S('wave',0,560,W,200,K.bg));
+  a.push(T(title,50,762,980,88,{font:'d',weight:800,color:K.title}),T(sub,90,1016,900,38,{}));
+  return {bg:K.bg,els:a.concat(cta('الرابط في البايو 👇'))};
+}
+var INTRO=[];
+[
+ ['حياك الله',photoTop('img/scene-reishi.jpg','حياك الله في\nصحتك بالدنيا','صفحة منتجات DXN الأصلية، من الرياض لكل مدن المملكة','ريشي GL · 90 كبسولة · 127 ريال'),'حياك الله في صحتك بالدنيا 🌿 صفحة منتجات DXN الأصلية، من الرياض لكل مدن المملكة.\nتصفح المنتجات واطلب من الرابط في البايو 👇','#تعريف'],
+ ['وش تلقى عندنا؟',grid4('وش تلقى عندنا؟','مكملات غذائية ومشروبات من DXN',[['ganocelium-gl','ريشي GL','90 كبسولة','127'],['spirulina-tablet','سبيرولينا','120 حبة','89'],['morinzhi','مورنزي','285 مل','74'],['bee-pollen-120','لقاح النحل','120 حبة','99']]),'وش تلقى عندنا؟ 🌿 ريشي، سبيرولينا، مورنزي، لقاح النحل وغيرها من منتجات DXN.\nكل المنتجات وأسعارها في الرابط في البايو 👇','#ريشي #سبيرولينا'],
+ ['ليش تطلب منا؟',points('ليش تطلب منا؟',['منتجات DXN الأصلية','التوصيل في الرياض خلال 24 ساعة','باقي مدن المملكة من 3 إلى 7 أيام','الدفع عند الاستلام']),'ليش تطلب من صحتك بالدنيا؟ 🌿 منتجات DXN الأصلية، توصيل سريع، والدفع عند الاستلام.\nاطلب من الرابط في البايو 👇','#توصيل'],
+ ['عرض السعر قبل الطلب',big('تشوف السعر كامل\nقبل ما تطلب','تختار منتجاتك ويطلع لك عرض سعر واضح، وبعدها ترسل طلبك','🧾',true),'تشوف السعر كامل قبل ما تطلب 🧾 تختار منتجاتك ويطلع لك عرض سعر واضح.\nجربها من الرابط في البايو 👇','#عرض_سعر'],
+ ['الدفع عند الاستلام',big('تستلم أول\nوبعدين تدفع','الدفع عند الاستلام في كل مدن المملكة','💵',false),'تستلم أول وبعدين تدفع 💵 الدفع عند الاستلام في كل مدن المملكة.\nاطلب من الرابط في البايو 👇','#الدفع_عند_الاستلام'],
+ ['جديد على DXN؟',big('جديد على DXN؟\nاطلب بدون عضوية','بدون تسجيل وبدون تعقيد، وهو أسرع خيار في صفحة المنتجات','🌿',true),'جديد على DXN؟ 🌿 اطلب بدون عضوية وبدون تسجيل، وهو أسرع خيار.\nابدأ من الرابط في البايو 👇','#DXN_السعودية'],
+ ['عضويتك تحتاج تفعيل؟',points('عضويتك تحتاج تفعيل؟',['عضويتك مسجلة وهذا أول طلب لها','التفعيل يحتاج 100 نقطة سعودية','اختر «عضوية تحتاج تفعيل» في صفحة المنتجات','وتُحسب لك نقاط طلبك']),'عضويتك في DXN تحتاج تفعيل؟ 🌿 أول طلب يحتاج 100 نقطة سعودية، واختر «عضوية تحتاج تفعيل» وقت الطلب.\nالرابط في البايو 👇','#عضوية_DXN'],
+ ['وش بتشوف في حسابنا',photoTop('img/scene-lion.jpg','كل يوم منتج\nبفائدته وسعره','من الأحد للخميس منتج جديد، والجمعة والسبت طريقة الطلب والأسعار','عرف الأسد · 120 حبة · 144 ريال'),'كل يوم منتج بفائدته وسعره 🌿 تابعنا عشان ما يفوتك.\nوالطلب دايم من الرابط في البايو 👇','#نمط_حياة_صحي'],
+ ['عندك سؤال؟',big('عندك سؤال؟\nاسألنا','اكتب لنا في التعليقات أو في الخاص ونرد عليك','💬',true,'نرد عليك في الخاص 💬'),'عندك سؤال عن منتج أو عن الطلب؟ 💬 اكتب لنا في التعليقات أو في الخاص ونرد عليك.\nوالمنتجات كلها في الرابط في البايو 👇','#اسألنا'],
+ ['ابدأ من هنا',big('ابدأ من هنا 👇\nوشوف المنتجات','الرابط في البايو يوديك مباشرة لصفحة المنتجات، تختار وتطلب في أقل من دقيقة','📲',false,'افتح الرابط في البايو 👇'),'ابدأ من هنا 👇 الرابط في البايو يوديك مباشرة لصفحة المنتجات.\nتختار وتطلب في أقل من دقيقة 📲','#طريقة_الطلب']
+].forEach(function(r,i){var id='intro-'+(i<9?'0':'')+(i+1);INTRO.push(id);DEF[id]=r[1];META[id]={day:'بداية',title:r[0],price:'',cap:r[2],style:i%2?'b':'a',tags:(i%2?TAG_B:TAG_A)+' '+r[3]}});
+var ALLP=INTRO.concat(IDS);
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function fullCap(id){var m=META[id];return m.style==='a'?m.cap+'\n\n'+m.tags:m.cap}
 
 /* ---------- state + persistence ---------- */
 var posters={},edited={},hist={},cur=IDS[0],selI=-1,db=null,assets=null,downloads=null,mcp=null;
 var state={},ideas=[],stats=[],lessons=null,config={},ccount=0;
-IDS.forEach(function(id){posters[id]=clone(DEF[id])});
+ALLP.forEach(function(id){posters[id]=clone(DEF[id])});
 var LS='sb-designs-v2',LSS='sb-state-v2';
 function strip(p){return {bg:p.bg,at:p.at||0,els:p.els.map(function(e){var c={};for(var k in e)if(k[0]!=='_')c[k]=e[k];return c})}}
 function loadLocal(){
@@ -518,18 +563,23 @@ var DIDX={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6},SLOTS=[[13,0,'بوستر ١
 function slotOf(id){var r=id.indexOf('reel-')===0,k=r?id.slice(5):id.split('-')[0];return {d:DIDX[k],s:r?2:(+id.split('-')[1]-1)}}
 function weekStart(off){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay()+off*7);return d}
 function taken(ts,id){for(var k in state){var s=state[k];if(k!==id&&s&&s.planAt===ts&&LIVE[s.status])return true}return false}
-function planDate(id){
+function planDate(id,used){
+  used=used||{};
+  if(id.indexOf('intro-')===0){
+    for(var dd=0;dd<200;dd++)for(var k=0;k<2;k++){var q=weekStart(0);q.setDate(q.getDate()+dd);q.setHours(SLOTS[k][0],SLOTS[k][1],0,0);var qt=q.getTime();if(qt>Date.now()+2*3600e3&&!taken(qt,id)&&!used[qt])return qt}
+  }
   var o=slotOf(id),t=SLOTS[o.s],c=null;
-  for(var w=0;w<12;w++){c=weekStart(w);c.setDate(c.getDate()+o.d);c.setHours(t[0],t[1],0,0);if(c.getTime()>Date.now()+2*3600e3&&!taken(c.getTime(),id))break}
+  for(var w=0;w<12;w++){c=weekStart(w);c.setDate(c.getDate()+o.d);c.setHours(t[0],t[1],0,0);if(c.getTime()>Date.now()+2*3600e3&&!taken(c.getTime(),id)&&!used[c.getTime()])break}
   return c.getTime();
 }
 var weekOff=0;
 function planItems(){
-  var out=[],seen={};
-  IDS.concat(REELS.map(function(r){return r[0]})).forEach(function(id){
+  var out=[],seen={},used={};
+  ALLP.concat(REELS.map(function(r){return r[0]})).forEach(function(id){
     seen[id]=1;var s=state[id]||{};if(s.status==='ignored')return;
     var reel=id.indexOf('reel-')===0,title=reel?REELS.filter(function(r){return r[0]===id})[0][3]:META[id].title+(META[id].price?' · '+META[id].price+' ريال':'');
-    out.push({id:id,ts:LIVE[s.status]&&s.planAt?s.planAt:planDate(id),live:!!LIVE[s.status],status:s.status,kind:SLOTS[slotOf(id).s][2],title:title,reel:reel,known:true});
+    var ts=LIVE[s.status]&&s.planAt?s.planAt:planDate(id,used);used[ts]=1;
+    out.push({id:id,ts:ts,live:!!LIVE[s.status],status:s.status,kind:id.indexOf('intro-')===0?'بوستر بداية':SLOTS[slotOf(id).s][2],title:title,reel:reel,known:true});
   });
   for(var k in state){var s=state[k];if(!seen[k]&&s&&s.planAt&&LIVE[s.status])out.push({id:k,ts:s.planAt,live:true,status:s.status,kind:s.kind||'بوستر',title:s.title||k,reel:false,known:false})}
   return out;
@@ -618,7 +668,8 @@ function ideaCard(o,reel){
 }
 function renderMedia(){
   var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=0,ig=[];
-  IDS.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else pc.appendChild(posterCard(id))});
+  var sc=$('scards');sc.innerHTML='';
+  ALLP.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else (id.indexOf('intro-')===0?sc:pc).appendChild(posterCard(id))});
   var reels=REELS.map(function(r){var st=state[r[0]]||{};return {o:{id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:st.status||'new',reason:st.reason,nowAt:st.nowAt},reel:true}});
   reels.forEach(function(x){if(x.o.status==='ignored')ig.push(x)});
   ideas.forEach(function(o){if(o.status==='ignored')ig.push({o:o,reel:o.kind==='reel'})});
@@ -727,8 +778,8 @@ $('b-now').onclick=function(){
 /* ---------- stats page ---------- */
 function renderStats(){
   var c={published:0,scheduled:0,approved:0,ignored:0};
-  IDS.forEach(function(id){var s=(state[id]||{}).status;if(c[s]!=null)c[s]++});
-  var waitN=IDS.length-c.published-c.scheduled-c.approved-c.ignored;
+  ALLP.forEach(function(id){var s=(state[id]||{}).status;if(c[s]!=null)c[s]++});
+  var waitN=ALLP.length-c.published-c.scheduled-c.approved-c.ignored;
   $('kpis').innerHTML=[[c.published,'منشور'],[c.scheduled,'مجدول'],[c.approved,'موافق عليه'],[waitN,'بانتظار مراجعتك'],[c.ignored,'متجاهل']].map(function(k){return '<div class="kpi"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join('');
   var L=lessons||{},list=function(a){return a&&a.length?'<ul>'+a.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'<p class="note">ما فيه دروس للحين. أول ملخص يطلع يوم الجمعة بعد أول أسبوع نشر.</p>'};
   $('lessons').innerHTML='<div class="box"><h3>نزيد منه</h3>'+list(L.keep)+'</div><div class="box"><h3>نتجنبه</h3>'+list(L.avoid)+'</div>'+(L.summary?'<div class="box"><h3>ملخص الأسبوع</h3><p>'+esc(L.summary)+'</p></div>':'');
@@ -737,7 +788,7 @@ function renderStats(){
     var n=[['وصول',s.reach],['إعجاب',s.likes],['تعليق',s.comments],['حفظ',s.saves],['مشاركة',s.shares]].filter(function(x){return x[1]!=null}).map(function(x){return '<span><b>'+esc(x[1])+'</b> '+x[0]+'</span>'}).join('');
     return '<div class="box"><div class="row"><h3>'+esc(s.title||s.id)+'</h3>'+v+'</div><div class="nums">'+n+'</div>'+(s.why&&s.why.length?'<ul>'+s.why.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'')+(s.next?'<p class="note">للمرة الجاية: '+esc(s.next)+'</p>':'')+'</div>';
   }).join(''):'<div class="empty">ما فيه منشورات منشورة للحين. بعد ما ينربط حساب إنستقرام وتنشر أول بوستر، تطلع هنا أرقام كل منشور وتحليل سبب ارتفاع أو انخفاض تفاعله.</div>';
-  $('c-post').innerHTML='<option value="general">عام (كل الحساب)</option>'+IDS.map(function(id){return '<option value="'+id+'">'+esc(META[id].day+' · '+META[id].title)+'</option>'}).join('');
+  $('c-post').innerHTML='<option value="general">عام (كل الحساب)</option>'+ALLP.map(function(id){return '<option value="'+id+'">'+esc(META[id].day+' · '+META[id].title)+'</option>'}).join('');
   $('c-count').textContent=ccount?'محفوظ عندي '+ccount+' دفعة تعليقات':'';
 }
 $('c-save').onclick=function(){
