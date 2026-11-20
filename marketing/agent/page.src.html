@@ -62,6 +62,8 @@ h3{font-family:var(--display);font-weight:700;font-size:1.02rem;margin:0}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .card canvas{width:100%;border-radius:12px;display:block;cursor:pointer}
+.card img.ph{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;display:block;cursor:zoom-in;background:var(--bg)}
+#iphotos:not(:empty){margin-top:16px}
 .card b{font-family:var(--display);font-size:1rem}
 .card .meta{font-size:.84rem;color:var(--muted)}
 .card details{font-size:.86rem}
@@ -145,8 +147,13 @@ input[type=range]{width:100%;accent-color:var(--green)}
 
   <div class="page" id="v-media" hidden>
     <div class="jump">
-      <a class="btn small" href="#starters">بوسترات البداية</a><a class="btn small" href="#posters">بوسترات الأسبوع</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
+      <a class="btn small" href="#photos">صور المنتجات</a><a class="btn small" href="#starters">بوسترات البداية</a><a class="btn small" href="#posters">بوسترات الأسبوع</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
     </div>
+    <section class="sec" id="photos">
+      <h2>صور المنتجات الاحترافية</h2>
+      <p class="note" id="ph-note"></p>
+      <div class="cards" id="phcards"></div>
+    </section>
     <section class="sec" id="starters">
       <h2>بوسترات التعريف</h2>
       <p class="note">17 بوستر تعرّف العميل بالصفحة وبالموقع وطريقة الشغل. السبعة الأخيرة فيها لقطات حقيقية من الموقع. لما توافق على واحد ينزل في أقرب خانة فاضية في الجدول.</p>
@@ -183,6 +190,7 @@ input[type=range]{width:100%;accent-color:var(--green)}
       <p class="note">كل شي تجاهلته يجي هنا مع سببه، وتقدر ترجعه في أي وقت. الأسباب أستخدمها عشان ما أكرر نفس الغلط.</p>
       <div class="empty" id="iempty">ما تجاهلت شي للحين.</div>
       <div class="cards" id="icards"></div>
+      <div class="cards" id="iphotos"></div>
       <div class="ideas" id="iideas"></div>
     </section>
   </div>
@@ -474,13 +482,25 @@ function fullCap(id){var m=META[id];return m.style==='a'?m.cap+'\n\n'+m.tags:m.c
 var posters={},edited={},hist={},cur=IDS[0],selI=-1,db=null,assets=null,downloads=null,mcp=null;
 var state={},ideas=[],stats=[],lessons=null,config={},ccount=0;
 ALLP.forEach(function(id){posters[id]=clone(DEF[id])});
-var LS='sb-designs-v2',LSS='sb-state-v2';
+var LS='sb-designs-v2',LSS='sb-state-v2',LSP='sb-photos-v1';
+/* professional product photos: [image name, scene key, Arabic label] */
+var PH=__PHOTOS__;
+var PHS={A:'ستوديو أبيض',B:'لوح حجر وخشب',C:'رشّة ألوان',D:'رمل وصخر',E:'ركن الحمام',F:'قماش ساتان',G:'تنسيق طبيعي'};
+var PHN={};PH.forEach(function(p){PHN[p[0]]=p[2]||p[0]});
+var pstate={};
+function PP(n){return 'img/photo-'+n+'.jpg'}
+function isPhoto(src){return String(src).indexOf('img/photo-')===0}
+function setPhoto(id,patch){
+  var s={},old=pstate[id]||{},k;for(k in old)s[k]=old[k];for(k in patch)s[k]=patch[k];s.at=Date.now();pstate[id]=s;saveLocal();
+  return put('photos/'+id,s);
+}
 function strip(p){return {bg:p.bg,at:p.at||0,els:p.els.map(function(e){var c={};for(var k in e)if(k[0]!=='_')c[k]=e[k];return c})}}
 function loadLocal(){
   try{var m=JSON.parse(localStorage.getItem(LS)||'{}');for(var id in m)if(DEF[id]&&m[id]&&m[id].els){posters[id]=m[id];edited[id]=true}}catch(e){}
   try{state=JSON.parse(localStorage.getItem(LSS)||'{}')||{}}catch(e){state={}}
+  try{pstate=JSON.parse(localStorage.getItem(LSP)||'{}')||{}}catch(e){pstate={}}
 }
-function saveLocal(){try{var m={};for(var id in edited)if(edited[id])m[id]=strip(posters[id]);localStorage.setItem(LS,JSON.stringify(m));localStorage.setItem(LSS,JSON.stringify(state))}catch(e){}}
+function saveLocal(){try{var m={};for(var id in edited)if(edited[id])m[id]=strip(posters[id]);localStorage.setItem(LS,JSON.stringify(m));localStorage.setItem(LSS,JSON.stringify(state));localStorage.setItem(LSP,JSON.stringify(pstate))}catch(e){}}
 function setStatus(s){var t={idle:'جاهز',saving:'جارٍ الحفظ…',saved:'محفوظ',local:'محفوظ على هذا الجهاز فقط'};$('status').dataset.s=s;$('status').textContent=t[s]}
 function put(path,data){
   if(!db){setStatus('local');return Promise.resolve(false)}
@@ -694,8 +714,39 @@ function ideaCard(o,reel){
   else if(s!=='done')h+='<p class="note">'+(o.nowAt?'طلبت إنتاجه الآن · '+esc(fmt(o.nowAt)):'موعد الإنتاج: '+esc(fmt(nextRun()))+' (تحديث الفجر)')+'</p><div class="acts"><button class="btn glow" data-a="now">أنتجه الآن</button><button class="btn quiet" data-a="new">ألغِ الموافقة</button></div>';
   return '<div class="idea" data-id="'+esc(o.id)+'">'+h+'</div>';
 }
+function photoCard(p){
+  var id=p[0],s=pstate[id]||{},nm=PHN[id];
+  var h='<div class="card" data-ph="'+esc(id)+'"><img class="ph" loading="lazy" alt="'+esc(nm)+'" src="'+PP(id)+'">';
+  h+='<div class="row"><span class="chip">'+PHS[p[1]]+'</span>'+(s.status==='ok'?'<span class="chip gold">معتمدة</span>':s.status==='ignored'?'<span class="chip off">متجاهلة</span>':'<span class="chip">جاهزة للمراجعة</span>')+'</div><b>'+esc(nm)+'</b>';
+  if(s.status==='ignored')h+='<p class="note">'+(s.reason?'السبب: '+esc(s.reason):'بدون سبب')+'</p><div class="acts"><button class="btn" data-a="restore">رجّعها</button></div>';
+  else if(s.status==='ok')h+='<div class="acts"><button class="btn" data-a="save">حمّلها</button><button class="btn quiet" data-a="restore">ألغِ الاعتماد</button></div>';
+  else h+='<div class="acts"><button class="btn primary" data-a="ok">اعتمدها</button><button class="btn" data-a="save">حمّلها</button><button class="btn quiet" data-a="no">تجاهل</button></div>';
+  return h+'</div>';
+}
+function showPhoto(id){
+  modal('<div class="row"><h3>'+esc(PHN[id])+'</h3><button class="btn small" id="m-no">إغلاق</button></div><p class="note">تبغى تحفظها؟ اضغط مطولاً على الصورة (أو بالزر اليمين) واختر حفظ الصورة.</p><img class="out" alt="" src="'+PP(id)+'">');
+  $('m-no').onclick=closeModal;
+}
+function savePhoto(id){
+  var im=new Image();
+  im.onerror=function(){showPhoto(id)};
+  im.onload=function(){
+    var c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;c.getContext('2d').drawImage(im,0,0);
+    if(!downloads||!c.toBlob)return showPhoto(id);
+    try{c.toBlob(function(b){if(!b)return showPhoto(id);downloads.save({filename:'sehhatek-photo-'+id+'.jpg',data:b}).then(function(){toast('تم حفظ الصورة')},function(err){if(!err||err.code!=='declined')showPhoto(id)})},'image/jpeg',.95)}catch(e){showPhoto(id)}
+  };
+  im.src=PP(id);
+}
+function renderPhotos(){
+  var live=PH.filter(function(p){return (pstate[p[0]]||{}).status!=='ignored'}),gone=PH.filter(function(p){return (pstate[p[0]]||{}).status==='ignored'});
+  var ok=PH.filter(function(p){return (pstate[p[0]]||{}).status==='ok'}).length;
+  $('ph-note').textContent=PH.length+' صورة لمنتجاتنا بتصوير احترافي، بدون نص ولا سعر. اعتمد اللي تعجبك وأستخدمها في البوسترات الجاية (والحجم والسعر ينكتبون في البوستر نفسه)، واللي ما تعجبك تجاهلها واكتب السبب. اضغط على الصورة تكبر.'+(ok?' اعتمدت '+ok+' للحين.':'');
+  $('phcards').innerHTML=live.map(photoCard).join('')||'<div class="empty">كل الصور متجاهلة. تلقاها تحت في «المتجاهلة».</div>';
+  $('iphotos').innerHTML=gone.map(photoCard).join('');
+  return gone.length;
+}
 function renderMedia(){
-  var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=0,ig=[];
+  var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=renderPhotos(),ig=[];
   var sc=$('scards');sc.innerHTML='';
   ALLP.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else (id.indexOf('intro-')===0?sc:pc).appendChild(posterCard(id))});
   var reels=REELS.map(function(r){var st=state[r[0]]||{};return {o:{id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:st.status||'new',reason:st.reason,nowAt:st.nowAt},reel:true}});
@@ -731,6 +782,16 @@ function approve(id,btn){
 }
 $('v-media').addEventListener('click',function(ev){
   var t=ev.target,card=t.closest('.card'),idea=t.closest('.idea'),b=t.closest('button');
+  var ph=t.closest('[data-ph]');
+  if(ph){
+    var pid=ph.dataset.ph,pa=b&&b.dataset.a;
+    if(t.tagName==='IMG')showPhoto(pid);
+    else if(pa==='ok'){setPhoto(pid,{status:'ok',reason:''});renderMedia();toast('تم الاعتماد. أستخدمها في البوسترات الجاية')}
+    else if(pa==='no')askWhy(PHN[pid],function(r){setPhoto(pid,{status:'ignored',reason:r});renderMedia()});
+    else if(pa==='restore'){setPhoto(pid,{status:'new',reason:''});renderMedia()}
+    else if(pa==='save')savePhoto(pid);
+    return;
+  }
   if(card){
     var id=card.dataset.id;
     if(t.tagName==='CANVAS'||(b&&b.dataset.a==='edit')){cur=id;selI=-1;show('editor');window.scrollTo(0,0);return}
@@ -913,7 +974,7 @@ $('props').addEventListener('click',function(ev){
 });
 function act(a){
   var arr=els(),e=arr[selI];if(!e)return;
-  if(a==='swap')return openLib(function(src){snap();e.src=src;redraw();commit()});
+  if(a==='swap')return openLib(function(src){snap();e.src=src;if(isPhoto(src)){e.blend='';e.fit='cover'}redraw();commit()});
   if(a==='swapup'){upTarget=e;return $('file').click()}
   snap();
   if(a==='bold')e.weight=e.weight>=700?500:700;
@@ -927,7 +988,7 @@ function act(a){
 }
 function add(e){snap();els().push(e);selI=els().length-1;redraw();commit();renderProps();renderLayers()}
 $('a-text').onclick=function(){add(T('اكتب نصك هنا',190,600,700,56,{font:'d',weight:700,color:K.title}))};
-$('a-img').onclick=function(){openLib(function(src){add(I(src,340,440,400,400,true))})};
+$('a-img').onclick=function(){openLib(function(src){if(isPhoto(src)){var e=I(src,190,240,700,875,false);e.fit='cover';e.r=40;add(e)}else add(I(src,340,440,400,400,true))})};
 document.querySelector('.panel').addEventListener('click',function(e){
   var b=e.target.closest('[data-shape]');if(!b)return;var s=b.dataset.shape;
   add(s==='rect'?R(390,520,300,300,K.tint,150):s==='arch'?S('arch',290,420,500,560,K.tint):s==='wave'?S('wave',0,700,W,200,K.tint2):S('leaf',420,540,240,240,K.tint2,14));
@@ -969,9 +1030,10 @@ $('b-save').onclick=function(){
   });
 };
 function openLib(cb){
-  modal('<div class="row"><h3>اختر صورة منتج</h3><button class="btn small" id="m-no">إغلاق</button></div><div class="lib">'+[['../site-logo','الشعار']].concat(LIB).map(function(l){var src=l[0]==='../site-logo'?'img/site-logo.png':P(l[0]);return '<button data-src="'+src+'"><img loading="lazy" alt="" src="'+src+'">'+esc(l[1])+'</button>'}).join('')+'</div>');
+  var pro=PH.filter(function(p){return (pstate[p[0]]||{}).status!=='ignored'});
+  modal('<div class="row"><h3>اختر صورة منتج</h3><button class="btn small" id="m-no">إغلاق</button></div><div class="lib">'+[['../site-logo','الشعار']].concat(LIB).map(function(l){var src=l[0]==='../site-logo'?'img/site-logo.png':P(l[0]);return '<button data-src="'+src+'"><img loading="lazy" alt="" src="'+src+'">'+esc(l[1])+'</button>'}).join('')+'</div>'+(pro.length?'<h3>صور احترافية</h3><div class="lib">'+pro.map(function(p){return '<button data-src="'+PP(p[0])+'"><img loading="lazy" alt="" src="'+PP(p[0])+'">'+esc(PHN[p[0]])+'</button>'}).join('')+'</div>':''));
   $('m-no').onclick=closeModal;
-  $('modal').querySelector('.lib').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;closeModal();cb(b.dataset.src)});
+  $('modal').querySelectorAll('.lib').forEach(function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;closeModal();cb(b.dataset.src)})});
 }
 
 /* ---------- boot ---------- */
@@ -993,11 +1055,12 @@ function readCol(c,tries){
 function loadAll(){
   if(!db)return Promise.resolve();
   loadErr={};setStatus('saving');$('status').textContent='جارٍ التحميل…';
-  var names=['state','ideas','designs','config','stats','lessons','comments'],r={};
+  var names=['state','ideas','designs','config','stats','lessons','comments','photos'],r={};
   return names.reduce(function(ch,c){return ch.then(function(){return readCol(c,1)}).then(function(v){r[c]=v})},Promise.resolve()).then(function(){
     try{
       (r.designs||[]).forEach(function(doc){var v=doc.v;if(!v||!v.json||!DEF[doc.id])return;try{var p=JSON.parse(v.json);if(p&&p.els&&(!edited[doc.id]||(p.at||0)>=(posters[doc.id].at||0))){posters[doc.id]=p;edited[doc.id]=true}}catch(e){}});
       (r.state||[]).forEach(function(doc){var v=doc.v;if(v&&(!state[doc.id]||(v.at||0)>=(state[doc.id].at||0)))state[doc.id]=v});
+      (r.photos||[]).forEach(function(doc){var v=doc.v;if(v&&(!pstate[doc.id]||(v.at||0)>=(pstate[doc.id].at||0)))pstate[doc.id]=v});
       if(r.ideas)ideas=r.ideas.map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (a.order||0)-(b.order||0)});
       if(r.stats)stats=r.stats.map(function(doc){var v=doc.v||{};v.id=doc.id;return v}).sort(function(a,b){return (b.at||0)-(a.at||0)});
       (r.lessons||[]).forEach(function(doc){if(doc.id==='main')lessons=doc.v});
