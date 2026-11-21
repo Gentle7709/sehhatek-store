@@ -135,7 +135,7 @@ input[type=range]{width:100%;accent-color:var(--green)}
       <h1>وكيل صحتك بالدنيا</h1>
       <p>بوسترات وريلز صفحة منتجات DXN: راجع، وافق، وتابع الأرقام</p>
     </div>
-    <span class="status" id="status" data-s="idle">جاهز</span>
+    <span class="status" id="status" data-s="idle">جاهز</span><span class="row" id="linkst"></span>
     <button class="btn primary" id="b-now">حدّث الصور الآن</button>
   </header>
 
@@ -551,9 +551,31 @@ function setState(id,patch){
   var s={},old=state[id]||{},k;for(k in old)s[k]=old[k];for(k in patch)s[k]=patch[k];s.at=Date.now();state[id]=s;saveLocal();
   return put('state/'+id,s);
 }
+var LINK='Claude Code Remote',linkState='';
+function logPoke(o){o.at=Date.now();linkState=o.ok?'ok':(o.code||'error');renderLink();if(db)db.doc('requests/poke').set(o).catch(function(){})}
 function poke(what){
-  if(!mcp)return Promise.resolve(false);
-  return mcp.callTool('Claude Code Remote','fire_trigger',{trigger_id:POKE,text:'الزر: '+what}).then(function(){return true},function(){return false});
+  if(!mcp){logPoke({ok:false,code:'no_mcp',what:what});return Promise.resolve(false)}
+  return mcp.callTool(LINK,'fire_trigger',{trigger_id:POKE,text:'الزر: '+what}).then(function(){logPoke({ok:true,what:what});return true},function(e){logPoke({ok:false,code:e&&e.code||'error',message:String(e&&e.message||'').slice(0,300),what:what});return false});
+}
+function renderLink(){
+  var el=$('linkst');if(!el)return;
+  var t=linkState==='ok'?['🟢 النشر الفوري شغّال','gold']:linkState===''?['النشر الفوري: جرّبه بالزر','']:['🔴 النشر الفوري موقّف','off'];
+  el.innerHTML='<span class="chip '+t[1]+'">'+t[0]+'</span>'+(linkState==='ok'?'':'<button class="btn small glow" id="b-link">فعّل النشر الفوري</button>');
+  var b=$('b-link');if(b)b.onclick=enableLink;
+}
+function enableLink(){
+  var b=$('b-link');if(b){b.disabled=true;b.textContent='جارٍ التفعيل…'}
+  var perm=null;
+  (cl&&cl.use?cl.use('permissions'):Promise.resolve(null)).then(function(p){perm=p;return p&&p.request?p.request(['mcp:'+LINK]).catch(function(){}):null}).then(function(){
+    return mcp?mcp.listTools(LINK).catch(function(e){return {err:e}}):{err:{code:'no_mcp'}};
+  }).then(function(l){
+    var tools=l&&l.servers&&l.servers[0]?l.servers[0].tools.map(function(t){return t.name}):[];
+    if(l&&l.err){logPoke({ok:false,code:l.err.code||'error',message:String(l.err.message||''),what:'تفعيل'});return}
+    if(tools.length&&tools.indexOf('fire_trigger')<0){logPoke({ok:false,code:'no_fire_trigger',message:tools.join(','),what:'تفعيل'});return}
+    return poke('اختبار الربط من الصفحة');
+  }).then(function(){
+    toast(linkState==='ok'?'تمام! النشر الفوري صار شغّال، وكل زر يوصلني على طول':'ما اشتغل ('+linkState+'). وصلني السبب وبصلحه');
+  });
 }
 
 /* ---------- renderer ---------- */
@@ -812,8 +834,8 @@ function approve(id,btn,now){
     var old=state[id]||{};return setState(id,{status:'approved',asset:asset||old.asset||'',caption:fullCap(id)+(m.style==='b'?'\n\n'+m.tags:''),firstComment:'',reason:'',planAt:now?Date.now():(old.status==='scheduled'&&old.planAt?old.planAt:planDate(id)),title:m.title,publishNow:!!now,nowAt:now?Date.now():0});
   }).then(function(){
     rerender();
-    if(now)poke('انشر الآن: '+id).then(function(ok){toast('سجلت طلب النشر، ينزل على الانستقرام الساعة 9 بالليل')});
-    else if(config.buffer)poke('وافق وجدول: '+id).then(function(ok){toast('تمت الموافقة، وينجدول في بفر الساعة 9 بالليل')});
+    if(now)poke('انشر الآن: '+id).then(function(ok){toast(ok?'وصلني طلب النشر، ينزل على الانستقرام خلال دقائق':'سجلت الطلب، وينزل الساعة 9 بالليل. اضغط «فعّل النشر الفوري» فوق')});
+    else if(config.buffer)poke('وافق وجدول: '+id).then(function(ok){toast(ok?'تمت الموافقة، وأجدوله في بفر خلال دقائق':'تمت الموافقة، وينجدول الساعة 9 بالليل')});
     else toast('تمت الموافقة ونزل في الجدول: '+fmt(state[id].planAt));
   });
 }
@@ -1113,7 +1135,7 @@ var cl=window.claude;
 if(cl&&cl.use){
   cl.use('downloads').then(function(d){downloads=d},function(){});
   cl.use('assets').then(function(a){assets=a},function(){});
-  cl.use('mcp').then(function(m){mcp=m},function(){});
+  cl.use('mcp').then(function(m){mcp=m;renderLink()},function(){renderLink()});
   cl.use('db').then(function(d){
     if(!d)return;
     db=d;loadAll();
