@@ -629,7 +629,7 @@ function closeModal(){$('modal').innerHTML=''}
 function fmt(ts){try{return new Date(ts).toLocaleString('ar-SA-u-ca-gregory-nu-latn',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit'})}catch(e){return ''}}
 var ST={approved:['موافق عليه · بانتظار الجدولة','wait'],scheduled:['مجدول في بفر','gold'],published:['منشور ✓','gold'],ignored:['متجاهل','off']};
 var WHY=['التصميم','النص','الصورة','الفكرة','مكرر'];
-function chip(id){var s=state[id];if(s&&s.publishNow&&s.status==='approved')return '<span class="chip wait">ينشر خلال ساعة</span>';if(!s||!ST[s.status])return '<span class="chip">جاهز للمراجعة</span>';var t=ST[s.status],w=s.status==='scheduled'&&s.dueAt?s.dueAt:s.status==='approved'&&s.planAt?s.planAt:0;return '<span class="chip '+t[1]+'">'+(s.status==='approved'?'ينجدول في بفر خلال ساعة':t[0])+(w?' · '+esc(fmt(w)):'')+'</span>'}
+function chip(id){var s=state[id];if(s&&s.publishNow&&s.status==='approved')return '<span class="chip wait">ينشر 9 بالليل</span>';if(!s||!ST[s.status])return '<span class="chip">جاهز للمراجعة</span>';var t=ST[s.status],w=s.status==='scheduled'&&s.dueAt?s.dueAt:s.status==='approved'&&s.planAt?s.planAt:0;return '<span class="chip '+t[1]+'">'+(s.status==='approved'?'ينجدول في بفر 9 بالليل':t[0])+(w?' · '+esc(fmt(w)):'')+'</span>'}
 
 /* ---------- schedule ---------- */
 var DIDX={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6},SLOTS=[[13,0,'بوستر ١'],[17,30,'بوستر ٢'],[21,0,'ريلز']],LIVE={approved:1,scheduled:1,published:1};
@@ -675,7 +675,7 @@ function renderPlan(){
       var el=document.createElement('div');el.className='slot'+(x.live?'':' pending');el.dataset.id=x.id;
       if(x.known&&!x.reel)el.appendChild(thumb(x.id,240));else{var ph=document.createElement('div');ph.className='reelph';ph.textContent='🎬 ريلز';el.appendChild(ph)}
       var tm='';try{tm=new Date(x.ts).toLocaleTimeString('ar-SA-u-nu-latn',{hour:'numeric',minute:'2-digit'})}catch(er){}
-      var S=state[x.id]||{},st=x.status==='published'?'<span class="chip gold">منشور ✓</span>':x.status==='scheduled'?'<span class="chip gold">مجدول في بفر</span>':S.publishNow?'<span class="chip wait">ينشر خلال ساعة</span>':x.live?'<span class="chip wait">ينجدول في بفر خلال ساعة</span>':'<span class="chip off">بانتظار موافقتك</span>';
+      var S=state[x.id]||{},st=x.status==='published'?'<span class="chip gold">منشور ✓</span>':x.status==='scheduled'?'<span class="chip gold">مجدول في بفر</span>':S.publishNow?'<span class="chip wait">ينشر 9 بالليل</span>':x.live?'<span class="chip wait">ينجدول في بفر 9 بالليل</span>':'<span class="chip off">بانتظار موافقتك</span>';
       var canNow=x.known&&!x.reel&&x.status!=='published'&&!S.publishNow;
       var acts=(x.known&&!x.live?'<button class="btn small primary" data-a="ok">'+(x.reel?'وافق':'وافق وجدول')+'</button>':'')+(canNow?'<button class="btn small glow" data-a="now">انشر الآن</button>':'')+(x.known&&x.live&&x.status!=='published'?'<button class="btn small quiet" data-a="undo">ألغِ</button>':'')+(x.known&&!x.reel?'<button class="btn small" data-a="edit">المحرر</button>':'');
       var h=document.createElement('div');h.className='sinfo';
@@ -812,8 +812,8 @@ function approve(id,btn,now){
     var old=state[id]||{};return setState(id,{status:'approved',asset:asset||old.asset||'',caption:fullCap(id)+(m.style==='b'?'\n\n'+m.tags:''),firstComment:'',reason:'',planAt:now?Date.now():(old.status==='scheduled'&&old.planAt?old.planAt:planDate(id)),title:m.title,publishNow:!!now,nowAt:now?Date.now():0});
   }).then(function(){
     rerender();
-    if(now)poke('انشر الآن: '+id).then(function(ok){toast('سجلت طلب النشر، ينزل على الانستقرام خلال ساعة')});
-    else if(config.buffer)poke('وافق وجدول: '+id).then(function(ok){toast('تمت الموافقة، وينجدول في بفر خلال ساعة')});
+    if(now)poke('انشر الآن: '+id).then(function(ok){toast('سجلت طلب النشر، ينزل على الانستقرام الساعة 9 بالليل')});
+    else if(config.buffer)poke('وافق وجدول: '+id).then(function(ok){toast('تمت الموافقة، وينجدول في بفر الساعة 9 بالليل')});
     else toast('تمت الموافقة ونزل في الجدول: '+fmt(state[id].planAt));
   });
 }
