@@ -18,6 +18,9 @@ const photos = JSON.parse(fs.readFileSync(path.join(photoDir, 'photos.json'), 'u
   .filter(p => fs.existsSync(path.join(photoDir, p[0] + '.jpg')));
 const src = fs.readFileSync(path.join(__dirname, 'page.src.html'), 'utf8')
   .replace('__LIB__', JSON.stringify(Object.entries(lib)))
-  .replace('__PHOTOS__', JSON.stringify(photos));
+  .replace('__PHOTOS__', JSON.stringify(photos))
+  // Product posters: marketing/photos/posters.json holds the text, size and price written on each photo.
+  .replace('__PPOSTERS__', JSON.stringify(JSON.parse(fs.readFileSync(path.join(photoDir, 'posters.json'), 'utf8'))
+    .filter(p => fs.existsSync(path.join(photoDir, p.img + '.jpg')))));
 fs.writeFileSync(path.join(__dirname, 'page.html'), src);
 console.log('built', Object.keys(lib).length, 'images,', photos.length, 'photos');

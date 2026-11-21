@@ -147,8 +147,13 @@ input[type=range]{width:100%;accent-color:var(--green)}
 
   <div class="page" id="v-media" hidden>
     <div class="jump">
-      <a class="btn small" href="#photos">صور المنتجات</a><a class="btn small" href="#starters">بوسترات البداية</a><a class="btn small" href="#posters">بوسترات الأسبوع</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
+      <a class="btn small" href="#pposters">بوسترات المنتجات</a><a class="btn small" href="#photos">صور المنتجات</a><a class="btn small" href="#starters">بوسترات البداية</a><a class="btn small" href="#posters">بوسترات الأسبوع</a><a class="btn small" href="#reels">الريلز</a><a class="btn small" href="#ideas-p">اقتراحات البوسترات</a><a class="btn small" href="#ideas-r">اقتراحات الريلز</a><a class="btn small" href="#ignored">المتجاهلة <span id="icount"></span></a>
     </div>
+    <section class="sec" id="pposters">
+      <h2>بوسترات المنتجات</h2>
+      <p class="note" id="pp-note"></p>
+      <div class="cards" id="ppcards"></div>
+    </section>
     <section class="sec" id="photos">
       <h2>صور المنتجات الاحترافية</h2>
       <p class="note" id="ph-note"></p>
@@ -474,7 +479,27 @@ var NEW=[
  ['منتجات طبيعية لصحتك ولصحة عائلتك',natural(),'منتجات طبيعية لصحتك ولصحة عائلتك 🌿 أكثر من 70 منتج من DXN، وكل منتج بسعره في الصفحة.\nالرابط في البايو 👇','#منتجات_طبيعية #صحة_العائلة']
 ];
 NEW.forEach(function(r,i){var id='intro-'+(i+11);INTRO.push(id);DEF[id]=r[1];META[id]={day:'بداية',title:r[0],price:'',cap:r[2],style:i%2?'b':'a',tags:(i%2?TAG_B:TAG_A)+' '+r[3]}});
-var ALLP=INTRO.concat(IDS);
+/* ---------- product photo posters: the photo, two short lines, size and price ---------- */
+var PPD=__PPOSTERS__,PPIDS=[];
+function shot(o){
+  var dark=!!o.dark,fill=dark?K.title:K.bg,has=!!o.price;
+  var im=I(PP(o.img),0,-(o.off||0),W,H,false);im.fit='cover';
+  var a=[im,R(916,40,112,112,K.w,56),I('img/site-logo.png',924,48,96,96),R(54,62,330,60,K.w,30),T('منتجات DXN الأصلية',54,76,330,25,{weight:600,color:K.title})];
+  a.push(S('wave',0,972,W,128,fill),R(0,1099,W,251,fill,0));
+  var x=has?320:60,w=has?704:960,al=has?'right':'center';
+  a.push(T(o.h,x,1072,w,58,{font:'d',weight:800,color:dark?K.w:K.title,align:al}),T(o.s,x,1152,w,32,{color:dark?K.tint:K.ink,align:al}),T(o.name+(o.size?' · '+o.size:''),x,1204,w,28,{weight:600,color:dark?K.w:K.title,align:al}));
+  if(has){
+    var px=56,py=1010,n=String(o.price),fs=n.length>3?76:n.length>2?92:104;
+    a.push(R(px,py,230,230,dark?K.gold:K.title,115));
+    if(o.from)a.push(T('من',px,py+22,230,28,{weight:600,color:K.w}));
+    a.push(T(n,px,py+(o.from?48:36)+(104-fs)*.6,230,fs,{font:'d',weight:800,color:K.w}),T('ريال',px,py+(o.from?166:158),230,30,{weight:600,color:K.w}));
+  }
+  a.push(R(54,1262,972,70,dark?K.w:K.title,35),T(has?'اطلبه من الرابط في البايو 👇':'الرابط في البايو 👇',54,1276,972,30,{font:'d',weight:700,color:dark?K.title:K.w}));
+  return {bg:fill,els:a};
+}
+PPD.forEach(function(o,i){var id='pp-'+o.img;PPIDS.push(id);DEF[id]=shot(o);META[id]={day:'منتج',title:o.name+(o.size?' · '+o.size:''),price:o.price?(o.from?'من ':'')+o.price:'',cap:o.cap,style:i%2?'b':'a',tags:(i%2?TAG_B:TAG_A)+' '+o.tags,noprice:!o.price}});
+function isFree(id){return id.indexOf('intro-')===0||id.indexOf('pp-')===0}
+var ALLP=INTRO.concat(IDS,PPIDS);
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function fullCap(id){var m=META[id];return m.style==='a'?m.cap+'\n\n'+m.tags:m.cap}
 
@@ -556,7 +581,7 @@ function shape(ctx,e){
   ctx.closePath();ctx.fill();ctx.restore();
 }
 function draw(ctx,p,scale){
-  ctx.save();ctx.setTransform(scale,0,0,scale,0,0);
+  ctx.save();ctx.setTransform(scale,0,0,scale,0,0);ctx.imageSmoothingQuality='high';
   ctx.fillStyle=p.bg;ctx.fillRect(0,0,W,H);
   p.els.forEach(function(e){
     if(e.t==='rect'){ctx.fillStyle=e.fill;rr(ctx,e.x,e.y,e.w,e.h,e.r||0);ctx.fill()}
@@ -613,7 +638,7 @@ function weekStart(off){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate
 function taken(ts,id){for(var k in state){var s=state[k];if(k!==id&&s&&s.planAt===ts&&LIVE[s.status])return true}return false}
 function planDate(id,used){
   used=used||{};
-  if(id.indexOf('intro-')===0){
+  if(isFree(id)){
     for(var dd=0;dd<200;dd++)for(var k=0;k<2;k++){var q=weekStart(0);q.setDate(q.getDate()+dd);q.setHours(SLOTS[k][0],SLOTS[k][1],0,0);var qt=q.getTime();if(qt>Date.now()+2*3600e3&&!taken(qt,id)&&!used[qt])return qt}
   }
   var o=slotOf(id),t=SLOTS[o.s],c=null;
@@ -625,9 +650,10 @@ function planItems(){
   var out=[],seen={},used={};
   ALLP.concat(REELS.map(function(r){return r[0]})).forEach(function(id){
     seen[id]=1;var s=state[id]||{};if(s.status==='ignored')return;
+    if(id.indexOf('pp-')===0&&!LIVE[s.status])return;
     var reel=id.indexOf('reel-')===0,title=reel?REELS.filter(function(r){return r[0]===id})[0][3]:META[id].title+(META[id].price?' · '+META[id].price+' ريال':'');
     var ts=LIVE[s.status]&&s.planAt?s.planAt:planDate(id,used);used[ts]=1;
-    out.push({id:id,ts:ts,live:!!LIVE[s.status],status:s.status,kind:id.indexOf('intro-')===0?'بوستر بداية':SLOTS[slotOf(id).s][2],title:title,reel:reel,known:true});
+    out.push({id:id,ts:ts,live:!!LIVE[s.status],status:s.status,kind:id.indexOf('intro-')===0?'بوستر بداية':id.indexOf('pp-')===0?'بوستر منتج':SLOTS[slotOf(id).s][2],title:title,reel:reel,known:true});
   });
   for(var k in state){var s=state[k];if(!seen[k]&&s&&s.planAt&&LIVE[s.status])out.push({id:k,ts:s.planAt,live:true,status:s.status,kind:s.kind||'بوستر',title:s.title||k,reel:false,known:false})}
   return out;
@@ -685,7 +711,7 @@ $('b-back').onclick=function(){show('media')};
 function posterCard(id){
   var m=META[id],s=state[id]||{},d=document.createElement('div');d.className='card';d.dataset.id=id;
   d.appendChild(thumb(id,432));
-  var h='<div class="row"><span class="chip">'+esc(m.day)+'</span>'+chip(id)+(edited[id]?'<span class="chip off">معدّل</span>':'')+'</div>';
+  var h='<div class="row"><span class="chip">'+esc(m.day)+'</span>'+chip(id)+(m.noprice?'<span class="chip off">بدون سعر</span>':'')+(edited[id]?'<span class="chip off">معدّل</span>':'')+'</div>';
   h+='<b>'+esc(m.title)+(m.price?' · '+esc(m.price)+' ريال':'')+'</b>';
   h+='<details><summary>الكابشن والهاشتاقات</summary><pre>'+esc(m.cap)+'</pre><div class="meta">'+(m.style==='a'?'الهاشتاقات في الكابشن (طريقة أ)':'الهاشتاقات في أول تعليق (طريقة ب)')+'</div><pre>'+esc(m.tags)+'</pre><div class="row"><button class="btn small" data-a="cap">انسخ الكابشن</button><button class="btn small" data-a="tags">انسخ الهاشتاقات</button></div></details>';
   if(s.status==='ignored'){
@@ -748,7 +774,10 @@ function renderPhotos(){
 function renderMedia(){
   var pc=$('pcards'),ic=$('icards');pc.innerHTML='';ic.innerHTML='';var n=renderPhotos(),ig=[];
   var sc=$('scards');sc.innerHTML='';
-  ALLP.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else (id.indexOf('intro-')===0?sc:pc).appendChild(posterCard(id))});
+  var ppc=$('ppcards');ppc.innerHTML='';
+  ALLP.forEach(function(id){if((state[id]||{}).status==='ignored'){ic.appendChild(posterCard(id));n++}else (id.indexOf('intro-')===0?sc:id.indexOf('pp-')===0?ppc:pc).appendChild(posterCard(id))});
+  var np=PPD.filter(function(o){return !o.price}).length;
+  $('pp-note').textContent=PPD.length+' بوستر من صور المنتجات، كل واحد فيه جملتين والحجم والسعر. '+(np?np+' منها بدون سعر لأن ما عندي سعرها؛ عطني الأسعار وأضيفها. ':'')+'أي نص أو سعر تقدر تعدله من «افتح المحرر».';
   var reels=REELS.map(function(r){var st=state[r[0]]||{};return {o:{id:r[0],product:r[1]+' · '+r[2],title:r[3],text:r[4],cap:r[5],status:st.status||'new',reason:st.reason,nowAt:st.nowAt},reel:true}});
   reels.forEach(function(x){if(x.o.status==='ignored')ig.push(x)});
   ideas.forEach(function(o){if(o.status==='ignored')ig.push({o:o,reel:o.kind==='reel'})});
