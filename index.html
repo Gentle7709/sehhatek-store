@@ -542,6 +542,18 @@ body.theme-modern *{font-family:var(--f-ui)!important;letter-spacing:0}
 body.theme-modern .m-display{font-family:var(--f-display)!important}
 body.theme-modern #pdf-render-area *{font-family:Tajawal,Arial,sans-serif!important}
 body:not(.theme-modern) .m-only{display:none!important}
+/* أزرار صفحة عرض السعر: الإرسال للمشرف بارز، وتحميل PDF زر دائري صغير */
+.inv-send{margin-top:1.3rem;padding-bottom:1.5rem;text-align:center}
+/* في صفحة عرض السعر: لا أزرار عائمة تغطي زر الإرسال وزر التحميل */
+body.on-invoice #wa-fab,body.on-invoice #theme-toggle{display:none!important}
+.inv-send-note{font-size:1rem;font-weight:800;color:#b3261e;margin:0 0 .7rem;line-height:1.6}
+.inv-send-row{display:flex;align-items:center;justify-content:center;gap:.8rem}
+.inv-send-btn{flex:1 1 auto;max-width:440px;min-height:58px;padding:.8rem 1.4rem;background:#15803D;color:#fff;border:0;border-radius:50px;font-size:1.1rem;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;box-shadow:0 6px 18px rgba(21,128,61,.3)}
+.inv-pdf-btn{flex:0 0 54px;width:54px;height:54px;padding:0;border-radius:50%;border:2px solid #15803D;background:#fff;color:#15803D;font-size:1.25rem;cursor:pointer;display:grid;place-items:center}
+body.theme-modern .inv-send-btn{border-radius:16px}
+body.theme-modern .inv-send-btn svg.ic{width:22px;height:22px}
+body.theme-modern .inv-pdf-btn{border:1.5px solid var(--canopy);color:var(--canopy)}
+body.theme-modern .inv-pdf-btn svg.ic{width:22px;height:22px}
 #product-modal.no-price .modal-price,#product-modal.no-price .modal-price-sub{display:none}
 body.theme-modern .pc-noprice{font-size:14px;font-weight:600;color:var(--muted)}
 /* منتج بلا سعر: صورته تبقى بألوانها (الرمادي للمنتهي فقط) */
@@ -1377,8 +1389,6 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
   <div class="inv-page-bg" style="background:#f0f4f1;min-height:100vh;padding:2rem">
     <div class="inv-wrap" style="max-width:780px;margin:0 auto">
       <div style="display:flex;gap:1rem;margin-bottom:1.2rem;justify-content:flex-end" class="no-print invoice-actions">
-        <button onclick="sendOrderToSupervisor()" style="padding:0.7rem 1.8rem;background:#15803D;color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 14px rgba(21,128,61,0.3)"><span class="emo" aria-hidden="true">📤</span><svg class="ic m-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg> إرسال الطلب إلى المشرف</button>
-        <button onclick="printInvoice()" style="padding:0.7rem 1.8rem;background:var(--green-dark);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem"><span class="emo" aria-hidden="true">⬇️</span><svg class="ic m-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> تحميل عرض السعر PDF</button>
         <button onclick="goTo('page-delivery')" style="padding:0.7rem 1.5rem;background:transparent;color:var(--green-dark);border:2px solid var(--green-mid);border-radius:50px;font-size:0.95rem;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer">← رجوع</button>
       </div>
       <!-- INVOICE DOCUMENT -->
@@ -1462,6 +1472,14 @@ body:has(.modal-overlay:not(.hidden)) #wa-fab,body:has(.order-modal-wrap:not(.hi
           <div style="font-size:0.85rem;color:#c0392b;font-weight:700;margin-bottom:0.4rem"><span class="emo" aria-hidden="true">⚠️</span> يجب توفر المبلغ نقداً قبل التوصيل</div>
           <div style="font-size:0.8rem;color:#666">شكراً لتصفحك صفحة منتجات <span dir="ltr">DXN</span> • <span dir="ltr" style="display:inline-block">sehhatek-beddonya.com</span></div>
           <div style="font-size:0.8rem;color:#666;margin-top:0.3rem">هذه الصفحة فقط عرض سعر وليست فاتورة أو تأكيد بالطلب</div>
+        </div>
+      </div>
+      <!-- الإرسال للمشرف + تحميل PDF تحت عرض السعر -->
+      <div class="no-print inv-send">
+        <p class="inv-send-note">يجب الإرسال للمشرف حتى يتواصل معك</p>
+        <div class="inv-send-row">
+          <button class="inv-send-btn" onclick="sendOrderToSupervisor()"><span class="emo" aria-hidden="true">📤</span><svg class="ic m-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg> إرسال الطلب إلى المشرف</button>
+          <button class="inv-pdf-btn" onclick="printInvoice()" aria-label="تحميل عرض السعر PDF" title="تحميل عرض السعر PDF"><span class="emo" aria-hidden="true">⬇️</span><svg class="ic m-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button>
         </div>
       </div>
     </div>
@@ -1964,6 +1982,9 @@ function saveUsers()     { try { localStorage.setItem(LS_KEYS.users,     JSON.st
 // إضافة/تحديث عميل يدوياً أو تلقائياً
 function pad2(n) { return n < 10 ? ('0' + n) : ('' + n); }
 
+// كل رسالة واتساب تبدأ بهذا السطر ليعرف المشرف مصدرها
+var WA_HEADER = 'من صفحة منتجات صحتك بالدنيا';
+
 // إرسال الطلب للمشرف: فتح واتساب بملخّص الطلب
 function sendOrderToSupervisor() {
   var d = getDeliveryData();
@@ -1987,7 +2008,7 @@ function sendOrderToSupervisor() {
     return left + eqs + right;
   }
 
-  var L = [];
+  var L = [WA_HEADER, ''];
   // كل مشترٍ (الرئيسي ثم الإلحاقيات) بنفس الترتيب
   buyers.forEach(function(b, bi) {
     if (!b.items.length) return;
@@ -2312,6 +2333,7 @@ var selectedDistrictFee = null;
 // ── التنقل ──────────────────────────────────────────────────
 function goTo(id) {
   document.body.classList.toggle('in-admin', id === 'page-admin');
+  document.body.classList.toggle('on-invoice', id === 'page-invoice');
   document.querySelectorAll('.page, .shop-page').forEach(function(p) {
     p.classList.remove('active');
     if (p.classList.contains('shop-page')) p.style.display = 'none';
@@ -3470,7 +3492,7 @@ function printInvoice() {
   // رابط واتساب للعميل الرئيسي (من رقم هاتفه) وللمشرف
   var custDigits = (d.phone || '').replace(/[^0-9]/g, '');
   var custWa = custDigits ? ('https://wa.me/' + custDigits) : '';
-  var supWa  = 'https://wa.me/966506434783';
+  var supWa  = 'https://wa.me/966506434783?text=' + encodeURIComponent(WA_HEADER);
   var rows = '';
   buyers.forEach(function(b) {
     if (b.items.length === 0) return;
@@ -4225,6 +4247,10 @@ loadRecords();
   var src = document.getElementById('dxn-logo');
   document.querySelectorAll('[data-dxn-logo]').forEach(function(img) { if (src) img.src = src.src; });
   if (src) document.body.style.setProperty('--dxn-logo', 'url("' + src.src + '")');
+  // روابط واتساب العامة (الزر العائم، تواصل معنا، الفوتر) تفتح برسالة تبدأ باسم الصفحة
+  document.querySelectorAll('a[href="https://wa.me/966506434783"]').forEach(function(a) {
+    a.href = 'https://wa.me/966506434783?text=' + encodeURIComponent(WA_HEADER);
+  });
   var logo = document.getElementById('site-logo');
   if (logo) {
     document.querySelectorAll('[data-site-logo]').forEach(function(img) { img.src = logo.src; });
